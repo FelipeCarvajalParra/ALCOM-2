@@ -7,4 +7,5 @@ class CustomUser(AbstractUser):
     status = models.CharField(max_length=10, choices=[
         ('active', 'Active'),
         ('blocked', 'Blocked'),
-    ], default='active')                                     
+    ], default='active')                    
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)  # Asegúrate de tener Pillow instalado para trabajar con imágenes                 

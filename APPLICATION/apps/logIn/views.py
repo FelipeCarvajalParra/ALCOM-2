@@ -25,7 +25,7 @@ def group_required(group_name, redirect_url='login'):
 @login_required
 def redirect_user(request):
     if request.user.groups.filter(name='administrators').exists():
-        return redirect('admin_home')
+        return redirect('home')
     elif request.user.groups.filter(name='consultants').exists():
         return redirect('consultants_home')
     elif request.user.groups.filter(name='technicians').exists():
@@ -38,45 +38,43 @@ def expired_session(request): #Funcion que caduca la sesion por navegacion en ur
     messages.error(request, 'Sesion caducada por navegacion sospechosa, evite ingresar a sitios no permitidos')
     return redirect('/accounts/login/')
 
+
+@require_POST
 def login_validate(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
 
+    # Validar que ambos campos están completos
     if not username or not password:
-        return JsonResponse({'error': 'Ups! debes completar todos los campos'}, status=400)
+        return JsonResponse({'error': 'Ups! debes completar todos los campos'})
 
-    # Buscar el usuario en la base de datos
-    user = CustomUser.objects.filter(username=username).first()
-    
+    user = CustomUser.objects.filter(username=username).first()  # Buscar el usuario
+
     if user is None:
-        return JsonResponse({'error': 'Credenciales incorrectas'}, status=400)
+        return JsonResponse({'error': 'Credenciales incorrectas'})
 
     if user.status == 'blocked':
-        return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'}, status=403)
+        return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'})
 
-    # Autenticar al usuario
     authenticated_user = authenticate(username=username, password=password)
 
     if authenticated_user is None:
-        # Aumentar el contador de intentos fallidos
         user.login_attempts += 1
         user.save()
 
         if user.login_attempts >= 3:
             user.status = 'blocked'
             user.save()
-            return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'}, status=403)
-        
-        return JsonResponse({'error': 'Credenciales incorrectas'}, status=400)
+            return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'})
 
-    # Si las credenciales son correctas
+        return JsonResponse({'error': 'Credenciales incorrectas'})
+
     login(request, authenticated_user)
-
-    # Reiniciar contador de intentos fallidos
     user.login_attempts = 0
     user.save()
 
     return JsonResponse({'success': True, 'redirect_url': '/redirect_user/'})
+
 
 
 

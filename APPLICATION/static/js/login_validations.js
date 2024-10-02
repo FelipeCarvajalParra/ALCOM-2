@@ -3,19 +3,17 @@ const password = document.getElementById('password');
 const form = document.querySelector('.login__access');
 const messageError = document.getElementById('messageError');
 
-console.log('hola')
-
 form.addEventListener('submit', function(event) {
     event.preventDefault(); // Evitar el envío normal del formulario
 
-    messageError.textContent = '';  // Limpiar mensajes de error previos
+    messageError.textContent = '‎';  // Limpiar mensajes de error previos
 
     // Obtener los valores del formulario
     const username = user.value.trim();
     const userPassword = password.value.trim();
 
     // Enviar la solicitud AJAX al servidor
-    fetch('/validate_login/', {
+    fetch('/login_validate/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,7 +21,7 @@ form.addEventListener('submit', function(event) {
         },
         body: new URLSearchParams({
             'username': username,
-            'password': userPassword
+            'password': userPassword,
         })
     })
     .then(response => response.json())
@@ -38,6 +36,6 @@ form.addEventListener('submit', function(event) {
     })
     .catch(error => {
         console.error('Error:', error);
-        messageError.textContent = 'Ha ocurrido un error inesperado.';
+        messageError.textContent = 'Error en la validacion';
     });
 });
