@@ -24,12 +24,12 @@ def group_required(group_name, redirect_url='login'):
 # Función para validar el rol del usuario 
 @login_required
 def redirect_user(request):
-    if request.user.groups.filter(name='administrdor').exists():
+    if request.user.groups.filter(name='administrators').exists():
         return redirect('home')
     elif request.user.groups.filter(name='consultants').exists():
-        return redirect('consultants_home')
+        return redirect('home')
     elif request.user.groups.filter(name='technicians').exists():
-        return redirect('technicians_home')
+        return redirect('home')
     else:
         return redirect('GroupNone')
     
@@ -43,6 +43,8 @@ def expired_session(request): #Funcion que caduca la sesion por navegacion en ur
 def login_validate(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
+
+    print('entro')
 
     # Validar que ambos campos están completos
     if not username or not password:

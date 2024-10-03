@@ -1464,9 +1464,10 @@ display: block;
 
 .modal__options{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 0px;
     flex-wrap: wrap;
     margin-top: 15px;
 }

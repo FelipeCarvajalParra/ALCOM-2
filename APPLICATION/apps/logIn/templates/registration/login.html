@@ -46,13 +46,7 @@
         </form>
     </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script src="{% static 'js/expired_sesion.js' %}"></script>
-        {% endfor %}
-    {% endif %}
-    <script src="{% static 'js/login_validations.js' %}"></script>
+    <script src="{% static 'js/login_validations.js' %} ?v=2"></script>
     <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 
 </body>

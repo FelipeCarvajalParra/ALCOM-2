@@ -73,61 +73,63 @@
         </thead>
         <tbody class="table__body">
             {% for user in users %}
-                <tr class="table__row">
-                    <td class="table__cell table__cell--auto table__cell--flex">
-                        <img class="table__image table__image--circular" src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% endif %}"
-                            alt="img" />
-                        <div class="table__container-text">
-                            <a href="{% url 'edit_user' user.id %}" class="table__container-link">{% if user.first_name or user.last_name %}{{ user.first_name }}{{ user.last_name }}{% else %}No name{% endif %}</a>
-                            <span class="table__container-email">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
-                        </div>
-                    </td>
-                    <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
-                        {% if user.groups.exists %}
-                            {% for group in user.groups.all %}
-                                {% if group.name == "administrators" %}
-                                    Administrador
-                                {% elif group.name == "consultants" %}
-                                    Consultor
-                                {% elif group.name == "technicians" %}
-                                    Técnico
-                                {% else %}
-                                    {{ group.name }}  {# En caso de que el grupo no esté en la lista #}
-                                {% endif %}
-                                {% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            No group
-                        {% endif %}
-                    </td>
-                    <td class="table__cell table__cell--small table__cell--overflow"
-                        data-text="{% if user.status == 'active' %}Activo{% elif user.status == 'blocked' %}Bloqueado{% else %}None{% endif %}">
-                        {% if user.status == 'active' %}
-                            <div class="status status--active">
-                                <span>
-                                    Activo
-                                </span>
+                {% if request.user.id != user.id %}
+                    <tr class="table__row">
+                        <td class="table__cell table__cell--auto table__cell--flex">
+                            <img class="table__image table__image--circular" src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% endif %}"
+                                alt="img" />
+                            <div class="table__container-text">
+                                <a href="{% url 'edit_user' user.id %}" class="table__container-link">{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</a>
+                                <span class="table__container-email">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
                             </div>
-                        {% elif user.status == 'blocked' %}
-                            <div class="status status--blocked">
+                        </td>
+                        <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
+                            {% if user.groups.exists %}
+                                {% for group in user.groups.all %}
+                                    {% if group.name == "administrators" %}
+                                        Administrador
+                                    {% elif group.name == "consultants" %}
+                                        Consultor
+                                    {% elif group.name == "technicians" %}
+                                        Técnico
+                                    {% else %}
+                                        {{ group.name }}  {# En caso de que el grupo no esté en la lista #}
+                                    {% endif %}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                No group
+                            {% endif %}
+                        </td>
+                        <td class="table__cell table__cell--small table__cell--overflow"
+                            data-text="{% if user.status == 'active' %}Activo{% elif user.status == 'blocked' %}Bloqueado{% else %}None{% endif %}">
+                            {% if user.status == 'active' %}
+                                <div class="status status--active">
+                                    <span>
+                                        Activo
+                                    </span>
+                                </div>
+                            {% elif user.status == 'blocked' %}
+                                <div class="status status--blocked">
+                                    <span>
+                                        Bloqueado
+                                    </span>
+                                </div>
+                            {% else %}
                                 <span>
-                                    Bloqueado
+                                    None
                                 </span>
-                            </div>
-                        {% else %}
-                            <span>
-                                None
-                            </span>
-                        {% endif %}
-                    </td>
-                    <td class="table__cell table__cell--actions">
-                        <a href="{% url 'edit_user' user.id %}" >
-                            <svg class="svg-option" width="20px" height="20px">
-                                <use href="#icon-view"></use>
-                            </svg>
-                        </a>
-                    </td>
-                </tr>
+                            {% endif %}
+                        </td>
+                        <td class="table__cell table__cell--actions">
+                            <a href="{% url 'edit_user' user.id %}" >
+                                <svg class="svg-option" width="20px" height="20px">
+                                    <use href="#icon-view"></use>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
@@ -215,6 +217,7 @@
 
 
         <form class="container__form">
+            {% csrf_token %}
             <div class="form__largue">
                 <div class="input-container">
                     <div class="input-wrapper">
@@ -294,9 +297,21 @@
                 <button type="submit" class="button button--save">
                     <span>Añadir usuario</span>
                 </button>
+                <span id="messageError" class="login__error-message">‎</span>
             </div>
 
         </form>
     </div>
+
+    {% if messages %}
+    {% for message in messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
+        <script src="{% static 'js/pop-up_window.js' %}" ></script>
+    {% endfor %}
+    {% endif %}
+
+
+    <script src="{% static 'js/user_validation.js' %}" ></script>
 
 {% endblock %}

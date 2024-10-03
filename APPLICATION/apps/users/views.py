@@ -10,20 +10,20 @@ from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 
 
+
 @login_required #Template para listar los usuarios
 @group_required('administrators', redirect_url='expired_session')
 def view_users(request):
-    user_list = CustomUser.objects.all()  # Obtener todos los usuarios
-    paginator = Paginator(user_list, 13)  # 15 usuarios por página
+    user_list = CustomUser.objects.all().order_by('-id')  # Ordenar por ID descendente (más nuevos primero)
+    paginator = Paginator(user_list, 13)  # 13 usuarios por página
 
-    page_number = request.GET.get('page')  
-    users = paginator.get_page(page_number) 
+    page_number = request.GET.get('page')
+    users = paginator.get_page(page_number)
 
     context = {
         'users': users,  # Pasar solo los usuarios de la página actual
     }
     return render(request, 'view_users.html', context)
-
 
 @login_required #Template para listar los usuarios
 @group_required('administrators', redirect_url='expired_session')
@@ -39,10 +39,76 @@ def edit_user(request, id):
 
 
 
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.contrib.auth.models import Group
 
 
+@login_required 
+@group_required('administrators', redirect_url='expired_session')
+def register_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
 
+        # Validaciones
+        required_fields = ['names', 'lastName', 'email', 'jobName', 'username', 'status', 'group', 'password', 'password_validation']
+        for field in required_fields:
+            if not data.get(field):
+                return JsonResponse({'success': False, 'error': f'El campo {field} es obligatorio.'})
 
+        if data['password'] != data['password_validation']:
+            return JsonResponse({'success': False, 'error': 'Las contraseñas no coinciden.'})
+
+        
+        if CustomUser.objects.filter(username=data['username']).exists(): # Verifica si el usuario ya existe
+            return JsonResponse({'success': False, 'error': 'El usuario ya existe.'})
+
+        if CustomUser.objects.filter(email=data['email']).exists():
+            return JsonResponse({'success': False, 'error': 'El correo ya está registrado.'})
+
+        group_mapping = {
+            'Administrador': 'administrators',
+            'Consultor': 'consultants',
+            'Tecnico': 'technicians',
+        }
+        group_name = group_mapping.get(data['group'], None)
+
+        if group_name is None:
+            return JsonResponse({'success': False, 'error': 'Grupo no válido.'})
+
+        status_mapping = {
+            'Activo': 'active',
+            'Bloqueado': 'blocked',
+        }
+        translated_status = status_mapping.get(data['status'], None)
+
+        if translated_status is None:
+            return JsonResponse({'success': False, 'error': 'Estado no válido.'})
+
+        # Registra el nuevo usuario
+        try:
+            new_user = CustomUser(
+                username=data['username'],
+                email=data['email'],
+                first_name= data['names'].title(),
+                last_name=data['lastName'].title(),
+                position=data['jobName'],
+                status=translated_status,  # Guardar el estado traducido
+            )
+            new_user.set_password(data['password'])
+            new_user.save()
+
+            group = Group.objects.get(name=group_name)# Asigna el usuario al grupo
+            new_user.groups.add(group)
+
+            messages.success(request, 'Usuario registrado exitosamente.')
+            return JsonResponse({'success': True})  
+
+        except Exception as e:
+            messages.error(request, f'Ha ocurrido un error al registrar el usuario: {str(e)}')
+            return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)  # Respuesta JSON
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido.'})
 
 
 
