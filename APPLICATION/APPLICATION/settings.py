@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.logIn',
     'apps.core',
+    'apps.userProfile',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.common.context_processors.user_role_context',
+                'apps.common.context_processors.current_path',
             ],
         },
     },

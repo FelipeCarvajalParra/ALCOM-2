@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+
+<div class="layer-color"></div>
+<div class="page__user">
+
+    <div class="page__user-section-info">
+        <div class="container--user">
+            <div class="container__section-image">
+                <img class="container__image--profile" src="/static/img/profile.png" alt="img">
+                <span>Felipe Carvajal Parra</span>
+            </div>
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Usuario:</span>
+                    <span class="detail__value">Felipe2356</span>
+                </div>
+            </div>
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Correo:</span>
+                    <span class="detail__value">felipecarvajalparra@gmail.com</span>
+                </div>
+            </div>
+
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Estado:</span>
+                    <span class="detail__value">
+                        <div class="status status--active">
+                            <span>
+                                Activo
+                            </span>
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Rol:</span>
+                    <span class="detail__value">administrador</span>
+                </div>
+            </div>
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Cargo:</span>
+                    <span class="detail__value">Practicante</span>
+                </div>
+            </div>
+            <div class="container__section-details">
+                <div class="container__section-detail">
+                    <span class="detail__label">Fecha de registro:</span>
+                    <span class="detail__value">26/09/2024</span>
+                </div>
+            </div>
+            <div class="container__section-actions">
+                <div class="button button--edit">
+                    <span>Editar</span>
+                </div>
+                <div class="button button--delete">
+                    <span>Eliminar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page__user-section-nav">
+        <div class="container--sub-navegation">
+            <div class="button button--active button--navegation" data-target="activityContainer">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.26 9.96L14.95 12.94C14.66 13.31 14.25 13.55 13.78 13.6C13.31 13.66 12.85 13.53 12.48 13.24L10.65 11.8C10.58 11.74 10.5 11.74 10.46 11.75C10.42 11.75 10.35 11.77 10.29 11.85L7.91 14.94C7.76 15.13 7.54 15.23 7.32 15.23C7.16 15.23 7 15.18 6.86 15.07C6.53 14.82 6.47 14.35 6.72 14.02L9.1 10.93C9.39 10.56 9.8 10.32 10.27 10.26C10.73 10.2 11.2 10.33 11.57 10.62L13.4 12.06C13.47 12.12 13.54 12.12 13.59 12.11C13.63 12.11 13.7 12.09 13.76 12.01L16.07 9.03C16.32 8.7 16.8 8.64 17.12 8.9C17.45 9.17 17.51 9.64 17.26 9.96Z" />
+                </svg>
+                <span>Actividad</span>
+            </div>
+            <div class="button button--navegation button-margin-left"
+                data-target="personalDataContainer,loginDataContainer">
+                <svg fill="currentColor" width="30px" height="30px" viewBox="0 0 24 24">
+                    <path
+                        d="M9.6,3.32a3.86,3.86,0,1,0,3.86,3.85A3.85,3.85,0,0,0,9.6,3.32M16.35,11a.26.26,0,0,0-.25.21l-.18,1.27a4.63,4.63,0,0,0-.82.45l-1.2-.48a.3.3,0,0,0-.3.13l-1,1.66a.24.24,0,0,0,.06.31l1,.79a3.94,3.94,0,0,0,0,1l-1,.79a.23.23,0,0,0-.06.3l1,1.67c.06.13.19.13.3.13l1.2-.49a3.85,3.85,0,0,0,.82.46l.18,1.27a.24.24,0,0,0,.25.2h1.93a.24.24,0,0,0,.23-.2l.18-1.27a5,5,0,0,0,.81-.46l1.19.49c.12,0,.25,0,.32-.13l1-1.67a.23.23,0,0,0-.06-.3l-1-.79a4,4,0,0,0,0-.49,2.67,2.67,0,0,0,0-.48l1-.79a.25.25,0,0,0,.06-.31l-1-1.66c-.06-.13-.19-.13-.31-.13L19.5,13a4.07,4.07,0,0,0-.82-.45l-.18-1.27a.23.23,0,0,0-.22-.21H16.46M9.71,13C5.45,13,2,14.7,2,16.83v1.92h9.33a6.65,6.65,0,0,1,0-5.69A13.56,13.56,0,0,0,9.71,13m7.6,1.43a1.45,1.45,0,1,1,0,2.89,1.45,1.45,0,0,1,0-2.89Z" />
+                </svg>
+                <span>Configuracion</span>
+            </div>
+        </div>
+
+        <div id="activityContainer" class="container--activity scroll" style="display: block;">
+            <div class="container__section-title">
+                <span>Actividad reciente</span>
+            </div>
+            <ul class="container__list-activity">
+                <li class="list-activity__item">
+                    <div class="list-activity__header">
+                        <span class="list-activity__icon"></span>
+                        <span class="list-activity__title">Intervencion</span>
+                        <span class="list-activity__timestamp">26/09/2024 - 3:30pm</span>
+                    </div>
+                    <div class="list-activity__body">
+                        <p class="list-activity__description">El usuario registro una nueva intervencion</p>
+                        <svg class="svg-option svg-option--notification" width="20px" height="20px">
+                            <use href="#icon-view"></use>
+                        </svg>
+                        <svg class="svg-option svg-option--delete svg-option--notification" width="20px" height="20px">
+                            <use href="#icon-delete"></use>
+                        </svg>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="personalDataContainer" class="container--activity scroll" style="display: none;">
+            <div class="container__section-title">
+                <span>Datos personales</span>
+            </div>
+
+            <form class="container__form">
+                <div class="form__largue">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <input class="input input--medium" type="text" id="names" required>
+                            <label class="input-container__label" for="names">Nombres</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input class="input input--medium" type="text" id="lastName" required>
+                            <label class="input-container__label" for="lastName">Apellidos</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__largue form__largue--margin-top">
+                    <div class="input-container">
+                        <div class="input-wrapper input-wrapper--largue">
+                            <input class="input input--largue" type="email" id="email" required>
+                            <label class="input-container__label" for="email">Correo electrónico</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__largue form__largue--margin-top">
+                    <div class="input-container">
+                        <div class="input-wrapper input-wrapper--largue">
+                            <input class="input input--largue" type="text" id="jobName" required>
+                            <label class="input-container__label" for="jobName">Cargo</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="button button--save">
+                    <span>Guardar cambios</span>
+                </button>
+            </form>
+        </div>
+
+
+
+
+        <div id="loginDataContainer" class="container--activity scroll" style="display: none;">
+            <div class="container__section-title">
+                <span>Datos de ingreso</span>
+            </div>
+
+            <form class="container__form">
+                <div class="form__largue">
+                    <div class="input-container">
+
+
+                        <div class="input-wrapper">
+                            <input class="input input--medium" type="text" id="Usuario" required>
+                            <label class="input-container__label" for="Usuario">Usuario</label>
+                        </div>
+
+
+                        <div class="input-wrapper input-wrapper--flex">
+                            <div class="select select--filter select--state">
+                                <div class="select__selected">Estado</div>
+                                <div class="select__options scroll">
+                                    <div class="select__option">Activo</div>
+                                    <div class="select__option">Bloqueado</div>
+                                </div>
+                                <div class="select__icon">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="select select--filter select--state">
+                                <div class="select__selected">Rol</div>
+                                <div class="select__options scroll">
+                                    <div class="select__option">Consultor</div>
+                                    <div class="select__option">Administrador</div>
+                                    <div class="select__option">Tecnico</div>
+                                </div>
+                                <div class="select__icon">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <input class="input input--medium" type="password" id="newPassword" required>
+                            <label class="input-container__label" for="newPassword">Nueva contraseña</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input class="input input--medium" type="password" id="newPasswordValidation" required>
+                            <label class="input-container__label" for="newPasswordValidation">Confirme nueva
+                                contraseña</label>
+                        </div>
+
+                    </div>
+
+                    <button class="button button--save">
+                        <span>Guardar cambios</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -8,4 +8,4 @@ class CustomUser(AbstractUser):
         ('active', 'Active'),
         ('blocked', 'Blocked'),
     ], default='active')                    
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)  # Asegúrate de tener Pillow instalado para trabajar con imágenes                 
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, default='default/default_user.jpg')  # Asegúrate de tener Pillow instalado para trabajar con imágenes                 

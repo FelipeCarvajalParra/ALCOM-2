@@ -9,6 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.logIn.urls')),
     path('', include('apps.core.urls')),
+    path('', include('apps.userProfile.urls')),
+    path('', include('apps.users.urls')),
 ]
 
 if settings.DEBUG:

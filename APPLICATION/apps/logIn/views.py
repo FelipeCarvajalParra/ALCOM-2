@@ -24,7 +24,7 @@ def group_required(group_name, redirect_url='login'):
 # Función para validar el rol del usuario 
 @login_required
 def redirect_user(request):
-    if request.user.groups.filter(name='administrators').exists():
+    if request.user.groups.filter(name='administrdor').exists():
         return redirect('home')
     elif request.user.groups.filter(name='consultants').exists():
         return redirect('consultants_home')
@@ -74,17 +74,6 @@ def login_validate(request):
     user.save()
 
     return JsonResponse({'success': True, 'redirect_url': '/redirect_user/'})
-
-
-
-
-
-
-
-
-
-
-
 
 # Función para cerrar sesión 
 def logout_user(request):
