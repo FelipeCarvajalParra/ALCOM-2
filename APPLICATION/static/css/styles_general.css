@@ -1065,7 +1065,6 @@ display: block;
 
 
 .button--save{
-    display: inline-flex; /* o inline-flex */
     font-size: 16px;
     background-color: #77baee;
     margin-top: 15px;

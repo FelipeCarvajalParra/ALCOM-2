@@ -8,19 +8,19 @@
     <div class="page__user-section-info">
         <div class="container--user">
             <div class="container__section-image">
-                <img class="container__image--profile" src="/static/img/profile.png" alt="img">
-                <span>Felipe Carvajal Parra</span>
+                <img class="container__image--profile" src="{{ user.profile_picture.url }}" alt="img">
+                <span>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</span>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Usuario:</span>
-                    <span class="detail__value">Felipe2356</span>
+                    <span class="detail__value">{% if user.username %}{{ user.username }}{% else %}No user{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Correo:</span>
-                    <span class="detail__value">felipecarvajalparra@gmail.com</span>
+                    <span class="detail__value">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
                 </div>
             </div>
 
@@ -28,30 +28,42 @@
                 <div class="container__section-detail">
                     <span class="detail__label">Estado:</span>
                     <span class="detail__value">
-                        <div class="status status--active">
+                        {% if user.status == 'active' %}
+                            <div class="status status--active">
+                                <span>
+                                    Activo
+                                </span>
+                            </div>
+                        {% elif user.status == 'blocked' %}
+                            <div class="status status--blocked">
+                                <span>
+                                    Bloqueado
+                                </span>
+                            </div>
+                        {% else %}
                             <span>
-                                Activo
+                                None
                             </span>
-                        </div>
+                        {% endif %}
                     </span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Rol:</span>
-                    <span class="detail__value">administrador</span>
+                    <span class="detail__value">{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Cargo:</span>
-                    <span class="detail__value">Practicante</span>
+                    <span class="detail__value">{% if user.position %}{{ user.position }}{% else %}No position{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Fecha de registro:</span>
-                    <span class="detail__value">26/09/2024</span>
+                    <span class="detail__value">{% if user.date_joined %}{{ user.date_joined|date:"d/m/y" }}{% else %}No date{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-actions">
@@ -70,8 +82,7 @@
         <div class="container--sub-navegation">
             <div class="button button--active button--navegation" data-target="activityContainer">
                 <svg width="30px" height="30px" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.26 9.96L14.95 12.94C14.66 13.31 14.25 13.55 13.78 13.6C13.31 13.66 12.85 13.53 12.48 13.24L10.65 11.8C10.58 11.74 10.5 11.74 10.46 11.75C10.42 11.75 10.35 11.77 10.29 11.85L7.91 14.94C7.76 15.13 7.54 15.23 7.32 15.23C7.16 15.23 7 15.18 6.86 15.07C6.53 14.82 6.47 14.35 6.72 14.02L9.1 10.93C9.39 10.56 9.8 10.32 10.27 10.26C10.73 10.2 11.2 10.33 11.57 10.62L13.4 12.06C13.47 12.12 13.54 12.12 13.59 12.11C13.63 12.11 13.7 12.09 13.76 12.01L16.07 9.03C16.32 8.7 16.8 8.64 17.12 8.9C17.45 9.17 17.51 9.64 17.26 9.96Z" />
+                    <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.26 9.96L14.95 12.94C14.66 13.31 14.25 13.55 13.78 13.6C13.31 13.66 12.85 13.53 12.48 13.24L10.65 11.8C10.58 11.74 10.5 11.74 10.46 11.75C10.42 11.75 10.35 11.77 10.29 11.85L7.91 14.94C7.76 15.13 7.54 15.23 7.32 15.23C7.16 15.23 7 15.18 6.86 15.07C6.53 14.82 6.47 14.35 6.72 14.02L9.1 10.93C9.39 10.56 9.8 10.32 10.27 10.26C10.73 10.2 11.2 10.33 11.57 10.62L13.4 12.06C13.47 12.12 13.54 12.12 13.59 12.11C13.63 12.11 13.7 12.09 13.76 12.01L16.07 9.03C16.32 8.7 16.8 8.64 17.12 8.9C17.45 9.17 17.51 9.64 17.26 9.96Z" />
                 </svg>
                 <span>Actividad</span>
             </div>
@@ -109,20 +120,21 @@
             </ul>
         </div>
 
-        <div id="personalDataContainer" class="container--activity scroll" style="display: none;">
+        <div id="personalDataContainer" class="container--activity scroll" style="display: none;" >
             <div class="container__section-title">
                 <span>Datos personales</span>
             </div>
 
-            <form class="container__form">
+            <form class="container__form"  data-id="{{ user.id }}">
+                {% csrf_token %}
                 <div class="form__largue">
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="names" required>
+                            <input class="input input--medium" type="text" id="names" value="{% if user.first_name %}{{ user.first_name }}{% endif %}">
                             <label class="input-container__label" for="names">Nombres</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="lastName" required>
+                            <input class="input input--medium" type="text" id="lastName" value="{% if user.last_name %}{{ user.last_name }}{% endif %}">
                             <label class="input-container__label" for="lastName">Apellidos</label>
                         </div>
                     </div>
@@ -130,7 +142,7 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="email" id="email" required>
+                            <input class="input input--largue" type="email" id="email" value="{% if user.email %}{{ user.email }}{% endif %}">
                             <label class="input-container__label" for="email">Correo electrónico</label>
                         </div>
                     </div>
@@ -138,14 +150,15 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="jobName" required>
+                            <input class="input input--largue" type="text" id="jobName" value="{% if user.last_name %}{{ user.last_name }}{% endif %}">
                             <label class="input-container__label" for="jobName">Cargo</label>
                         </div>
                     </div>
                 </div>
-                <button class="button button--save">
+                <button class="button button--save" type="submit">
                     <span>Guardar cambios</span>
                 </button>
+                <span id="personalMessageError" class="login__error-message"></span>
             </form>
         </div>
 
@@ -157,14 +170,15 @@
                 <span>Datos de ingreso</span>
             </div>
 
-            <form class="container__form">
+            <form id="loginDataForm" class="container__form"  data-id="{{ user.id }}">
+                {% csrf_token %}
                 <div class="form__largue">
                     <div class="input-container">
 
 
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="Usuario" required>
-                            <label class="input-container__label" for="Usuario">Usuario</label>
+                            <input class="input input--medium" type="text" id="username" value="{% if user.username %}{{ user.username }}{% endif %}">
+                            <label class="input-container__label" for="username">Usuario</label>
                         </div>
 
 
@@ -199,13 +213,12 @@
                         </div>
 
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="password" id="newPassword" required>
+                            <input class="input input--medium" type="password" id="newPassword" >
                             <label class="input-container__label" for="newPassword">Nueva contraseña</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="password" id="newPasswordValidation" required>
-                            <label class="input-container__label" for="newPasswordValidation">Confirme nueva
-                                contraseña</label>
+                            <input class="input input--medium" type="password" id="newPasswordValidation">
+                            <label class="input-container__label" for="newPasswordValidation">Confirme nueva contraseña</label>
                         </div>
 
                     </div>
@@ -213,6 +226,7 @@
                     <button class="button button--save">
                         <span>Guardar cambios</span>
                     </button>
+                    <span id="loginMessageError" class="login__error-message"></span>
                 </div>
 
             </form>
@@ -220,6 +234,17 @@
 
     </div>
 </div>
+
+<script src="{% static 'js/sub_navigation.js' %}" ></script>
+<script src="{% static 'js/update_user.js' %}" ></script>
+<script src="{% static 'js/update_login_data.js' %}" ></script>
+{% if messages %}
+    {% for message in messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
+        <script src="{% static 'js/pop-up_window.js' %}" ></script>
+    {% endfor %}
+{% endif %}
 
 
 
