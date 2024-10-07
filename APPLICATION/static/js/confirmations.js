@@ -1,6 +1,7 @@
 // Escuchar los clics en elementos por ID
 const logoutLink = document.getElementById('logout');
 const deleteUser = document.getElementById('deleteUser');
+const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
 
 if (logoutLink) {
     logoutLink.addEventListener('click', function () {
@@ -22,12 +23,32 @@ if (deleteUser) {
             'Si eliminas este usuario, también se eliminará toda la información relacionada (intervenciones, actividad, etc.).',
             'Sí, eliminar',
             'Cancelar',
-            userId // Pasa solo el ID de usuario aquí
+            userId, // Pasa solo el ID de usuario aquí
+            1
         );
     });
 }
 
-function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, userIdOrRedirectUrl) {
+// Iterar sobre todos los elementos con clase 'deleteActivityLog'
+if (deleteActivityLogs) {
+    deleteActivityLogs.forEach(function (logElement) {
+        logElement.addEventListener('click', function () {
+            const idLog = logElement.getAttribute('data-idLog'); 
+            console.log(idLog)
+            showConfirmationModal(
+                '¿Estás seguro?',
+                'El registro se eliminará de forma permanente.',
+                'Sí, eliminar',
+                'Cancelar',
+                idLog, // Pasa el ID del log aquí
+                2
+            );
+        });
+    });
+}
+
+
+function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action) {
     Swal.fire({
         title: title,
         text: text,
@@ -39,19 +60,24 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
         cancelButtonText: cancelButtonText
     }).then((result) => {
         if (result.isConfirmed) {
-            if (typeof userIdOrRedirectUrl === 'string' && userIdOrRedirectUrl.startsWith('/')) {
+            if (typeof recordId === 'string' && recordId.startsWith('/')) {
                 // Redirigir a la URL especificada (por ejemplo, para cerrar sesión)
-                window.location.href = userIdOrRedirectUrl;
+                window.location.href = recordId;
             } else {
-                // Si es un ID de usuario, ejecutar la función de eliminación
-                deleteUserRequest(userIdOrRedirectUrl); // Llama a la función para eliminar el usuario
+                switch(action){
+                    case(1):
+                        deleteRequest('delete_user', recordId, 'view_users')
+                    case(2):
+                        deleteRequest('delete_log_activity', recordId)
+                }
             }
         }
-    });
+    }); 
 }
 
-function deleteUserRequest(userId) {
-    fetch(`/delete_user/${userId}`, {
+function deleteRequest(url, id, returnView) {
+    console.log(id)
+    fetch(`/${url}/${id}`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCookie('csrftoken') // Asegúrate de incluir el token CSRF
@@ -59,7 +85,12 @@ function deleteUserRequest(userId) {
     })
     .then(response => {
         if (response.ok) {
-            window.location.href = '/view_users/'; // Asigna la URL directamente
+            if(returnView){
+                window.location.href = `/${returnView}/`; 
+            }else{
+                location.reload(true)
+            }
+            
         }
     })
     .catch(error => {

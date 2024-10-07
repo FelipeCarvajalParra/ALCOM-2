@@ -281,6 +281,32 @@ a{
     margin-right: 8px;
 }
 
+.list-activity__icon--create {
+    background-color: #72e128;
+    box-shadow: 0 0 0 3px rgba(114, 225, 40, 0.2);
+}
+
+.list-activity__icon--edit {
+    background-color: #26c6f9;
+    box-shadow: 0 0 0 3px rgba(38, 198, 249, 0.2);
+}
+
+.list-activity__icon--delete {
+    background-color: #f7902f;
+    box-shadow: 0 0 0 3px rgba(247, 144, 47, 0.2);
+}
+
+.list-activity__icon--login {
+    background-color: #666cff;
+    box-shadow: 0 0 0 3px rgba(102, 108, 255, 0.2);
+}
+
+.list-activity__icon--lockout {
+    background-color: #d10505;
+    box-shadow: 0 0 0 3px rgba(209, 5, 5, 0.2);
+}
+
+
 .list-activity__timestamp {
     margin-left: auto;
     color: #aeb0ba;

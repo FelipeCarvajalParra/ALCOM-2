@@ -27,7 +27,7 @@
                 </div>
                 <div class="select__options">
                     <div class="select__option select__option--export">
-                        <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
+                        <svg fill="currentColor" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
                             data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M46.92,0H18.74A3.44,3.44,0,0,0,15.3,3.43V52.57A3.44,3.44,0,0,0,18.74,56H53.26a3.44,3.44,0,0,0,3.44-3.43V10.62Zm.81,5.14L52,9.79H47.73Zm6.08,47.43a.55.55,0,0,1-.55.55H18.74a.55.55,0,0,1-.55-.55V3.43a.54.54,0,0,1,.55-.54H44.85v8.35a1.45,1.45,0,0,0,1.44,1.44h7.52Z" />
@@ -37,7 +37,7 @@
                         <span>Excel</span>
                     </div>
                     <div class="select__option select__option--export">
-                        <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
+                        <svg width="23px" height="18px" fill="currentColor" viewBox="-274.15 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
                             <path
                                 d="M30 161c-16.5 0-30 13.5-30 30v827.8c0 16.5 13.5 30 30 30h591.7c16.5 0 30-13.5 30-30V343.7L469 161H30zm389.6 60v134.8c0 19.9 16.3 36.2 36.2 36.2h135.9v596.8H60V221h359.6z" />
@@ -46,6 +46,12 @@
                             <circle cx="194" cy="382.3" r="60" />
                         </svg>
                         <span> PDF </span>
+                    </div>
+                    <div class="select__option select__option--export">
+                        <svg fill="currentColor" width="25px" height="25px" viewBox="0 0 1024 1024">
+                            <path d="M691.2 410V256H333v154h-77v256h76.8v102h358.4V666H768V410h-76.8zM640 717H384V589h256v128zM384 410V307h256v103H384zm307.2 102c-14.1 0-25.6-11.5-25.6-25.6 0-14.1 11.5-25.6 25.6-25.6 14.1 0 25.6 11.5 25.6 25.6 0 14.1-11.5 25.6-25.6 25.6z"/>
+                        </svg>
+                        <span> Imprimir </span>
                     </div>
                 </div>
                 <div class="select__icon">
@@ -146,12 +152,6 @@
                             </svg>
                         </a>
                     </li>
-                {% else %}
-                    <li class="pagination__item pagination__item--previous disabled">
-                        <svg width="15px" height="15px">
-                            <use href="#icon-previous"></use>
-                        </svg>
-                    </li>
                 {% endif %}
 
                 {% if users.paginator.num_pages > 1 %}
@@ -185,12 +185,6 @@
                                 <use href="#icon-next"></use>
                             </svg>
                         </a>
-                    </li>
-                {% else %}
-                    <li class="pagination__item pagination__item--next disabled"> 
-                        <svg width="15px" height="15px">
-                            <use href="#icon-next"></use>
-                        </svg>
                     </li>
                 {% endif %}
             </ul>
@@ -287,8 +281,7 @@
                     </div>
                     <div class="input-wrapper">
                         <input class="input input--medium" type="password" id="newPasswordValidation" required>
-                        <label class="input-container__label" for="newPasswordValidation">Confirme nueva
-                            contraseña</label>
+                        <label class="input-container__label" for="newPasswordValidation">Confirme nueva contraseña</label>
                     </div>
                 </div>
             </div>

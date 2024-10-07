@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.contrib import messages
 from .models import CustomUser
+from apps.activityLog.models import ActivityLog
 
 
 #Funcion para limitar la navegacion por rol 
@@ -25,11 +26,11 @@ def group_required(group_name, redirect_url='login'):
 @login_required
 def redirect_user(request):
     if request.user.groups.filter(name='administrators').exists():
-        return redirect('home')
+        return redirect('/home/construction')
     elif request.user.groups.filter(name='consultants').exists():
-        return redirect('home')
+        return redirect('/home/construction')
     elif request.user.groups.filter(name='technicians').exists():
-        return redirect('home')
+        return redirect('/home/construction')
     else:
         return redirect('GroupNone')
     
@@ -43,8 +44,6 @@ def expired_session(request): #Funcion que caduca la sesion por navegacion en ur
 def login_validate(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
-
-    print('entro')
 
     # Validar que ambos campos están completos
     if not username or not password:
@@ -72,6 +71,13 @@ def login_validate(request):
         return JsonResponse({'error': 'Credenciales incorrectas'})
 
     login(request, authenticated_user)
+    log_activity(
+                user=request.user.id,                       
+                action='DELETE',                 
+                title='Elimino usuario',      
+                description=f'El usuario elimino el perfil de {user_instance.first_name}.',  
+                category='USER_PROFILE'          
+    )
     user.login_attempts = 0
     user.save()
 

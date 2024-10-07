@@ -21,7 +21,7 @@ class ActivityLog(models.Model):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    action = models.CharField(max_length=25, choices=ACTION_CHOICES)
     title = models.CharField(max_length=255)
     description = models.TextField()
     link = models.URLField(null=True, blank=True)

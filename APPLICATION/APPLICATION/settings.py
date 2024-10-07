@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.userProfile',
     'apps.users',
     'apps.activityLog',
+    'apps.categories',
 ]
 
 MIDDLEWARE = [

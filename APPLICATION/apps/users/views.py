@@ -6,8 +6,11 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from apps.logIn.models import CustomUser
+from apps.activityLog.models import ActivityLog
 from django.core.paginator import Paginator
 import json
+from urllib import request, error
+from urllib.request import urlopen  
 from django.apps import apps
 import os
 from django.conf import settings
@@ -15,6 +18,9 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 from apps.activityLog.utils import log_activity
+
+from urllib.parse import urljoin
+import requests
 
 group_name = {
     'Consultor': 'consultants', 
@@ -38,8 +44,10 @@ def get_group_by_name(group_name):
 @login_required
 @group_required('administrators', redirect_url='expired_session')
 def view_users(request):
-    user_list = CustomUser.objects.all().order_by('-id')
-    paginator = Paginator(user_list, 13)
+    # Excluye al usuario actual de la lista
+    user_list = CustomUser.objects.exclude(id=request.user.id).order_by('-id')
+    
+    paginator = Paginator(user_list, 13)  # Ajusta el número de usuarios por página
     page_number = request.GET.get('page')
     users = paginator.get_page(page_number)
 
@@ -51,8 +59,11 @@ def view_users(request):
 @group_required('administrators', redirect_url='expired_session')
 def edit_user(request, id):
     user = get_object_or_404(CustomUser, pk=id)
-    context = {'user': user}
+    activity = ActivityLog.objects.filter(user_id = id).order_by('-timestamp')
+    context = {'user': user, 
+               'activity': activity}
     return render(request, 'user_edit.html', context)
+
 
 
 def validate_user_data(data, is_update=False):
@@ -124,7 +135,7 @@ def register_user(request):
                 user=request.user.id,                       
                 action='CREATE',                 
                 title='Registro de Usuario',      
-                description=f'Usuario {data["names"].title()} registrado.',  
+                description=f'El usuario registro a {data["names"].title()} en el sistema.',  
                 link=f'/edit_user/{new_user.id}',      
                 category='USER_PROFILE'          
             )
@@ -163,6 +174,14 @@ def update_personal_data(request, user_id):
 
         try:
             user.save()
+            log_activity(
+                user=request.user.id,                       
+                action='EDIT',                 
+                title='Edito usuario',      
+                description=f'El usuario edito la  informacion personal de {user.first_name}.',  
+                link=f'/edit_user/{user.id}',      
+                category='USER_PROFILE'          
+            )
             messages.success(request, 'Datos personales actualizados correctamente.')
             return JsonResponse({'success': True})
         except Exception as e:
@@ -206,6 +225,14 @@ def update_login_data(request, user_id):
                 return JsonResponse({'success': False, 'error': 'Las contraseñas no coinciden.'})
 
         user.save()
+        log_activity(
+            user=request.user.id,                       
+            action='EDIT',                 
+            title='Edito usuario',      
+            description=f'El usuario edito la  informacion de  inicio de {user.first_name}.',  
+            link=f'/edit_user/{user.id}',      
+            category='USER_PROFILE'          
+        )
         messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
         return JsonResponse({'success': True})
 
@@ -279,6 +306,8 @@ def update_image(request):
             messages.error(request, str(e))
     else:
         messages.error(request, 'Método no permitido')
+
+
 def delete_user(request, user_id):
     if request.method == 'POST':
         try:
@@ -295,6 +324,13 @@ def delete_user(request, user_id):
             # Eliminar el usuario
             user_instance.delete()
             messages.success(request, 'Usuario eliminado correctamente.')
+            log_activity(
+                user=request.user.id,                       
+                action='DELETE',                 
+                title='Elimino usuario',      
+                description=f'El usuario elimino el perfil de {user_instance.first_name}.',  
+                category='USER_PROFILE'          
+            )
             return HttpResponse(status=200)  # Respuesta exitosa
         except Exception as e:
             messages.error(request, str(e))

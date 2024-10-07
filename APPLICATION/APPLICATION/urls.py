@@ -11,6 +11,8 @@ urlpatterns = [
     path('', include('apps.core.urls')),
     path('', include('apps.userProfile.urls')),
     path('', include('apps.users.urls')),
+    path('', include('apps.categories.urls')),
+    path('', include('apps.activityLog.urls')),
 ]
 
 if settings.DEBUG:
