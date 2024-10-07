@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.userProfile',
     'apps.users',
+    'apps.activityLog',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'apps.common.context_processors.user_role_context',
                 'apps.common.context_processors.current_path',
+                'apps.common.context_processors.section_highlighter_processor',
             ],
         },
     },

@@ -26,3 +26,13 @@ def current_path(request):
         'current_path': request.path,
         'current_view': request.resolver_match.view_name,  # Obtén el nombre de la vista
     }
+
+def section_highlighter_processor(request):
+    current_path = request.path
+    
+    return {
+        'is_home': current_path.startswith('/home/'),
+        'is_profile': current_path.startswith('/profile/'),
+        'is_view_user': current_path.startswith('/view_users/'),
+        'is_edit_user': current_path.startswith('/edit_user/'),
+    }

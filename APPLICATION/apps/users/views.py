@@ -2,11 +2,30 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.logIn.views import group_required
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from apps.logIn.models import CustomUser
 from django.core.paginator import Paginator
 import json
+from django.apps import apps
+import os
+from django.conf import settings
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+from apps.activityLog.utils import log_activity
+
+group_name = {
+    'Consultor': 'consultants', 
+    'Administrador': 'administrators', 
+    'Tecnico': 'technicians'
+}
+
+status_mapping = {
+        'Activo': 'active',
+        'Bloqueado': 'blocked',
+}
 
 def get_group_by_name(group_name):
     """Obtiene un grupo por su nombre, o None si no existe."""
@@ -84,7 +103,7 @@ def register_user(request):
             return JsonResponse(validation_result)
 
         try:
-            group = get_group_by_name(data['group'])
+            group = get_group_by_name(group_name[data['group']])
             if not group:
                 return JsonResponse({'success': False, 'error': 'Grupo no válido.'})
 
@@ -94,12 +113,21 @@ def register_user(request):
                 first_name=data['names'].title(),
                 last_name=data['lastName'].title(),
                 position=data['jobName'],
-                status=data['status'],
+                status=status_mapping[data['status']] ,
             )
             new_user.set_password(data['password'])
             new_user.save()
             new_user.groups.add(group)
+            
 
+            log_activity(
+                user=request.user.id,                       
+                action='CREATE',                 
+                title='Registro de Usuario',      
+                description=f'Usuario {data["names"].title()} registrado.',  
+                link=f'/edit_user/{new_user.id}',      
+                category='USER_PROFILE'          
+            )
             messages.success(request, 'Usuario registrado exitosamente.')
             return JsonResponse({'success': True})
         except Exception as e:
@@ -182,3 +210,101 @@ def update_login_data(request, user_id):
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Método no permitido.'}, status=405)
+
+
+
+
+def compress_and_convert_to_webp(image_file):
+    # Abrir la imagen con Pillow
+    img = Image.open(image_file)
+
+    # Convertir la imagen a RGB si es necesario (porque WebP no soporta modo RGBA)
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
+
+    # Comprimir la imagen y reducir su tamaño
+    img_io = BytesIO()
+    img.save(img_io, format='WEBP', quality=40)  # Cambiar la calidad según sea necesario
+
+    # Crear un archivo Django de la imagen comprimida
+    img_content = ContentFile(img_io.getvalue(), name=f"{image_file.name.split('.')[0]}.webp")
+    return img_content
+
+def update_image(request):
+    if request.method == 'POST':
+        app_name = request.POST.get('app_name')
+        table = request.POST.get('table')
+        field = request.POST.get('field')
+        record_id = request.POST.get('userId')
+        new_image = request.FILES.get('image')
+
+        if not (app_name and table and field and record_id and new_image):
+            messages.error(request, 'Faltan campos requeridos')
+            return  # Asegúrate de salir de la función si faltan campos
+
+        try:
+            record_id = int(record_id)
+            Model = apps.get_model(app_name, table)
+            instance = Model.objects.get(id=record_id)
+
+            if not hasattr(instance, field):
+                messages.error(request, f'El campo "{field}" no existe en el modelo "{table}".')
+                return  # Salir si el campo no existe
+
+            # Verificar el valor actual de la imagen
+            current_image_path = getattr(instance, field)
+
+            if current_image_path and current_image_path.url != settings.MEDIA_URL + 'default/default_user.jpg': # Eliminar la imagen anterior si no es la imagen por defecto
+                current_image_full_path = os.path.join(settings.MEDIA_ROOT, current_image_path.name)
+                if os.path.isfile(current_image_full_path):
+                    os.remove(current_image_full_path)
+
+            new_image_name = f'imageProfile_{record_id}.webp'
+
+            compressed_image = compress_and_convert_to_webp(new_image)
+
+            image_file = ContentFile(compressed_image.read(), name=new_image_name)
+
+            setattr(instance, field, image_file)  # Guardar el archivo en el campo
+            instance.save()
+
+            messages.success(request, 'Foto de perfil actualizada correctamente')
+        except ValueError:
+            messages.error(request, 'ID de registro no válido')
+        except Model.DoesNotExist:
+            messages.error(request, 'El registro no existe')
+        except LookupError:
+            messages.error(request, f'La app "{app_name}" no tiene un modelo "{table}".')
+        except Exception as e:
+            messages.error(request, str(e))
+    else:
+        messages.error(request, 'Método no permitido')
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        try:
+            user_instance = get_object_or_404(CustomUser, id=user_id)
+
+            # Verificar si la imagen no es la por defecto
+            if user_instance.profile_picture and user_instance.profile_picture.url != settings.MEDIA_URL + 'default/default_user.jpg':
+                # Obtener la ruta completa de la imagen
+                image_path = user_instance.profile_picture.path
+                # Eliminar la imagen del sistema de archivos
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+
+            # Eliminar el usuario
+            user_instance.delete()
+            messages.success(request, 'Usuario eliminado correctamente.')
+            return HttpResponse(status=200)  # Respuesta exitosa
+        except Exception as e:
+            messages.error(request, str(e))
+            return HttpResponse(status=500)  # Error interno en el servidor
+    else:
+        messages.error(request, 'Método no permitido.')
+        return HttpResponse(status=405)  # Método no permitido
+
+
+
+
+
+

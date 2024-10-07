@@ -8,9 +8,17 @@
     <div class="page__user-section-info">
         <div class="container--user">
             <div class="container__section-image">
-                <img class="container__image--profile" src="{{ user.profile_picture.url }}" alt="img">
+                <img id="imageProfile" class="container__image--profile" src="{{ user.profile_picture.url }}" alt="Profile Image">
+                
+                <input type="text" id="app_name" name="app_name" value="logIn" hidden>
+                <input type="text" id="table" value="customuser" hidden>
+                <input type="text" id="field" value="profile_picture" hidden>
+                <input type="number" id="userId" value="{{ user.id }}" hidden>
+                <input type="file" id="image" accept="image/*" hidden>
+
                 <span>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</span>
             </div>
+
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Usuario:</span>
@@ -67,10 +75,7 @@
                 </div>
             </div>
             <div class="container__section-actions">
-                <div class="button button--edit">
-                    <span>Editar</span>
-                </div>
-                <div class="button button--delete">
+                <div id="deleteUser" class="button button--delete" data-user="{{ user.id }}">
                     <span>Eliminar</span>
                 </div>
             </div>
@@ -150,7 +155,7 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="jobName" value="{% if user.last_name %}{{ user.last_name }}{% endif %}">
+                            <input class="input input--largue" type="text" id="jobName" value="{% if user.position %}{{ user.position }}{% endif %}">
                             <label class="input-container__label" for="jobName">Cargo</label>
                         </div>
                     </div>
@@ -238,6 +243,7 @@
 <script src="{% static 'js/sub_navigation.js' %}" ></script>
 <script src="{% static 'js/update_user.js' %}" ></script>
 <script src="{% static 'js/update_login_data.js' %}" ></script>
+<script src="{% static 'js/update_image_user.js' %}" ></script>
 {% if messages %}
     {% for message in messages %}
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

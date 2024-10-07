@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=4" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=5" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -112,7 +112,7 @@
 
                     {% if role != 'No role' %}
                     <li class="aside__nav-option">
-                        <a class="aside__nav-item {% if current_path == '/home/' %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'home' %}">
+                        <a class="aside__nav-item {% if is_home %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'home' %}">
                             <svg width="20px" height="20px">
                                 <use href="#home"></use>
                             </svg>
@@ -121,7 +121,7 @@
                     </li>
 
                     <li class="aside__nav-option">
-                        <a class="aside__nav-item {% if current_path == '/profile/' %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'profile' %}">
+                        <a class="aside__nav-item {% if is_profile %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'profile' %}">
                             <svg fill="currentColor" version="1.1" id="Capa_1"
                                 width="20px" height="20px" viewBox="0 0 45.532 45.532"
                                 xml:space="preserve">
@@ -152,20 +152,20 @@
                                 <use href="#chevron-right"></use>
                             </svg>
                         </div>
-                        <ul class="aside__nav-option-sublist">
+                        <ul class="aside__nav-option-sublist  {% if is_view_user or is_edit_user %}aside__nav-option-sublist--active{% endif %}">
                             <li class="aside__nav-option-subitem aside__nav-item--no-current">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
                                 <a class="aside__nav-item-link" href="#">Grupos</a>
                             </li>
-                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
-                                <a class="aside__nav-item" href="{% url 'view_users' %}">
-                                    <svg class="" width="7" height="10">
-                                        <use href="#circle"></use>
-                                    </svg>
-                                    <span class="aside__nav-item-link" href="#">Usuarios registrados</span>
-                                </a>
+                            <li class="aside__nav-option-subitem {% if is_view_user or is_edit_user %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                               
+                                <svg class="" width="7" height="10">
+                                    <use href="#circle"></use>
+                                </svg>
+                                <a href="{% url 'view_users' %}" class="aside__nav-item-link">Usuarios registrados</a>
+                               
                             </li>
                         </ul>
                     </li>
@@ -356,11 +356,11 @@
    
       
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'js/side_bar.js' %}"></script>
+    <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
     <script src="{% static 'js/filters.js'%}"></script>
     <script src="{% static 'js/table.js'%}"></script>
     <script src="{% static 'js/search-general.js'%}"></script>
-    <script src="{% static 'js/confirmations.js'%}"></script>
+    <script src="{% static 'js/confirmations.js'%} ?v=2"></script>
 
     <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 

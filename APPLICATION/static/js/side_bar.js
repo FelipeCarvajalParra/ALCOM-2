@@ -1,18 +1,16 @@
-// Elementos del sidebar
 const aside = document.querySelector('.aside');
 const asideInfo = document.querySelector('.aside-nav-info-user');
 const links = document.querySelectorAll('.aside__nav-item-link');
 const chevrons = document.querySelectorAll('.aside__nav-item-chevron');
 const main = document.querySelector('.main');
-const btnClose = document.getElementById('aside__close-btn')
-const prueba = document.querySelectorAll('.aside__nav-option-sublist')
+const btnClose = document.getElementById('aside__close-btn');
+const prueba = document.querySelectorAll('.aside__nav-option-sublist');
 
 // Alternar el sidebar
 function toggleSidebar(isContracted) {
-
-    prueba.forEach( i =>{
-        i.style.transition = 'none'
-    })
+    prueba.forEach(i => {
+        i.style.transition = 'none';
+    });
 
     // Remover la clase 'active' de todas las sublistas abiertas
     const subListActive = document.querySelectorAll('.aside__nav-option-sublist--active');
@@ -47,9 +45,20 @@ function toggleSidebar(isContracted) {
         aside.style.position = 'absolute';
     }
 
-    prueba.forEach( i =>{
-        i.style.transition = ''
-    })
+    prueba.forEach(i => {
+        i.style.transition = '';
+    });
+
+    // Comprobar las sublistas
+    const subLists = document.querySelectorAll('.aside__nav-option-sublist');
+    subLists.forEach(subList => {
+        const currentItem = subList.querySelector('.aside__nav-item--current');
+        if (currentItem) {
+            subList.classList.add('aside__nav-option-sublist--active');
+        } else {
+            subList.classList.remove('aside__nav-option-sublist--active');
+        }
+    });
 }
 
 // Alternar visibilidad de elementos
@@ -61,8 +70,6 @@ function toggleVisibility(elements, show) {
 
 // Manejar el clic en los elementos del menú
 function handleNavItemClick() {
-
-    
     const subList = this.nextElementSibling; // Detecta la sublista siguiente
 
     // Cerrar cualquier sublista activa si se hace clic en otro elemento
@@ -105,7 +112,6 @@ function handleNavItemClick() {
             }
         }
     }
-
 }
 
 // Asignar manejadores de eventos
@@ -129,4 +135,24 @@ mediaQuery.addEventListener('change', handleScreenChange); // Escuchar cambios
 
 btnClose.addEventListener('click', () => {
     toggleSidebar(true);
+});
+
+// Esto se debe ejecutar una vez al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    const subLists = document.querySelectorAll('.aside__nav-option-sublist');
+
+    subLists.forEach(subList => {
+        const currentItem = subList.querySelector('.aside__nav-item--current');
+        if (currentItem) {
+            subList.classList.add('aside__nav-option-sublist--active');
+            const navItem = subList.previousElementSibling;
+            if (navItem) {
+                navItem.classList.add('aside__nav-item--active');
+                const chevron = navItem.querySelector('.aside__nav-item-chevron');
+                if (chevron) {
+                    chevron.classList.add('aside__nav-item-chevron--active');
+                }
+            }
+        }
+    });
 });
