@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from apps.logIn.models import CustomUser
+from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
 from django.core.paginator import Paginator
 import json
@@ -18,6 +18,11 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 from apps.activityLog.utils import log_activity
+from datetime import datetime
+import openpyxl
+from openpyxl.utils import get_column_letter
+from django.utils import timezone
+
 
 from urllib.parse import urljoin
 import requests
@@ -39,17 +44,29 @@ def get_group_by_name(group_name):
         return Group.objects.get(name=group_name)
     except Group.DoesNotExist:
         return None
-
+    
+from django.template.loader import render_to_string
+from django.db.models import Q
 
 @login_required
 @group_required('administrators', redirect_url='expired_session')
 def view_users(request):
-    # Excluye al usuario actual de la lista
     user_list = CustomUser.objects.exclude(id=request.user.id).order_by('-id')
-    
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        user_list = user_list.filter(
+        Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
+    )
+
     paginator = Paginator(user_list, 13)  # Ajusta el número de usuarios por página
     page_number = request.GET.get('page')
     users = paginator.get_page(page_number)
+
+    # Verifica si es una solicitud AJAX a través del encabezado HTTP
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/_user_table_body.html', {'users': users}, request=request)
+        return HttpResponse(html)
 
     context = {'users': users}
     return render(request, 'view_users.html', context)
@@ -206,7 +223,35 @@ def update_login_data(request, user_id):
             user.username = new_username
 
         if 'status' in data:
-            user.status = 'active' if data['status'] == 'Activo' else 'blocked'
+            
+            if data['status'] != 'Estado':  # Si no es 'Estado', significa que hubo un cambio
+                if data['status'] == 'Activo':
+                    if user.status == 'blocked':
+                        log_activity(
+                            user=user.id,                       
+                            action='LOGIN',                 
+                            title='Cuenta desbloqueada',      
+                            description=f'La cuenta del usuario ha pasado a estado activo.',  
+                            link=f'/edit_user/{user.id}',      
+                            category='USER_PROFILE'          
+                        )
+                    user.status = 'active'
+                    user.login_attempts = 0
+                elif data['status'] == 'Bloqueado':
+                    log_activity(
+                        user=user.id,                       
+                        action='LOCKOUT',                 
+                        title='Cuenta bloqueada',      
+                        description=f'La cuenta del del usuario ha sido bloqueada por administrador.',  
+                        link=f'/edit_user/{user.id}',      
+                        category='USER_PROFILE'          
+                    )
+                    user.status = 'blocked'
+                else:
+                    return JsonResponse({'success': False, 'error': 'Error en el estado'})  # Error si no es ni 'Activo' ni 'Bloquedo'
+            else:
+                # Si data['status'] es 'Estado', simplemente no se hace ningún cambio
+                pass
 
         if 'role' in data:
             group_name = {'Consultor': 'consultants', 'Administrador': 'administrators', 'Tecnico': 'technicians'}.get(data['role'])
@@ -339,8 +384,56 @@ def delete_user(request, user_id):
         messages.error(request, 'Método no permitido.')
         return HttpResponse(status=405)  # Método no permitido
 
+def print_users(request):
+    users = CustomUser.objects.all() 
+    current_time = datetime.now() 
 
+    context = {
+        'users': users,
+        'current_time': current_time,  
+    }
+    
+    return render(request, 'prin_table_users.html', context)
 
+@login_required
+@group_required('administrators', redirect_url='expired_session')
+def export_users_xlsx(request):
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = 'Usuarios Registrados'
 
+    headers = ['ID', 'Nombre', 'Correo', 'Usuario', 'Fecha de creación', 'Último inicio de sesión', 'Cargo', 'Estado']
 
+    for col_num, header in enumerate(headers, start=1):
+        sheet.cell(row=1, column=col_num, value=header)
 
+    users = CustomUser.objects.all()
+    for row_num, user in enumerate(users, start=2): 
+        sheet.cell(row=row_num, column=1, value=user.id)
+        sheet.cell(row=row_num, column=2, value=f"{user.first_name} {user.last_name}")
+        sheet.cell(row=row_num, column=3, value=user.email)
+        sheet.cell(row=row_num, column=4, value=user.username)
+        sheet.cell(row=row_num, column=5, value=user.date_joined.strftime('%Y-%m-%d %H:%M:%S'))
+        sheet.cell(row=row_num, column=6, value=user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'N/A')
+        sheet.cell(row=row_num, column=7, value=user.position)
+        sheet.cell(row=row_num, column=8, value=user.status)
+
+    # Ajustar el ancho de las columnas automáticamente
+    for col_num in range(1, len(headers) + 1):
+        column_letter = get_column_letter(col_num)
+        max_length = 0
+        for cell in sheet[column_letter]:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2)
+        sheet.column_dimensions[column_letter].width = adjusted_width
+
+    # Guardar el archivo Excel en un objeto BytesIO
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=usuarios_registrados.xlsx'
+    workbook.save(response)
+
+    return response

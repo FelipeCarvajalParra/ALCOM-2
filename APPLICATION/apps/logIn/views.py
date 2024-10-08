@@ -9,8 +9,9 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.contrib import messages
-from .models import CustomUser
+from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
+from apps.activityLog.utils import log_activity
 
 
 #Funcion para limitar la navegacion por rol 
@@ -66,17 +67,26 @@ def login_validate(request):
         if user.login_attempts >= 3:
             user.status = 'blocked'
             user.save()
+            print(user.id)
+            log_activity(
+                user= user.id,                       
+                action='LOCKOUT',                 
+                title='Cuenta bloqueada.',      
+                description=f'La cuenta del del usuario ha sido bloqueada por actividad sospechosa.',  
+                link = f'/edit_user/{user.id}',
+                category='USER_PROFILE'          
+            )
             return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'})
 
         return JsonResponse({'error': 'Credenciales incorrectas'})
 
     login(request, authenticated_user)
     log_activity(
-                user=request.user.id,                       
-                action='DELETE',                 
-                title='Elimino usuario',      
-                description=f'El usuario elimino el perfil de {user_instance.first_name}.',  
-                category='USER_PROFILE'          
+        user=request.user.id,                       
+        action='LOGIN',                 
+        title='Inicio de sesion',      
+        description=f'El usuario ingreso al sistema.',  
+        category='USER_PROFILE'          
     )
     user.login_attempts = 0
     user.save()

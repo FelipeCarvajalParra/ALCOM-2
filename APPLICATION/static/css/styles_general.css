@@ -77,6 +77,21 @@ a{
     background-color: #ffffff;
 }
 
+.container__home{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: auto;
+    width: 60%;
+    max-width: 900px;
+    min-height: 250px;
+    height: auto;
+    padding: 25px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+}
+
 .container--large {
     border-radius: 15px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4); /* Sombra alrededor del borde */
@@ -138,14 +153,14 @@ a{
 
 .container__section-image {
     display: flex;
-    gap: 15px;
+    gap: 35px;
     flex-direction: column;
     align-items: center;
     padding-top: 15px;
     justify-content: center;
     width: 100%;
     height: auto;
-    min-height: 200px;
+    min-height: 200px; 
     border-bottom: 1px solid #e5e6e8;
     color: #3b4056;
     font-size: clamp(1.2em, 1.3vw, 1.8rem);
@@ -1312,7 +1327,8 @@ display: block;
 /*============= bloque paginas ================*/
 
 .page__user, 
-.page__equipment {
+.page__equipment,
+.page_home {
     width: 100%;
     max-width: 1500px;
     margin: auto;

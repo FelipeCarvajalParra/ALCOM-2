@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'APPLICATION.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':'alcom_pre',
+        'NAME':'alcom_2',
         'USER':'root',
         'PASSWORD':'Deku1023624!',
         'HOST':'localhost',
@@ -96,7 +96,7 @@ DATABASES = {
 
 
 # settings.py
-AUTH_USER_MODEL = 'logIn.CustomUser'  # Cambia 'logIn' por el nombre de tu app si es diferente
+AUTH_USER_MODEL = 'users.CustomUser' 
 
 
 # Password validation
@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'  # o ajusta según tu zona horaria
 
 USE_I18N = True
 

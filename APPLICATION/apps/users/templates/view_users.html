@@ -13,7 +13,7 @@
         </div>
         <div class="table__info table__info--options">
 
-            <input class="select select--search" type="text" placeholder="Buscar por nombre" />
+            <input class="select select--search" type="text" id="searchUser" placeholder="Buscar por nombre" />
 
             <div class="select select--filter select--right">
                 <div class="select__selected">
@@ -26,7 +26,7 @@
                     <span> Exportar </span>
                 </div>
                 <div class="select__options">
-                    <div class="select__option select__option--export">
+                    <a href="{% url 'export_users_xlsx' %}" class="select__option select__option--export">
                         <svg fill="currentColor" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
                             data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -34,9 +34,9 @@
                             <path
                                 d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
                         </svg>
-                        <span>Excel</span>
-                    </div>
-                    <div class="select__option select__option--export">
+                        <span >Excel</span>
+                    </a>
+                    <div class="select__option select__option--export" id="printTable">
                         <svg width="23px" height="18px" fill="currentColor" viewBox="-274.15 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
                             <path
@@ -47,13 +47,10 @@
                         </svg>
                         <span> PDF </span>
                     </div>
-                    <div class="select__option select__option--export">
-                        <svg fill="currentColor" width="25px" height="25px" viewBox="0 0 1024 1024">
-                            <path d="M691.2 410V256H333v154h-77v256h76.8v102h358.4V666H768V410h-76.8zM640 717H384V589h256v128zM384 410V307h256v103H384zm307.2 102c-14.1 0-25.6-11.5-25.6-25.6 0-14.1 11.5-25.6 25.6-25.6 14.1 0 25.6 11.5 25.6 25.6 0 14.1-11.5 25.6-25.6 25.6z"/>
-                        </svg>
-                        <span> Imprimir </span>
-                    </div>
+                    
                 </div>
+
+               
                 <div class="select__icon">
                     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
@@ -78,65 +75,77 @@
             <th class="table__headed-title table__headed-actions">Acciones</th>
         </thead>
         <tbody class="table__body">
-            {% for user in users %}
-                {% if request.user.id != user.id %}
-                    <tr class="table__row">
-                        <td class="table__cell table__cell--auto table__cell--flex">
-                            <img class="table__image table__image--circular" src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% endif %}"
-                                alt="img" />
-                            <div class="table__container-text">
-                                <a href="{% url 'edit_user' user.id %}" class="table__container-link">{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</a>
-                                <span class="table__container-email">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
-                            </div>
-                        </td>
-                        <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
-                            {% if user.groups.exists %}
-                                {% for group in user.groups.all %}
-                                    {% if group.name == "administrators" %}
-                                        Administrador
-                                    {% elif group.name == "consultants" %}
-                                        Consultor
-                                    {% elif group.name == "technicians" %}
-                                        Técnico
-                                    {% else %}
-                                        {{ group.name }}  {# En caso de que el grupo no esté en la lista #}
-                                    {% endif %}
-                                    {% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                No group
-                            {% endif %}
-                        </td>
-                        <td class="table__cell table__cell--small table__cell--overflow"
-                            data-text="{% if user.status == 'active' %}Activo{% elif user.status == 'blocked' %}Bloqueado{% else %}None{% endif %}">
-                            {% if user.status == 'active' %}
-                                <div class="status status--active">
-                                    <span>
-                                        Activo
-                                    </span>
+            {% if users|length > 0 %}
+                {% for user in users %}
+                    {% if request.user.id != user.id %}
+                        <tr class="table__row">
+                            <td class="table__cell table__cell--auto table__cell--flex">
+                                <img class="table__image table__image--circular" src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% endif %}"
+                                    alt="img" />
+                                <div class="table__container-text">
+                                    <a href="{% url 'edit_user' user.id %}" class="table__container-link">{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</a>
+                                    <span class="table__container-email">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
                                 </div>
-                            {% elif user.status == 'blocked' %}
-                                <div class="status status--blocked">
+                            </td>
+                            <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
+                                {% if user.groups.exists %}
+                                    {% for group in user.groups.all %}
+                                        {% if group.name == "administrators" %}
+                                            Administrador
+                                        {% elif group.name == "consultants" %}
+                                            Consultor
+                                        {% elif group.name == "technicians" %}
+                                            Técnico
+                                        {% else %}
+                                            {{ group.name }}  {# En caso de que el grupo no esté en la lista #}
+                                        {% endif %}
+                                        {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    No group
+                                {% endif %}
+                            </td>
+                            <td class="table__cell table__cell--small table__cell--overflow"
+                                data-text="{% if user.status == 'active' %}Activo{% elif user.status == 'blocked' %}Bloqueado{% else %}None{% endif %}">
+                                {% if user.status == 'active' %}
+                                    <div class="status status--active">
+                                        <span>
+                                            Activo
+                                        </span>
+                                    </div>
+                                {% elif user.status == 'blocked' %}
+                                    <div class="status status--blocked">
+                                        <span>
+                                            Bloqueado
+                                        </span>
+                                    </div>
+                                {% else %}
                                     <span>
-                                        Bloqueado
+                                        None
                                     </span>
-                                </div>
-                            {% else %}
-                                <span>
-                                    None
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td class="table__cell table__cell--actions">
-                            <a href="{% url 'edit_user' user.id %}" >
-                                <svg class="svg-option" width="20px" height="20px">
-                                    <use href="#icon-view"></use>
-                                </svg>
-                            </a>
+                                {% endif %}
+                            </td>
+                            <td class="table__cell table__cell--actions">
+                                <a href="{% url 'edit_user' user.id %}" >
+                                    <svg class="svg-option" width="20px" height="20px">
+                                        <use href="#icon-view"></use>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <tbody class="table__body">
+                    <tr class="table__row table__row--not-results">
+                        <td class="table__cell table__cell--not-results" colspan="4">
+                            <span class="table__text--not-result">
+                                No se encontraron resultados
+                            </span>
                         </td>
                     </tr>
-                {% endif %}
-            {% endfor %}
+                </tbody>
+            {% endif %}
         </tbody>
     </table>
 
@@ -304,8 +313,17 @@
     {% endfor %}
     {% endif %}
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/user_validation.js' %}" ></script>
     <script src="{% static 'js/modal.js' %}"></script>
+    <script src="{% static 'js/search_tables.js' %}" ></script>
+
+   
+    <script>
+       document.getElementById('printTable').addEventListener('click', function() {
+    // Abre una nueva ventana con la URL que carga la vista de impresión
+    window.open('/print_users/', '_blank');
+});
+    </script>
 
 {% endblock %}
