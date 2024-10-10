@@ -35,4 +35,5 @@ def section_highlighter_processor(request):
         'is_profile': current_path.startswith('/profile/'),
         'is_view_user': current_path.startswith('/view_users/'),
         'is_edit_user': current_path.startswith('/edit_user/'),
+        'is_view_category': current_path.startswith('/view_categories/'),
     }

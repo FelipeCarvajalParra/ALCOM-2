@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+
+<div class="container--large">
+    <table class="table">
+        <div class="table__info">
+            <svg width="20" height="20" viewBox="0 0 18 18" fill="currentColor">
+                <path d="M1 8H7C7.26522 8 7.51957 7.89464 7.70711 7.70711C7.89464 7.51957 8 7.26522 8 7V1C8 0.734784 7.89464 0.48043 7.70711 0.292893C7.51957 0.105357 7.26522 0 7 0H1C0.734784 0 0.48043 0.105357 0.292893 0.292893C0.105357 0.48043 0 0.734784 0 1V7C0 7.26522 0.105357 7.51957 0.292893 7.70711C0.48043 7.89464 0.734784 8 1 8ZM11 8H17C17.2652 8 17.5196 7.89464 17.7071 7.70711C17.8946 7.51957 18 7.26522 18 7V1C18 0.734784 17.8946 0.48043 17.7071 0.292893C17.5196 0.105357 17.2652 0 17 0H11C10.7348 0 10.4804 0.105357 10.2929 0.292893C10.1054 0.48043 10 0.734784 10 1V7C10 7.26522 10.1054 7.51957 10.2929 7.70711C10.4804 7.89464 10.7348 8 11 8ZM1 18H7C7.26522 18 7.51957 17.8946 7.70711 17.7071C7.89464 17.5196 8 17.2652 8 17V11C8 10.7348 7.89464 10.4804 7.70711 10.2929C7.51957 10.1054 7.26522 10 7 10H1C0.734784 10 0.48043 10.1054 0.292893 10.2929C0.105357 10.4804 0 10.7348 0 11V17C0 17.2652 0.105357 17.5196 0.292893 17.7071C0.48043 17.8946 0.734784 18 1 18ZM14 18C16.206 18 18 16.206 18 14C18 11.794 16.206 10 14 10C11.794 10 10 11.794 10 14C10 16.206 11.794 18 14 18Z" />
+            </svg>
+            <span class="table__info-text">{{category_name}}</span>
+        </div>
+        <div class="table__info table__info--options">
+
+            <div class="select select--filter">
+                <div class="select__selected">Marca</div>
+                <div class="select__options">
+                    <div class="select__option">Hp</div>
+                    <div class="select__option">Acer</div>
+                </div>
+                <div class="select__icon">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <input class="select select--search" type="text" placeholder="Buscar por nombre" />
+
+            <div class="select select--filter select--right">
+                <div class="select__selected">
+                    <svg width="21px" height="17px" viewBox="0 0 21 21" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.625 14H11.375V6.125H14L10.5 1.75L7 6.125H9.625V14Z" />
+                        <path
+                            d="M4.375 19.25H16.625C17.5901 19.25 18.375 18.4651 18.375 17.5V9.625C18.375 8.65987 17.5901 7.875 16.625 7.875H13.125V9.625H16.625V17.5H4.375V9.625H7.875V7.875H4.375C3.40987 7.875 2.625 8.65987 2.625 9.625V17.5C2.625 18.4651 3.40987 19.25 4.375 19.25Z" />
+                    </svg>
+                    <span> Exportar </span>
+                </div>
+                <div class="select__options">
+                    <div class="select__option select__option--export">
+                        <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
+                            data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M46.92,0H18.74A3.44,3.44,0,0,0,15.3,3.43V52.57A3.44,3.44,0,0,0,18.74,56H53.26a3.44,3.44,0,0,0,3.44-3.43V10.62Zm.81,5.14L52,9.79H47.73Zm6.08,47.43a.55.55,0,0,1-.55.55H18.74a.55.55,0,0,1-.55-.55V3.43a.54.54,0,0,1,.55-.54H44.85v8.35a1.45,1.45,0,0,0,1.44,1.44h7.52Z" />
+                            <path
+                                d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
+                        </svg>
+                        <span>Excel</span>
+                    </div>
+                    <div class="select__option select__option--export">
+                        <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
+                            xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
+                            <path
+                                d="M30 161c-16.5 0-30 13.5-30 30v827.8c0 16.5 13.5 30 30 30h591.7c16.5 0 30-13.5 30-30V343.7L469 161H30zm389.6 60v134.8c0 19.9 16.3 36.2 36.2 36.2h135.9v596.8H60V221h359.6z" />
+                            <path
+                                d="M123.8 768.6h394.8v50H123.8zm0-124.6h394.8v50H123.8zm0-124.5h394.8v50H123.8z" />
+                            <circle cx="194" cy="382.3" r="60" />
+                        </svg>
+                        <span> PDF </span>
+                    </div>
+                </div>
+                <div class="select__icon">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="button">
+                <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
+                </svg>
+                <span>Agregar</span>
+            </div>
+        </div>
+        <thead class="table__headed">
+            <th class="table__headed-title">Referencia</th>
+            <th class="table__headed-title">Marca</th>
+            <th class="table__headed-title">Observaciones</th>
+            <th class="table__headed-title table__headed-actions">Acciones</th>
+        </thead>
+        <tbody class="table__body">
+            {% if reference_list|length > 0 %}
+                {% for reference in reference_list %}
+                    <tr class="table__row">
+                        <td class="table__cell table__cell--auto table__cell--flex">
+                            <img class="table__image table__image--semi-circular"
+                                src="{{reference.archivos.imagen_1.url}}" alt="" />
+                            <div class="table__container-text">
+                                <a href="#" class="table__container-link">{{reference.referencia_pk}}</a>
+                            </div>
+                        </td>
+                        <td class="table__cell table__cell--small table__cell--overflow" data-text="{{reference.marca}}">
+                            {{reference.marca}}
+                        </td>
+                        <td class="table__cell table__cell--small table__cell--overflow" data-text="{{reference.observaciones}}">
+                            {{reference.observaciones}} 
+                        </td>
+                        <td class="table__cell table__cell--actions">
+                            <svg class="svg-option svg-option--edit" width="20px" height="20px">
+                                <use href="#icon-edit"></use>
+                            </svg>
+                            <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                                <use href="#icon-delete"></use>
+                            </svg>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                    <tr class="table__row table__row--not-results">
+                        <td class="table__cell table__cell--not-results" colspan="4">
+                            <span class="table__text--not-result">
+                                No se encontraron resultados
+                            </span>
+                        </td>
+                    </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="table__footer">
+        <nav class="pagination">
+            <span class="pagination__records">59 registros</span>
+            <ul class="pagination__list">
+                <li class="pagination__item pagination__item--previous">
+                    <svg class="" width="15px" height="15px">
+                        <use href="#icon-previous"></use>
+                    </svg>
+                </li>
+                <li class="pagination__item pagination__item--active">1</li>
+                <li class="pagination__item">2</li>
+                <li class="pagination__item">3</li>
+                <li class="pagination__item">4</li>
+                <li class="pagination__item">5</li>
+                <li class="pagination__item pagination__item--next">
+                    <svg class="" width="15px" height="15px">
+                        <use href="#icon-next"></use>
+                    </svg>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+{% endblock %}

@@ -21,11 +21,9 @@ from apps.activityLog.utils import log_activity
 from datetime import datetime
 import openpyxl
 from openpyxl.utils import get_column_letter
-from django.utils import timezone
+from django.template.loader import render_to_string
+from django.db.models import Q
 
-
-from urllib.parse import urljoin
-import requests
 
 group_name = {
     'Consultor': 'consultants', 
@@ -45,8 +43,6 @@ def get_group_by_name(group_name):
     except Group.DoesNotExist:
         return None
     
-from django.template.loader import render_to_string
-from django.db.models import Q
 
 @login_required
 @group_required('administrators', redirect_url='expired_session')
@@ -173,37 +169,40 @@ def update_personal_data(request, user_id):
         data = json.loads(request.body)
         errors = {}
 
-        if 'names' in data and data['names'].strip():
-            user.first_name = data['names'].strip().title()
+        if data['names'] and data['lastName'] and data['email'] and data['email']:
 
-        if 'lastName' in data and data['lastName'].strip():
-            user.last_name = data['lastName'].strip().title()
+            if 'names' in data and data['names'].strip():
+                user.first_name = data['names'].strip().title()
 
-        if 'email' in data and data['email'].strip():
-            new_email = data['email'].strip().lower()
-            if CustomUser.objects.filter(email=new_email).exclude(id=user.id).exists():
-                return JsonResponse({'success': False, 'error': {'email': 'El correo ya está registrado por otro usuario.'}})
+            if 'lastName' in data and data['lastName'].strip():
+                user.last_name = data['lastName'].strip().title()
 
-            user.email = new_email
+            if 'email' in data and data['email'].strip():
+                new_email = data['email'].strip().lower()
+                if CustomUser.objects.filter(email=new_email).exclude(id=user.id).exists():
+                    return JsonResponse({'success': False, 'error': {'email': 'El correo ya está registrado por otro usuario.'}})
 
-        if 'jobName' in data and data['jobName'].strip():
-            user.position = data['jobName'].strip()
+                user.email = new_email
 
-        try:
-            user.save()
-            log_activity(
-                user=request.user.id,                       
-                action='EDIT',                 
-                title='Edito usuario',      
-                description=f'El usuario edito la  informacion personal de {user.first_name}.',  
-                link=f'/edit_user/{user.id}',      
-                category='USER_PROFILE'          
-            )
-            messages.success(request, 'Datos personales actualizados correctamente.')
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
+            if 'jobName' in data and data['jobName'].strip():
+                user.position = data['jobName'].strip()
 
+            try:
+                user.save()
+                log_activity(
+                    user=request.user.id,                       
+                    action='EDIT',                 
+                    title='Edito usuario',      
+                    description=f'El usuario edito la  informacion personal de {user.first_name}.',  
+                    link=f'/edit_user/{user.id}',      
+                    category='USER_PROFILE'          
+                )
+                messages.success(request, 'Datos personales actualizados correctamente.')
+                return JsonResponse({'success': True})
+            except Exception as e:
+                return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
+        else:
+            return JsonResponse({'success': False, 'error': 'Todos los campos son requeridos.'}, status=500)
     return JsonResponse({'success': False, 'error': 'Método no permitido.'}, status=405)
 
 
@@ -215,12 +214,14 @@ def update_login_data(request, user_id):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        if 'username' in data and data['username'].strip():
+        if 'username' in data and data['username']:
             new_username = data['username'].strip()
             if CustomUser.objects.filter(username=new_username).exclude(id=user.id).exists():
                 return JsonResponse({'success': False, 'error': 'El usuario ya existe.'})
 
             user.username = new_username
+        else:
+            return JsonResponse({'success': False, 'error': 'El usuario es obligatorio.'})
 
         if 'status' in data:
             

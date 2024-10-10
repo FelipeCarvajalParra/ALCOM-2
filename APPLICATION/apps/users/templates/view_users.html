@@ -313,17 +313,10 @@
     {% endfor %}
     {% endif %}
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/user_validation.js' %}" ></script>
+    <script src="{% static 'js/user_validation.js' %} " ></script>
     <script src="{% static 'js/modal.js' %}"></script>
-    <script src="{% static 'js/search_tables.js' %}" ></script>
-
-   
-    <script>
-       document.getElementById('printTable').addEventListener('click', function() {
-    // Abre una nueva ventana con la URL que carga la vista de impresión
-    window.open('/print_users/', '_blank');
-});
-    </script>
+    <script src="{% static 'js/search_users.js' %}" ></script>
+    <script src="{% static 'js/print.js' %} ?v=2" ></script>
+    <script src="{% static 'js/search_users.js' %} ?v=3" ></script>
 
 {% endblock %}

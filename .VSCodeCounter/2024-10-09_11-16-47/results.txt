@@ -1,0 +1,158 @@
+Date : 2024-10-09 11:16:47
+Directory : c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION
+Total : 96 files,  5231 codes, 193 comments, 902 blanks, all 6326 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| HTML       |         11 |      1,894 |          8 |        152 |      2,054 |
+| CSS        |          3 |      1,465 |         18 |        272 |      1,755 |
+| Python     |         62 |      1,186 |         66 |        339 |      1,591 |
+| JavaScript |         20 |        686 |        101 |        139 |        926 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                    | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                       |         96 |      5,231 |        193 |        902 |      6,326 |
+| . (Files)                                                                                                               |          1 |         17 |          1 |          5 |         23 |
+| APPLICATION                                                                                                             |          5 |        132 |         19 |         60 |        211 |
+| apps                                                                                                                    |         67 |      2,931 |         54 |        426 |      3,411 |
+| apps\activityLog                                                                                                        |         11 |        103 |          5 |         36 |        144 |
+| apps\activityLog (Files)                                                                                                |          8 |         68 |          3 |         21 |         92 |
+| apps\activityLog\migrations                                                                                             |          3 |         35 |          2 |         15 |         52 |
+| apps\categories                                                                                                         |         10 |        196 |          7 |         33 |        236 |
+| apps\categories (Files)                                                                                                 |          7 |         39 |          7 |         18 |         64 |
+| apps\categories\migrations                                                                                              |          1 |          0 |          0 |          1 |          1 |
+| apps\categories\templates                                                                                               |          2 |        157 |          0 |         14 |        171 |
+| apps\categories\templates (Files)                                                                                       |          1 |        122 |          0 |         14 |        136 |
+| apps\categories\templates\partials                                                                                      |          1 |         35 |          0 |          0 |         35 |
+| apps\common                                                                                                             |          2 |         31 |          1 |          8 |         40 |
+| apps\core                                                                                                               |         11 |      1,085 |         12 |         78 |      1,175 |
+| apps\core (Files)                                                                                                       |          7 |         34 |          5 |         20 |         59 |
+| apps\core\migrations                                                                                                    |          1 |          0 |          0 |          1 |          1 |
+| apps\core\templates                                                                                                     |          3 |      1,051 |          7 |         57 |      1,115 |
+| apps\logIn                                                                                                              |         11 |        445 |         11 |         88 |        544 |
+| apps\logIn (Files)                                                                                                      |          8 |        236 |          9 |         61 |        306 |
+| apps\logIn\migrations                                                                                                   |          2 |        163 |          1 |          8 |        172 |
+| apps\logIn\templates                                                                                                    |          1 |         46 |          1 |         19 |         66 |
+| apps\logIn\templates\registration                                                                                       |          1 |         46 |          1 |         19 |         66 |
+| apps\userProfile                                                                                                        |          9 |         23 |          3 |         20 |         46 |
+| apps\userProfile (Files)                                                                                                |          7 |         19 |          3 |         18 |         40 |
+| apps\userProfile\migrations                                                                                             |          1 |          0 |          0 |          1 |          1 |
+| apps\userProfile\templates                                                                                              |          1 |          4 |          0 |          1 |          5 |
+| apps\users                                                                                                              |         13 |      1,048 |         15 |        163 |      1,226 |
+| apps\users (Files)                                                                                                      |          7 |        371 |         14 |         94 |        479 |
+| apps\users\migrations                                                                                                   |          2 |         41 |          1 |          8 |         50 |
+| apps\users\templates                                                                                                    |          4 |        636 |          0 |         61 |        697 |
+| apps\users\templates (Files)                                                                                            |          3 |        595 |          0 |         60 |        655 |
+| apps\users\templates\partials                                                                                           |          1 |         41 |          0 |          1 |         42 |
+| static                                                                                                                  |         23 |      2,151 |        119 |        411 |      2,681 |
+| static\css                                                                                                              |          3 |      1,465 |         18 |        272 |      1,755 |
+| static\js                                                                                                               |         20 |        686 |        101 |        139 |        926 |
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\APPLICATION\__init__.py                                      | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\APPLICATION\asgi.py                                          | Python     |         10 |          0 |          7 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\APPLICATION\settings.py                                      | Python     |         94 |         19 |         42 |        155 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\APPLICATION\urls.py                                          | Python     |         18 |          0 |          3 |         21 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\APPLICATION\wsgi.py                                          | Python     |         10 |          0 |          7 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\__init__.py                                 | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\admin.py                                    | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\apps.py                                     | Python     |          4 |          0 |          3 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0001_initial.py                  | Python     |         19 |          1 |          7 |         27 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0002_initial.py                  | Python     |         16 |          1 |          7 |         24 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\__init__.py                      | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\models.py                                   | Python     |         28 |          0 |          7 |         35 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\tests.py                                    | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\urls.py                                     | Python     |          5 |          0 |          1 |          6 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\utils.py                                    | Python     |         13 |          1 |          4 |         18 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\views.py                                    | Python     |         16 |          0 |          1 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\__init__.py                                  | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\admin.py                                     | Python     |          7 |          0 |          1 |          8 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\apps.py                                      | Python     |          4 |          0 |          3 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\migrations\__init__.py                       | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\models.py                                    | Python     |          1 |          0 |          1 |          2 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\templates\partials\_category_table_body.html | HTML       |         35 |          0 |          0 |         35 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\templates\view_categories.html               | HTML       |        122 |          0 |         14 |        136 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\tests.py                                     | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\urls.py                                      | Python     |          5 |          0 |          1 |          6 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\categories\views.py                                     | Python     |         21 |          6 |          9 |         36 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\common\__init__.py                                      | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\common\context_processors.py                            | Python     |         31 |          1 |          7 |         39 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\__init__.py                                        | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\admin.py                                           | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\apps.py                                            | Python     |          4 |          0 |          3 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\migrations\__init__.py                             | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\models.py                                          | Python     |          1 |          0 |          1 |          2 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\templates\base.html                                | HTML       |        328 |          7 |         42 |        377 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\templates\construction.html                        | HTML       |        675 |          0 |          5 |        680 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\templates\home.html                                | HTML       |         48 |          0 |         10 |         58 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\tests.py                                           | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\urls.py                                            | Python     |          6 |          0 |          2 |          8 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\core\views.py                                           | Python     |         21 |          3 |          9 |         33 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\__init__.py                                       | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\admin.py                                          | Python     |         22 |          1 |          6 |         29 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\apps.py                                           | Python     |          4 |          0 |          5 |          9 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\middleware_admin_access.py                        | Python     |         11 |          3 |          3 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\migrations\0001_initial.py                        | Python     |        163 |          1 |          7 |        171 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\migrations\__init__.py                            | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\models.py                                         | Python     |        110 |          0 |         24 |        134 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\templates\registration\login.html                 | HTML       |         46 |          1 |         19 |         66 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\tests.py                                          | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\urls.py                                           | Python     |         10 |          0 |          2 |         12 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\logIn\views.py                                          | Python     |         78 |          4 |         18 |        100 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\__init__.py                                 | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\admin.py                                    | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\apps.py                                     | Python     |          4 |          0 |          3 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\migrations\__init__.py                      | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\models.py                                   | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\templates\profile.html                      | HTML       |          4 |          0 |          1 |          5 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\tests.py                                    | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\urls.py                                     | Python     |          7 |          0 |          2 |          9 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\userProfile\views.py                                    | Python     |          5 |          0 |          6 |         11 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\__init__.py                                       | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\admin.py                                          | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\apps.py                                           | Python     |          4 |          0 |          3 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\migrations\0001_initial.py                        | Python     |         41 |          1 |          7 |         49 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\migrations\__init__.py                            | Python     |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\models.py                                         | Python     |         10 |          0 |          2 |         12 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\templates\partials\_user_table_body.html          | HTML       |         41 |          0 |          1 |         42 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\templates\prin_table_users.html                   | HTML       |         42 |          0 |          5 |         47 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\templates\user_edit.html                          | HTML       |        255 |          0 |         31 |        286 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\templates\view_users.html                         | HTML       |        298 |          0 |         24 |        322 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\tests.py                                          | Python     |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\urls.py                                           | Python     |         13 |          0 |          1 |         14 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\users\views.py                                          | Python     |        343 |         13 |         84 |        440 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\manage.py                                                    | Python     |         17 |          1 |          5 |         23 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\css\styles_general.css                                | CSS        |      1,382 |         18 |        258 |      1,658 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\css\styles_print.css                                  | CSS        |         52 |          0 |          9 |         61 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\css\styles_secondare_pages.css                        | CSS        |         31 |          0 |          5 |         36 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\confirmations.js                                   | JavaScript |        122 |          6 |         13 |        141 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\error_url.js                                       | JavaScript |         13 |          1 |          5 |         19 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\filters.js                                         | JavaScript |         24 |          6 |          5 |         35 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\images_equipment.js                                | JavaScript |         20 |          8 |         16 |         44 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\inputs_placeholders.js                             | JavaScript |         13 |          2 |          2 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\login_validations.js                               | JavaScript |         33 |          4 |          5 |         42 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\modal.js                                           | JavaScript |         38 |          6 |          7 |         51 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\pop-up_window.js                                   | JavaScript |         20 |          0 |          2 |         22 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\print.js                                           | JavaScript |         17 |          2 |          4 |         23 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\register_user.js                                   | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\search-general.js                                  | JavaScript |         29 |          7 |          5 |         41 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\search_categories.js                               | JavaScript |         19 |          0 |          3 |         22 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\search_users.js                                    | JavaScript |         19 |          0 |          3 |         22 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\side_bar.js                                        | JavaScript |        114 |         17 |         28 |        159 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\sub_navigation.js                                  | JavaScript |         17 |          7 |          6 |         30 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\table.js                                           | JavaScript |         37 |         11 |         15 |         63 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\update_image_user.js                               | JavaScript |         27 |          4 |          4 |         35 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\update_login_data.js                               | JavaScript |         41 |          5 |          5 |         51 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\update_user.js                                     | JavaScript |         37 |          8 |          5 |         50 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\static\js\user_validation.js                                 | JavaScript |         46 |          7 |          5 |         58 |
+| Total                                                                                                                   |            |      5,231 |        193 |        902 |      6,326 |
++-------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

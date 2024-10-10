@@ -38,7 +38,7 @@ class Campo(models.Model):
 class Categorias(models.Model):
     categoria_pk = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    imagen = models.CharField(max_length=400, blank=True, null=True)
+    imagen = models.ImageField(upload_to='categories_pictures/', blank=True, null=True, default='default/default.jpg')
 
     class Meta:
         managed = False

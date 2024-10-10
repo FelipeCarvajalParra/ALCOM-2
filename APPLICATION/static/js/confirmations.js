@@ -2,6 +2,7 @@
 const logoutLink = document.getElementById('logout');
 const deleteUser = document.getElementById('deleteUser');
 const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
+const deleteCategory = document.querySelectorAll('.deleteCategory');
 
 if (logoutLink) {
     logoutLink.addEventListener('click', function () {
@@ -47,6 +48,24 @@ if (deleteActivityLogs) {
     });
 }
 
+// Iterar sobre todos los elementos con clase 'deleteActivityLog'
+if (deleteCategory) {
+    deleteCategory.forEach(function (logElement) {
+        logElement.addEventListener('click', function () {
+            const idCategory = logElement.getAttribute('data-idCategory'); 
+            console.log(idCategory)
+            showConfirmationModal(
+                '¿Estás seguro?',
+                'La categoria, equipos e intervenciones asociadas se perderan de forma permanente.',
+                'Sí, eliminar',
+                'Cancelar',
+                idCategory, // Pasa el ID del log aquí
+                3
+            );
+        });
+    });
+}
+
 
 function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action) {
     Swal.fire({
@@ -69,6 +88,8 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
                         deleteRequest('delete_user', recordId, 'view_users')
                     case(2):
                         deleteRequest('delete_log_activity', recordId)
+                    case(3):
+                        deleteRequest('delete_category', recordId)
                 }
             }
         }
