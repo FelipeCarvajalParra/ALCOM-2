@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Count
-from apps.logIn.models import Categorias, Campo
+from apps.categories.models import Categorias
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string

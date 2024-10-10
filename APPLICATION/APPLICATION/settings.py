@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'apps.activityLog',
     'apps.categories',
     'apps.references',
+    'apps.equipments',
+    'apps.inserts',
+    'apps.partsInventory',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from apps.logIn.models import Equipos, Categorias
+from apps.categories.models import Categorias  
+from apps.equipments.models import Equipos
 
 def view_references(request, id_category):
 

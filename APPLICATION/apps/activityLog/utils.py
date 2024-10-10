@@ -1,4 +1,3 @@
-# utils.py (en tu aplicación de actividad o en otro lugar apropiado)
 from .models import ActivityLog
 from django.shortcuts import get_object_or_404
 from apps.users.models import CustomUser
