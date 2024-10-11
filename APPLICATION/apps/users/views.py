@@ -9,8 +9,6 @@ from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
 from django.core.paginator import Paginator
 import json
-from urllib import request, error
-from urllib.request import urlopen  
 from django.apps import apps
 import os
 from django.conf import settings
@@ -45,7 +43,7 @@ def get_group_by_name(group_name):
     
 
 @login_required
-@group_required('administrators', redirect_url='expired_session')
+@group_required(['administrators'], redirect_url='expired_session')
 def view_users(request):
     user_list = CustomUser.objects.exclude(id=request.user.id).order_by('-id')
     search_query = request.GET.get('search', '')
@@ -67,16 +65,14 @@ def view_users(request):
     context = {'users': users}
     return render(request, 'view_users.html', context)
 
-
 @login_required
-@group_required('administrators', redirect_url='expired_session')
+@group_required(['administrators'], redirect_url='expired_session')
 def edit_user(request, id):
     user = get_object_or_404(CustomUser, pk=id)
     activity = ActivityLog.objects.filter(user_id = id).order_by('-timestamp')
     context = {'user': user, 
                'activity': activity}
     return render(request, 'user_edit.html', context)
-
 
 
 def validate_user_data(data, is_update=False):
@@ -117,7 +113,7 @@ def validate_user_data(data, is_update=False):
 
 
 @login_required
-@group_required('administrators', redirect_url='expired_session')
+@group_required(['administrators'], redirect_url='expired_session')
 def register_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -162,6 +158,7 @@ def register_user(request):
 
 
 @login_required
+@group_required(['administrators'], redirect_url='expired_session')
 def update_personal_data(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
 
@@ -207,7 +204,7 @@ def update_personal_data(request, user_id):
 
 
 @login_required
-@group_required('administrators', redirect_url='expired_session')
+@group_required(['administrators'], redirect_url='expired_session')
 def update_login_data(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
 
@@ -284,9 +281,6 @@ def update_login_data(request, user_id):
 
     return JsonResponse({'success': False, 'error': 'Método no permitido.'}, status=405)
 
-
-
-
 def compress_and_convert_to_webp(image_file):
     # Abrir la imagen con Pillow
     img = Image.open(image_file)
@@ -303,6 +297,8 @@ def compress_and_convert_to_webp(image_file):
     img_content = ContentFile(img_io.getvalue(), name=f"{image_file.name.split('.')[0]}.webp")
     return img_content
 
+@login_required
+@group_required(['administrators'], redirect_url='expired_session')
 def update_image(request):
     if request.method == 'POST':
         app_name = request.POST.get('app_name')
@@ -311,9 +307,10 @@ def update_image(request):
         record_id = request.POST.get('userId')
         new_image = request.FILES.get('image')
 
+        print(app_name, table, field, record_id, new_image)
+
         if not (app_name and table and field and record_id and new_image):
-            messages.error(request, 'Faltan campos requeridos')
-            return  # Asegúrate de salir de la función si faltan campos
+            return messages.error(request, 'Faltan campos requeridos')
 
         try:
             record_id = int(record_id)
@@ -321,10 +318,9 @@ def update_image(request):
             instance = Model.objects.get(id=record_id)
 
             if not hasattr(instance, field):
-                messages.error(request, f'El campo "{field}" no existe en el modelo "{table}".')
-                return  # Salir si el campo no existe
+                return messages.error(request, f'El campo "{field}" no existe en el modelo "{table}".')
+            
 
-            # Verificar el valor actual de la imagen
             current_image_path = getattr(instance, field)
 
             if current_image_path and current_image_path.url != settings.MEDIA_URL + 'default/default_user.jpg': # Eliminar la imagen anterior si no es la imagen por defecto
@@ -353,7 +349,8 @@ def update_image(request):
     else:
         messages.error(request, 'Método no permitido')
 
-
+@login_required
+@group_required(['administrators'], redirect_url='expired_session')
 def delete_user(request, user_id):
     if request.method == 'POST':
         try:
@@ -385,6 +382,8 @@ def delete_user(request, user_id):
         messages.error(request, 'Método no permitido.')
         return HttpResponse(status=405)  # Método no permitido
 
+@login_required
+@group_required(['administrators'], redirect_url='expired_session')
 def print_users(request):
     users = CustomUser.objects.all() 
     current_time = datetime.now() 
@@ -397,7 +396,7 @@ def print_users(request):
     return render(request, 'prin_table_users.html', context)
 
 @login_required
-@group_required('administrators', redirect_url='expired_session')
+@group_required(['administrators'], redirect_url='expired_session')
 def export_users_xlsx(request):
     workbook = openpyxl.Workbook()
     sheet = workbook.active

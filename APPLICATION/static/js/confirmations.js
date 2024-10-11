@@ -48,19 +48,19 @@ if (deleteActivityLogs) {
     });
 }
 
-// Iterar sobre todos los elementos con clase 'deleteActivityLog'
 if (deleteCategory) {
     deleteCategory.forEach(function (logElement) {
         logElement.addEventListener('click', function () {
-            const idCategory = logElement.getAttribute('data-idCategory'); 
-            console.log(idCategory)
+            const idCategory = logElement.getAttribute('data-category-id'); 
+            console.log(idCategory);
+            // Asegúrate de que el ID se pasa correctamente
             showConfirmationModal(
                 '¿Estás seguro?',
                 'La categoria, equipos e intervenciones asociadas se perderan de forma permanente.',
                 'Sí, eliminar',
                 'Cancelar',
-                idCategory, // Pasa el ID del log aquí
-                3
+                idCategory,  // Pasa el ID del log aquí
+                3           // El código para la eliminación
             );
         });
     });
@@ -86,10 +86,14 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
                 switch(action){
                     case(1):
                         deleteRequest('delete_user', recordId, 'view_users')
+                        break;
                     case(2):
                         deleteRequest('delete_log_activity', recordId)
+                        break;
                     case(3):
-                        deleteRequest('delete_category', recordId)
+                        const idCategory = arguments[4];  // recibir el ID aquí
+                        deleteRequest('delete_category', idCategory, 'view_categories');
+                        break;
                 }
             }
         }
@@ -111,7 +115,6 @@ function deleteRequest(url, id, returnView) {
             }else{
                 location.reload(true)
             }
-            
         }
     })
     .catch(error => {

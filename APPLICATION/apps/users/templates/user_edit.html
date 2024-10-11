@@ -10,7 +10,7 @@
             <div class="container__section-image">
                 <img id="imageProfile" class="container__image--profile" src="{{ user.profile_picture.url }}" alt="Profile Image">
                 
-                <input type="text" id="app_name" name="app_name" value="logIn" hidden>
+                <input type="text" id="app_name" name="app_name" value="users" hidden>
                 <input type="text" id="table" value="customuser" hidden>
                 <input type="text" id="field" value="profile_picture" hidden>
                 <input type="number" id="userId" value="{{ user.id }}" hidden>
@@ -111,11 +111,11 @@
                         <div class="list-activity__header">
                             <span class="list-activity__icon
                             {% if log.action == 'CREATE' %}list-activity__icon--create
-                    {% elif log.action == 'EDIT' %}list-activity__icon--edit
-                    {% elif log.action == 'DELETE' %}list-activity__icon--delete
-                    {% elif log.action == 'LOGIN' %}list-activity__icon--login
-                    {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
-                    {% else %}list-activity__icon{% endif %}"></span>
+                            {% elif log.action == 'EDIT' %}list-activity__icon--edit
+                            {% elif log.action == 'DELETE' %}list-activity__icon--delete
+                            {% elif log.action == 'LOGIN' %}list-activity__icon--login
+                            {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
+                            {% else %}list-activity__icon{% endif %}"></span>
                             <span class="list-activity__title">{{log.title}}</span>
                             <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
 
@@ -195,9 +195,6 @@
             </form>
         </div>
 
-
-
-
         <div id="loginDataContainer" class="container--activity scroll" style="display: none;">
             <div class="container__section-title">
                 <span>Datos de ingreso</span>
@@ -207,14 +204,10 @@
                 {% csrf_token %}
                 <div class="form__largue">
                     <div class="input-container">
-
-
                         <div class="input-wrapper">
                             <input class="input input--medium" type="text" id="username" value="{% if user.username %}{{ user.username }}{% endif %}">
                             <label class="input-container__label" for="username">Usuario</label>
                         </div>
-
-
                         <div class="input-wrapper input-wrapper--flex">
                             <div class="select select--filter select--state">
                                 <div class="select__selected">Estado</div>
@@ -249,6 +242,7 @@
                             <input class="input input--medium" type="password" id="newPassword" >
                             <label class="input-container__label" for="newPassword">Nueva contraseña</label>
                         </div>
+
                         <div class="input-wrapper">
                             <input class="input input--medium" type="password" id="newPasswordValidation">
                             <label class="input-container__label" for="newPasswordValidation">Confirme nueva contraseña</label>
@@ -264,15 +258,9 @@
 
             </form>
         </div>
-
     </div>
 </div>
 
-<script src="{% static 'js/sub_navigation.js' %}" ></script>
-<script src="{% static 'js/update_user.js' %}" ></script>
-<script src="{% static 'js/update_login_data.js' %}" ></script>
-<script src="{% static 'js/update_image_user.js' %}" ></script>
-<script src="{% static 'js/error_url.js' %}"></script>
 {% if messages %}
     {% for message in messages %}
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -280,6 +268,15 @@
         <script src="{% static 'js/pop-up_window.js' %}" ></script>
     {% endfor %}
 {% endif %}
+
+<script src="{% static 'js/sub_navigation.js' %}" ></script>
+<script src="{% static 'js/update_user.js' %}" ></script>
+<script src="{% static 'js/update_login_data.js' %}" ></script>
+<script src="{% static 'js/update_image_user.js' %}" ></script>
+<script src="{% static 'js/filters.js'%}"></script>
+<script src="{% static 'js/inputs_placeholders.js' %}"></script>
+
+
 
 
 

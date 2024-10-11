@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=8" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=10" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,6 +15,7 @@
         rel="stylesheet" />
     <meta name="description" content="Sistema de informacion web para la gestion empresarial en la empresa alcom sas">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -355,15 +356,10 @@
         </main>
     </div>
    
-      
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
-    <script src="{% static 'js/filters.js'%}"></script>
-    <script src="{% static 'js/table.js'%}"></script>
     <script src="{% static 'js/search-general.js'%} ?v=2"></script>
     <script src="{% static 'js/confirmations.js'%} ?v=5"></script>
 
-    <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 
     {% if messages %}
     {% for message in messages %}

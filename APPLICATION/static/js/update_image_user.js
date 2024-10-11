@@ -6,7 +6,7 @@ document.getElementById('image').addEventListener('change', function() {
     // Verifica si se ha seleccionado un archivo
     if (this.files && this.files[0]) {
         // Crear FormData y llenar con datos
-        const formData = new FormData();
+        const formData = new FormData(); 
         formData.append('app_name', document.getElementById('app_name').value);
         formData.append('table', document.getElementById('table').value);
         formData.append('field', document.getElementById('field').value);

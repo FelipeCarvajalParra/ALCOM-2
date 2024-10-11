@@ -9,7 +9,6 @@ class Equipos(models.Model):
     estado = models.CharField(max_length=250, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'equipos'
 
 class Valor(models.Model):
@@ -19,5 +18,4 @@ class Valor(models.Model):
     valor = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'valor'

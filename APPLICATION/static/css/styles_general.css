@@ -1551,6 +1551,12 @@ display: block;
     transform: translate(-50%, -50%) scale(1); /* Animación de aparición */
 }
 
+.modal--category{
+    min-height: 300px;
+    border: 10px solid white;
+    padding-bottom: 30px;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;

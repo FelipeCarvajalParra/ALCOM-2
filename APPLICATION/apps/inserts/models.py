@@ -12,12 +12,10 @@ class Intervenciones(models.Model):
     formato = models.CharField(max_length=400, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'intervenciones'
 
-
 class Actualizaciones(models.Model):
-    actualizacion_pk = models.IntegerField(primary_key=True)
+    actualizacion_pk = models.AutoField(primary_key=True)
     num_orden_fk = models.ForeignKey('Intervenciones', models.DO_NOTHING, db_column='num_orden_fk')
     num_parte_fk = models.ForeignKey('partsInventory.Inventario', models.DO_NOTHING, db_column='num_parte_fk', blank=True, null=True)
     accion = models.CharField(max_length=50, blank=True, null=True)
@@ -25,6 +23,5 @@ class Actualizaciones(models.Model):
     color = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'actualizaciones'
 

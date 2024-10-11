@@ -14,6 +14,5 @@ class Inventario(models.Model):
     imagen_5 = models.CharField(max_length=400, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'inventario'
 

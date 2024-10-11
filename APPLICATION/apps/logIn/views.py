@@ -12,18 +12,19 @@ from django.contrib import messages
 from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
 from apps.activityLog.utils import log_activity
+from django.db.models import Q
+from django.http import HttpRequest
 
 
 #Funcion para limitar la navegacion por rol 
-def group_required(group_name, redirect_url='login'):
+def group_required(group_names, redirect_url='login'):
     def decorator(view_func):
-        @user_passes_test(lambda u: u.groups.filter(name=group_name).exists(), login_url=redirect_url)
+        @user_passes_test(lambda u: u.groups.filter(Q(name__in=group_names)).exists(), login_url=redirect_url)
         def _wrapped_view(request, *args, **kwargs):
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
 
-# Función para validar el rol del usuario 
 @login_required
 def redirect_user(request):
     if request.user.groups.filter(name='administrators').exists():

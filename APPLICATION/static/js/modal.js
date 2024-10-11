@@ -24,17 +24,17 @@ openModalBtns.forEach(btn => {
 // Función para cerrar el modal
 closeModalBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    cerrarModal();
+    closeModal();
   });
 });
 
 // Cerrar el modal al hacer clic en el fondo oscuro
 modalOverlay.addEventListener('click', () => {
-  cerrarModal();
+  closeModal();
 });
 
 // Función que maneja el cierre con retraso para la animación
-function cerrarModal() {
+function closeModal() {
   modals.forEach(modal => {
     modal.classList.remove('modal--active');
   });
@@ -49,3 +49,4 @@ function cerrarModal() {
     modalOverlay.style.display = 'none';
   }, 300); // El tiempo debe coincidir con la duración de la transición en CSS
 }
+

@@ -46,23 +46,25 @@
                                     <use href="#icon-view"></use>
                                 </svg>
                             </a>
-                            <svg class="svg-option svg-option--edit" width="20px" height="20px">
+  
+                            <svg class="svg-option svg-option--edit editCategoryButton" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-modal-id="modalNewCategory">
                                 <use href="#icon-edit"></use>
                             </svg>
-                            <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-deleteCategory="{{category.id}}">
+
+                            <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-deleteCategory="{{category.id}}">
                                 <use href="#icon-delete"></use>
                             </svg>
                         </td>
                     </tr>
                 {% endfor %}
             {% else %}
-                    <tr class="table__row table__row--not-results">
-                        <td class="table__cell table__cell--not-results" colspan="4">
-                            <span class="table__text--not-result">
-                                No se encontraron resultados
-                            </span>
-                        </td>
-                    </tr>
+                <tr class="table__row table__row--not-results">
+                    <td class="table__cell table__cell--not-results" colspan="4">
+                        <span class="table__text--not-result">
+                            No se encontraron resultados
+                        </span>
+                    </td>
+                </tr>
             {% endif %}
         </tbody>
     </table>
@@ -120,7 +122,7 @@
 </div>
 
 <div class="modal-overlay"></div>
-<div class="modal" id="modalNewCategory">
+<div class="modal modal--category scroll" id="modalNewCategory">
     <button class="modal__close">
         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
             <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor"
@@ -130,11 +132,11 @@
 
     <div class="modal__header">
         <span>Añadir nueva categoria</span>
-        <p class="modal__subheader">Por favor, añada los camponentes asociados a la categoria a registrar.</p>
+        <p class="modal__subheader">Por favor, añada los componentes asociados a la categoria a registrar.</p>
     </div>
 
-    
-    <form class="container__form">
+    <form class="container__form" id="newCategoryForm">
+        {% csrf_token %}
         <div class="form__largue form__largue--margin-top">
             <div class="input-container">
                 <div class="input-wrapper input-wrapper--largue">
@@ -146,28 +148,95 @@
 
         <div class="container__task">
             <div class="input-wrapper input-wrapper--largue">
-                <input class="input input--largue" type="text" id="taskInput">
-                <label class="input-container__label" for="taskInput">Atributo</label>
+                <input class="input input--largue" type="text" id="taskInput" aria-labelledby="taskInputLabel">
+                <label class="input-container__label" for="taskInput" id="taskInputLabel">Atributo</label>
             </div>
 
             <button type="button" id="addButton" class="button button--attribute">
                 <span>Añadir</span>
             </button>
-            <ul id="taskList__autocomplete" class="autocomplete-list scroll">
-                <li data-value="Ejemplo 1">Ejemplo 1</li>
-                <li data-value="Ejemplo 2">Ejemplo 2</li>
-                <li data-value="Ejemplo 3">Ejemplo 3</li>
-                <li data-value="Ejemplo 4">Ejemplo 4</li>
-                <li data-value="Ejemplo 5">Ejemplo 5</li>
+            <ul id="autocompleteListNewCategory" class="autocomplete-list scroll" role="listbox" aria-hidden="true">
+                {% if components|length > 0 %}
+                    {% for component in components %}
+                        <li data-value="{{ component.nombre_campo }}">{{ component.nombre_campo }}</li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
-        
-        <ul id="taskList"></ul>
+
+        <ul id="componentsList"></ul>
 
         <div class="modal__options">
             <button type="submit" class="button button--save">
                 <span>Añadir Categoria</span>
             </button>
+            <span id="messageError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal modal--category scroll" id="modalEditCategory">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Editar categoría</span>
+        <p class="modal__subheader">Si elimina un atributo, tenga en cuenta que los registros de equipos asociados a ese atributo, se perderan.</p>
+    </div>
+
+    <form class="container__form" id="editCategoryForm">
+        {% csrf_token %}
+        <input type="hidden" id="editCategoryId">  <!-- Campo oculto para el ID de la categoría -->
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" type="text" id="editNameCategory" value=" " required>
+                    <label class="input-container__label" for="editNameCategory">Nombre</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="container__task">
+            <div class="input-wrapper input-wrapper--largue">
+                <input class="input input--largue" type="text" id="editTaskInput" aria-labelledby="editTaskInputLabel">
+                <label class="input-container__label" for="editTaskInput" id="editTaskInputLabel">Atributo</label>
+            </div>
+
+            <button type="button" id="editAddButton" class="button button--attribute">
+                <span>Añadir</span>
+            </button>
+            <ul id="autocompleteListUpdateCategory" class="autocomplete-list scroll" role="listbox" aria-hidden="true">
+                {% if components|length > 0 %}
+                    {% for component in components %}
+                        <li data-value="{{ component.nombre_campo }}">{{ component.nombre_campo }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+
+        <ul id="editComponentsList"></ul>
+
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Actualizar Categoría</span>
+            </button>
+            <span id="editMessageError" class="login__error-message">‎</span>
         </div>
     </form>
 </div>
@@ -182,10 +251,11 @@
 
 
 <script src="{% static 'js/search_categories.js' %}"></script>
-<script src="{% static 'js/new_category.js' %} ?v=2"></script>
-
-
-    <script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/category_modal.js' %} ?v=4"></script>
+<script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
+<script src="{% static 'js/category_crud.js' %} ?v=2"></script>
+<script src="{% static 'js/tooltip.js' %}" ></script>
+<script src="{% static 'js/modal.js' %}"></script>
 
 
 

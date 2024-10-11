@@ -10,7 +10,6 @@ class Referencias(models.Model):
     url_consulta = models.CharField(max_length=1000, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'Referencias'
 
 class Archivos(models.Model):
@@ -23,5 +22,4 @@ class Archivos(models.Model):
     ficha_tecnica = models.FileField(max_length=400, blank=True, upload_to='technical_sheets/', null=True)
 
     class Meta:
-        managed = False
         db_table = 'archivos'
