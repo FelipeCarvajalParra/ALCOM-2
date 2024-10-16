@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib import messages
 from apps.activityLog.utils import log_activity
-
+from django.db import transaction
 
 @login_required
 @group_required(['administrators'], redirect_url='expired_session')
@@ -20,7 +20,6 @@ def view_categories(request):
     search_query = request.GET.get('search', '')
     components = Campo.objects.all()
 
-    
     if search_query:
         categories_list = categories_list.filter(nombre__icontains=search_query)
 
@@ -36,7 +35,6 @@ def view_categories(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html = render_to_string('partials/_category_table_body.html', context, request=request)
         return HttpResponse(html)
-
     
     return render(request, 'view_categories.html', context)
 
@@ -46,37 +44,38 @@ def new_category(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-
             name_category = data.get('nameCategory', '').strip().capitalize()
+
+            # Verificar si la categoría ya existe
             if Categorias.objects.filter(nombre=name_category).exists():
                 return JsonResponse({'error': 'La categoría ya existe.'}, status=400)
-            categoria = Categorias.objects.create(nombre=name_category)
 
-            components = data.get('components', [])
-            # Lista para almacenar campos creados o existentes
-            for component_name in components:
-            
-                component_name = component_name.strip().capitalize()
-                campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
-                CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
+            # Crear la categoría y componentes en una transacción
+            with transaction.atomic():
+                categoria = Categorias.objects.create(nombre=name_category)
 
-            
+                components = data.get('components', [])
+                for component_name in components:
+                    component_name = component_name.strip().capitalize()
+                    campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
+                    CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
+
+            # Registrar la actividad
             log_activity(
                 user=request.user.id,                       
                 action='CREATE',                 
                 title='Registro de categoria',      
-                description=f'El usuario registro la categoria {categoria.nombre} en el sistema.',  
+                description=f'El usuario registró la categoría {categoria.nombre} en el sistema.',  
                 link=f'/view_categories/view_references/{categoria.categoria_pk}',      
-                category='USER_PROFILE'          
+                category='CATEGORY'          
             )
             messages.success(request, 'Categoría y campos asociados correctamente.')
-            return JsonResponse({'success': True}, status=200)  
+            return JsonResponse({'success': True}, status=201)  # 201 Created
 
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)  
-        except Exception as e:
-            messages.error(request, 'Error: ' + str(e))
-            return JsonResponse({'error': 'Ocurrió un error: ' + str(e)}, status=500)  
+            return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
+        except Exception:
+            return JsonResponse({'error': 'Ocurrió un error inesperado.'}, status=500)
 
     return JsonResponse({'error': 'Método no permitido.'}, status=405)
 
@@ -84,7 +83,6 @@ def new_category(request):
 @group_required(['administrators'], redirect_url='expired_session')
 def get_category(request, category_id):
     try:
-        
         category = Categorias.objects.get(pk=category_id)
         campos = Campo.objects.filter(categoriascampo__categoria_fk=category)  # Obtener campos asociados
 
@@ -96,7 +94,6 @@ def get_category(request, category_id):
             'campos': campos_data
         })
         
-
     except Categorias.DoesNotExist:
         return JsonResponse({'error': 'Categoría no encontrada.'})
 
@@ -140,7 +137,15 @@ def update_category(request, category_id):
                 if component not in components:
                     campo = Campo.objects.get(nombre_campo=component)
                     CategoriasCampo.objects.filter(categoria_fk=categoria, campo_fk=campo).delete()
-
+        
+            log_activity(
+                user=request.user.id,                       
+                action='UPDATE',                 
+                title='Actualizacion de categoria',      
+                description=f'El usuario actualizo la categoria {categoria.nombre} en el sistema.',  
+                link=f'/view_categories/view_references/{categoria.categoria_pk}',      
+                category='CATEGORY'          
+            )
             messages.success(request, 'Categoría y campos actualizados correctamente.')
             return JsonResponse({'success': True}, status=200)  
 
@@ -160,14 +165,23 @@ def delete_category(request, category_id):
             categoria = Categorias.objects.get(categoria_pk=category_id)
             categoria.delete()
 
-            messages.success(request, 'Categoría eliminada correctamente')
-            return JsonResponse({'success': True}, status=200)  
+
+            log_activity(
+                user=request.user.id,                       
+                action='DELETE',                 
+                title='Elimino categoria',      
+                description=f'El usuario elimino la categoria {categoria.nombre}.',  
+                category='CATEGORY'          
+            )
+            messages.success(request, 'Categoría eliminada correctamente.')
+            return JsonResponse({'success': True}, status=200) 
+        
         except Categorias.DoesNotExist:
             messages.error(request, 'La categoría no existe.')
-            return JsonResponse({'success': True}, status=404)  
+            return JsonResponse({'success': True}, status=500)  
         except Exception as e:
             messages.error(request, 'Ocurrió un error: ' + str(e))
-            return JsonResponse({'success': True}, status=404)  
+            return JsonResponse({'success': True}, status=500)  
 
     messages.error(request, 'Metodo no permitido.')
     return JsonResponse({'success': True}, status=404)  

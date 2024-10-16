@@ -206,104 +206,104 @@
 
 
 <div class="modal-overlay"></div>
-    <div class="modal" id="modalNewUser">
-        <button class="modal__close">
-            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
+<div class="modal" id="modalNewUser">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
 
-        <div class="modal__header">
-            <span>Añadir nuevo usuario</span>
-            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar un nuevo usuario.</p>
+    <div class="modal__header">
+        <span>Añadir nuevo usuario</span>
+        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar un nuevo usuario.</p>
+    </div>
+
+
+    <form class="container__form">
+        {% csrf_token %}
+        <div class="form__largue">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" id="names" required>
+                    <label class="input-container__label" for="names">Nombres</label>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" id="lastName" required>
+                    <label class="input-container__label" for="lastName">Apellidos</label>
+                </div>
+            </div>
+        </div>
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" type="email" id="email" required>
+                    <label class="input-container__label" for="email">Correo electrónico</label>
+                </div>
+            </div>
+        </div>
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" type="text" id="jobName" required>
+                    <label class="input-container__label" for="jobName">Cargo</label>
+                </div>
+            </div>
+        </div>
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" id="Usuario" required>
+                    <label class="input-container__label" for="Usuario">Usuario</label>
+                </div>
+                <div class="input-wrapper input-wrapper--flex">
+                    <div class="select select--filter select--state">
+                        <div class="select__selected">Estado</div>
+                        <div class="select__options scroll">
+                            <div class="select__option">Activo</div>
+                            <div class="select__option">Bloqueado</div>
+                        </div>
+                        <div class="select__icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="select select--filter select--state">
+                        <div class="select__selected">Rol</div>
+                        <div class="select__options scroll">
+                            <div class="select__option">Consultor</div>
+                            <div class="select__option">Administrador</div>
+                            <div class="select__option">Tecnico</div>
+                        </div>
+                        <div class="select__icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="password" id="newPassword" required>
+                    <label class="input-container__label" for="newPassword">Nueva contraseña</label>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="password" id="newPasswordValidation" required>
+                    <label class="input-container__label" for="newPasswordValidation">Confirme nueva contraseña</label>
+                </div>
+            </div>
         </div>
 
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir usuario</span>
+            </button>
+            <span id="messageError" class="login__error-message">‎</span>
+        </div>
 
-        <form class="container__form">
-            {% csrf_token %}
-            <div class="form__largue">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="text" id="names" required>
-                        <label class="input-container__label" for="names">Nombres</label>
-                    </div>
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="text" id="lastName" required>
-                        <label class="input-container__label" for="lastName">Apellidos</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper input-wrapper--largue">
-                        <input class="input input--largue" type="email" id="email" required>
-                        <label class="input-container__label" for="email">Correo electrónico</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper input-wrapper--largue">
-                        <input class="input input--largue" type="text" id="jobName" required>
-                        <label class="input-container__label" for="jobName">Cargo</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="text" id="Usuario" required>
-                        <label class="input-container__label" for="Usuario">Usuario</label>
-                    </div>
-                    <div class="input-wrapper input-wrapper--flex">
-                        <div class="select select--filter select--state">
-                            <div class="select__selected">Estado</div>
-                            <div class="select__options scroll">
-                                <div class="select__option">Activo</div>
-                                <div class="select__option">Bloqueado</div>
-                            </div>
-                            <div class="select__icon">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="select select--filter select--state">
-                            <div class="select__selected">Rol</div>
-                            <div class="select__options scroll">
-                                <div class="select__option">Consultor</div>
-                                <div class="select__option">Administrador</div>
-                                <div class="select__option">Tecnico</div>
-                            </div>
-                            <div class="select__icon">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="password" id="newPassword" required>
-                        <label class="input-container__label" for="newPassword">Nueva contraseña</label>
-                    </div>
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="password" id="newPasswordValidation" required>
-                        <label class="input-container__label" for="newPasswordValidation">Confirme nueva contraseña</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal__options">
-                <button type="submit" class="button button--save">
-                    <span>Añadir usuario</span>
-                </button>
-                <span id="messageError" class="login__error-message">‎</span>
-            </div>
-
-        </form>
-    </div>
+    </form>
+</div>
 
     {% if messages %}
     {% for message in messages %}
@@ -315,7 +315,7 @@
 
     <script src="{% static 'js/user_validation.js' %} " ></script>
     <script src="{% static 'js/modal.js' %}"></script>
-    <script src="{% static 'js/search_users.js' %}" ></script>
+    <script src="{% static 'js/search_users.js' %} ?v=2" ></script>
     <script src="{% static 'js/print.js' %} ?v=2" ></script>
     <script src="{% static 'js/filters.js'%}"></script>
     <script src="{% static 'js/tooltip.js'%}"></script>

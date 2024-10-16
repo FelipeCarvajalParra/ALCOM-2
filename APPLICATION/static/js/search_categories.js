@@ -18,5 +18,5 @@ $('#searchCategories').on('input', function() {
     clearTimeout(timeout);
     timeout = setTimeout(function() {
         searchCategories();
-    }, 500); // Ajusta el tiempo según tus necesidades
+    }, 50); // Ajusta el tiempo según tus necesidades
 });

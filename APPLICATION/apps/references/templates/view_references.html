@@ -12,16 +12,18 @@
         </div>
         <div class="table__info table__info--options">
 
-            <div class="select select--filter">
+            <div class="select select--filter select--active">
                 <div class="select__selected">Marca</div>
-                <div class="select__options">
-                    <div class="select__option">Hp</div>
-                    <div class="select__option">Acer</div>
+                <div class="select__options scroll">
+                    {% if brands|length > 0 %}
+                        {% for brand in brands %}
+                            <div class="select__option">{{brand.marca}}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="select__icon">
-                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
                     </svg>
                 </div>
             </div>
@@ -69,7 +71,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="button">
+            <div class="button" data-modal-id="modalNewReference">
                 <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -135,7 +137,7 @@
                 <li class="pagination__item pagination__item--active">1</li>
                 <li class="pagination__item">2</li>
                 <li class="pagination__item">3</li>
-                <li class="pagination__item">4</li>
+                <li class="pagination__item">4</li> 
                 <li class="pagination__item">5</li>
                 <li class="pagination__item pagination__item--next">
                     <svg class="" width="15px" height="15px">
@@ -146,5 +148,114 @@
         </nav>
     </div>
 </div>
+
+
+
+
+
+
+<div class="modal-overlay"></div>
+<div class="modal modal--edges scroll" id="modalNewReference">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Añadir referencia</span>
+        <p class="modal__subheader">Por favor, rellene todos los campos necesarios.</p>
+    </div>
+
+
+    <form class="container__form" id="referenceForm">
+        {% csrf_token %}
+        <span id="categoryId" data-category-id="{{id_category}}" ></span>
+        <div class="form__largue">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" name="reference" id="reference" required>
+                    <label class="input-container__label" for="reference">Referencia</label>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" name="brand" id="brand" required>
+                    <label class="input-container__label" for="brand">Marca</label>
+
+                    <ul id="autocompleteListNewCategory" class="autocomplete-list scroll" role="listbox" aria-hidden="true">
+                        {% if brands|length > 0 %}
+                            {% for brand in brands %}
+                                <li data-value="{{ brand.marca }}">{{ brand.marca }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" type="text" name="url" id="url" maxlength="1000">
+                    <label class="input-container__label" for="url">URL consulta</label>
+                </div>
+            </div>
+        </div>
+    
+        {% for component in components %}
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <textarea class="input input--largue textarea" 
+                            name="campo_{{ component.campo_fk.campo_pk }}" 
+                            id="{{ component.campo_fk.campo_pk }}" 
+                            maxlength="600" style="height: 45px;"></textarea>
+                    <label class="input-container__label textarea__label" 
+                        for="{{ component.campo_fk.campo_pk }}">{{ component.campo_fk.nombre_campo }}</label>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <textarea class="input input--largue textarea" name="accessories" id="accessories" maxlength="1000" style="height: 45px;"></textarea>
+                    <label class="input-container__label textarea__label" for="accessories">Accesorios</label>
+                </div>
+            </div>
+        </div>
+    
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <textarea class="input input--largue textarea" name="observations" id="observations" maxlength="1000" style="height: 45px;"></textarea>
+                    <label class="input-container__label textarea__label" for="observations">Observaciones</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir referencia</span>
+            </button>
+            <span id="referenceMessageError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
+            <script src="{% static 'js/pop-up_window.js' %}" ></script>
+        {% endfor %}
+    {% endif %}
+
+    <script src="{% static 'js/modal.js' %}"></script>
+    <script src="{% static 'js/inputs_placeholders.js' %}" ></script>
+    <script src="{% static 'js/height_textarea.js' %}"></script>
+    <script src="{% static 'js/filter_selector.js' %}"></script>
+    <script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>
 
 {% endblock %}

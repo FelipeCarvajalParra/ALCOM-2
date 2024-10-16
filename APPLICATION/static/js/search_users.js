@@ -18,5 +18,5 @@ $('#searchUser').on('input', function() {
     clearTimeout(timeout);
     timeout = setTimeout(function() {
         searchUsers();
-    }, 0); // Ajusta el tiempo según tus necesidades
+    }, 150); // Ajusta el tiempo según tus necesidades
 });
