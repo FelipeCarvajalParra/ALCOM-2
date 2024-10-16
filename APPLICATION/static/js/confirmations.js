@@ -1,8 +1,9 @@
-// Escuchar los clics en elementos por ID
 const logoutLink = document.getElementById('logout');
 const deleteUser = document.getElementById('deleteUser');
 const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
 const deleteCategory = document.querySelectorAll('.deleteCategory');
+const deleteReference = document.querySelectorAll('.deleteReference');
+
 
 if (logoutLink) {
     logoutLink.addEventListener('click', function () {
@@ -35,7 +36,6 @@ if (deleteActivityLogs) {
     deleteActivityLogs.forEach(function (logElement) {
         logElement.addEventListener('click', function () {
             const idLog = logElement.getAttribute('data-idLog'); 
-            console.log(idLog)
             showConfirmationModal(
                 '¿Estás seguro?',
                 'El registro se eliminará de forma permanente.',
@@ -52,7 +52,6 @@ if (deleteCategory) {
     deleteCategory.forEach(function (logElement) {
         logElement.addEventListener('click', function () {
             const idCategory = logElement.getAttribute('data-category-id'); 
-            console.log(idCategory);
             // Asegúrate de que el ID se pasa correctamente
             showConfirmationModal(
                 '¿Estás seguro?',
@@ -66,8 +65,28 @@ if (deleteCategory) {
     });
 }
 
+if (deleteReference) {
+    deleteReference.forEach(function (logElement) {
+        logElement.addEventListener('click', function () {
+            const idReference = logElement.getAttribute('data-reference-id'); 
+            const categoryId = document.getElementById('categoryId').dataset.categoryId;
+            console.log(categoryId)
+            // Asegúrate de que el ID se pasa correctamente
+            showConfirmationModal(
+                '¿Estás seguro?',
+                'La referencia, y existencias asociadas se perderan de forma permanente.',
+                'Sí, eliminar',
+                'Cancelar',
+                idReference,  
+                4,
+                categoryId         
+            );
+        });
+    });
+}
 
-function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action) {
+
+function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action, urlAutoGenerate) {
     Swal.fire({
         title: title,
         text: text,
@@ -80,7 +99,6 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
     }).then((result) => {
         if (result.isConfirmed) {
             if (typeof recordId === 'string' && recordId.startsWith('/')) {
-                // Redirigir a la URL especificada (por ejemplo, para cerrar sesión)
                 window.location.href = recordId;
             } else {
                 switch(action){
@@ -94,14 +112,19 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
                         const idCategory = arguments[4];  // recibir el ID aquí
                         deleteRequest('delete_category', idCategory, 'view_categories');
                         break;
+                    case(4):
+                        const idReference = arguments[4];  // recibir el ID aquí
+                        const idCategory2 = arguments[6];
+                        deleteRequest('delete_reference', idReference, `view_categories/view_references/${idCategory2}`, true);
+                        break;
+                    
                 }
             }
         }
     }); 
 }
 
-function deleteRequest(url, id, returnView) {
-    console.log(id)
+function deleteRequest(url, id, returnView, autogenerate) {
     fetch(`/${url}/${id}`, {
         method: 'POST',
         headers: {
@@ -110,7 +133,9 @@ function deleteRequest(url, id, returnView) {
     })
     .then(response => {
         if (response.ok) {
-            if(returnView){
+            if(autogenerate){
+                window.location.href = `/${returnView}`; 
+            }else if(returnView){
                 window.location.href = `/${returnView}/`; 
             }else{
                 location.reload(true)

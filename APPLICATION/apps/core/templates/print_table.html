@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - ALCOM SAS</title>
+    <link rel="stylesheet" href="{% static 'css/styles_print.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <img class="header__image" src="{% static 'img/logo_alcom.webp' %}" alt="Logo de ALCOM">
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                {% for header in headers %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Registro generado por {{ request.user.first_name }} {{ request.user.last_name }} el {{ current_time|date:"d/m/Y H:i:s" }}</p>
+    </div>
+
+    <script src="{% static 'js/print.js' %}"></script>
+</body>
+</html>

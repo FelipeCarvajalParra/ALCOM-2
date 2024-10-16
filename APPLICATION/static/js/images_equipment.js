@@ -7,7 +7,6 @@ const imageDisplay = document.getElementById('image-display');
 // Agregar un evento de clic a cada imagen de vista previa
 previewImages.forEach(image => {
     image.addEventListener('click', function() {
-        // Cambiar la fuente de la imagen principal por la fuente de la imagen seleccionada
         imageDisplay.src = this.src;
     });
 });

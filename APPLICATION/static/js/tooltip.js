@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", function() {
         cell.addEventListener('mouseenter', function() {
             const tooltipText = cell.getAttribute('data-text');
             
+            // Solo mostrar el tooltip si hay contenido
+            if (!tooltipText) return; // Si no hay contenido, no hacer nada
+            
             // Elimina el tooltip anterior si existe
             if (activeTooltip) {
                 activeTooltip.remove();
@@ -59,4 +62,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
 

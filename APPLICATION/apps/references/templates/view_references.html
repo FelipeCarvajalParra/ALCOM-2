@@ -12,9 +12,10 @@
         </div>
         <div class="table__info table__info--options">
 
-            <div class="select select--filter select--active">
-                <div class="select__selected">Marca</div>
+            <div class="select select--filter">
+                <div class="select__selected" id="filterBrand">Marca</div>
                 <div class="select__options scroll">
+                    <div class="select__option">TODAS</div>
                     {% if brands|length > 0 %}
                         {% for brand in brands %}
                             <div class="select__option">{{brand.marca}}</div>
@@ -28,7 +29,7 @@
                 </div>
             </div>
 
-            <input class="select select--search" type="text" placeholder="Buscar por nombre" />
+            <input class="select select--search" type="text" id="searchReferences" placeholder="Buscar por referencia" />
 
             <div class="select select--filter select--right">
                 <div class="select__selected">
@@ -41,7 +42,7 @@
                     <span> Exportar </span>
                 </div>
                 <div class="select__options">
-                    <div class="select__option select__option--export">
+                    <div class="select__option select__option--export" id="opctionExcel">
                         <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
                             data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -51,7 +52,7 @@
                         </svg>
                         <span>Excel</span>
                     </div>
-                    <div class="select__option select__option--export">
+                    <div class="select__option select__option--export" id="opctionPdf">
                         <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
                             <path
@@ -107,7 +108,7 @@
                             <svg class="svg-option svg-option--edit" width="20px" height="20px">
                                 <use href="#icon-edit"></use>
                             </svg>
-                            <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                            <svg class="svg-option svg-option--delete deleteReference" width="20px" height="20px" data-reference-id="{{reference.referencia_pk}}">
                                 <use href="#icon-delete"></use>
                             </svg>
                         </td>
@@ -127,7 +128,7 @@
 
     <div class="table__footer">
         <nav class="pagination">
-            <span class="pagination__records">59 registros</span>
+            <span class="pagination__records">Total: {{ references.paginator.count }} registros</span>
             <ul class="pagination__list">
                 <li class="pagination__item pagination__item--previous">
                     <svg class="" width="15px" height="15px">
@@ -170,7 +171,7 @@
 
     <form class="container__form" id="referenceForm">
         {% csrf_token %}
-        <span id="categoryId" data-category-id="{{id_category}}" ></span>
+        <span id="categoryId" data-category-id="{{id_category}}"></span>
         <div class="form__largue">
             <div class="input-container">
                 <div class="input-wrapper">
@@ -257,5 +258,8 @@
     <script src="{% static 'js/height_textarea.js' %}"></script>
     <script src="{% static 'js/filter_selector.js' %}"></script>
     <script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>
+    <script src="{% static 'js/search_references.js' %}" ></script>
+    <script src="{% static 'js/tooltip.js' %} ?v=2" ></script>
+    
 
 {% endblock %}

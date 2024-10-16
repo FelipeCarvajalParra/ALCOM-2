@@ -1,19 +1,13 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
-from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
-from django.contrib.auth.models import User
-from django.contrib.auth import logout
 from django.contrib import messages
-from apps.users.models import CustomUser
-from apps.activityLog.models import ActivityLog
-from apps.activityLog.utils import log_activity
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_POST
 from django.db.models import Q
-from django.http import HttpRequest
+from apps.users.models import CustomUser
+from apps.activityLog.utils import log_activity
+
 
 
 #Funcion para limitar la navegacion por rol 
