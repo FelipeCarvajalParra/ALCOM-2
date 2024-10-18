@@ -15,11 +15,11 @@ class Referencias(models.Model):
 
 class Archivos(models.Model):
     referencia_pk = models.OneToOneField('Referencias', models.DO_NOTHING, db_column='referencia_pk', primary_key=True)
-    imagen_1 = models.ImageField(max_length=400, blank=True, default='default/image_none.jpg', upload_to='References_pictures/', null=True)
-    imagen_2 = models.ImageField(max_length=400, blank=True, default='default/image_none.jpg', upload_to='References_pictures/', null=True)
-    imagen_3 = models.ImageField(max_length=400, blank=True, default='default/image_none.jpg', upload_to='References_pictures/', null=True)
-    imagen_4 = models.ImageField(max_length=400, blank=True, default='default/image_none.jpg', upload_to='References_pictures/', null=True)
-    imagen_5 = models.ImageField(max_length=400, blank=True, default='default/image_none.jpg', upload_to='References_pictures/', null=True)
+    imagen_1 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)
+    imagen_2 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)
+    imagen_3 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)
+    imagen_4 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)
+    imagen_5 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)
     ficha_tecnica = models.FileField(max_length=400, blank=True, upload_to='technical_sheets/', null=True)
 
     class Meta:

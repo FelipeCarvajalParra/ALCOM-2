@@ -8,7 +8,7 @@ from django.db import transaction
 import json
 import os
 from django.conf import settings
-from datetime import datetime
+from django.core.paginator import Paginator
 from apps.categories.models import Categorias, CategoriasCampo, Campo
 from .models import Valor, Referencias, Archivos
 from apps.activityLog.utils import log_activity
@@ -16,31 +16,41 @@ from apps.logIn.views import group_required
 
 @login_required
 def view_references(request, id_category):
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get('search', '').strip()
     filter_brand = request.GET.get('brand', '')
 
     references_list = Referencias.objects.filter(categoria=id_category)
     category_name = get_object_or_404(Categorias, pk=id_category).nombre
     components = CategoriasCampo.objects.filter(categoria_fk=id_category)
     brands = Referencias.objects.values('marca').distinct()
+    default_image = os.path.join(settings.MEDIA_ROOT, 'default\default.jpg')
+    default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
     if search_query:
+        print('entrada', search_query)
         references_list = references_list.filter(referencia_pk__icontains=search_query)
+        print('salida', references_list)
 
     if filter_brand and filter_brand != 'TODAS':
         references_list = references_list.filter(marca=filter_brand)
 
+    paginator = Paginator(references_list,1)  # Número de elementos por página
+    page_number = request.GET.get('page')
+    references_list = paginator.get_page(page_number)
+
     context = {
-        'reference_list': references_list,
+        'paginator': references_list,
         'category_name': category_name, 
         'components': components, 
         'id_category': id_category, 
-        'brands': brands
+        'brands': brands,
+        'default_image': default_image
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('partials/_references_table_body.html', context, request=request)
-        return HttpResponse(html)
+        html_body = render_to_string('partials/_references_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_references_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_references.html', context)
 
@@ -56,6 +66,8 @@ def new_reference(request, category_id):
         accessories = data.get('accessories', '').strip()
         observations = data.get('observations', '').strip()
         components = data.get('components', [])
+
+        print(components)
 
         # Verificar si la referencia ya existe
         if Referencias.objects.filter(referencia_pk=reference_pk).exists():
@@ -85,6 +97,10 @@ def new_reference(request, category_id):
                         campo_fk=field,
                         valor=field_value
                     )
+            
+            new_files_instance = Archivos.objects.create(
+                referencia_pk = get_object_or_404(Referencias, pk=reference_pk)
+            )
 
         # Registrar la actividad
         log_activity(
@@ -154,3 +170,19 @@ def delete_reference(request, reference_id):
     except Exception as e:
         messages.error(request, str(e))
         return HttpResponse(status=500)  # Error interno en el servidor
+    
+def edit_reference(request, reference_id):
+
+    reference = get_object_or_404(Referencias, pk=reference_id)
+    components = Valor.objects.filter(referencia_fk=reference_id)
+
+    print(components)
+    
+
+    context = {
+        'reference': reference,
+        'components': components,
+    }
+
+
+    return render(request, 'edit_reference.html', context)

@@ -18,23 +18,29 @@ def view_categories(request):
     search_query = request.GET.get('search', '')
     components = Campo.objects.all()
 
+    # Filtrar por búsqueda si hay un término de búsqueda
     if search_query:
         categories_list = categories_list.filter(nombre__icontains=search_query)
 
-    paginator = Paginator(categories_list, 13) #paginacion
+    # Paginación
+    paginator = Paginator(categories_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
     categories = paginator.get_page(page_number)
 
+    # Contexto de la vista
     context = {
-        'categories': categories,
-        'components': components
+        'paginator': categories,
+        'components': components,
+        'search_query': search_query,  # Agrega el término de búsqueda al contexto
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('partials/_category_table_body.html', context, request=request)
-        return HttpResponse(html)
+        html_body = render_to_string('partials/_category_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_category_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
     
     return render(request, 'view_categories.html', context)
+
 
 @login_required
 @require_POST

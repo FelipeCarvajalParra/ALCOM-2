@@ -29,8 +29,8 @@
             <th class="table__headed-title table__headed-actions">Acciones</th>
         </thead>
         <tbody class="table__body">
-            {% if categories|length > 0 %}
-                {% for category in categories %}
+            {% if paginator|length > 0 %}
+                {% for category in paginator %}
                     <tr class="table__row">
                         <td class="table__cell table__cell--auto table__cell--flex">
                             <div class="table__container-text">
@@ -70,55 +70,10 @@
     </table>
 
     <div class="table__footer">
-        <nav class="pagination">
-            <span class="pagination__records">Total: {{ categories.paginator.count }} registros</span>
-            <ul class="pagination__list">
-                {% if categories.has_previous %}
-                    <li class="pagination__item pagination__item--previous">
-                        <a class="pagination__container-icon" href="?page={{ categories.previous_page_number }}">
-                            <svg width="15px" height="15px">
-                                <use href="#icon-previous"></use>
-                            </svg>
-                        </a>
-                    </li>
-                {% endif %}
-
-                {% if categories.paginator.num_pages > 1 %}
-                    {% if users.number > 3 %}
-                        <li class="pagination__item"><a class="pagination__container-icon" href="?page=1">1</a></li>
-                        {% if categories.number > 4 %}
-                            <li class="pagination__item">...</li>
-                        {% endif %}
-                    {% endif %}
-
-                    {% for num in categories.paginator.page_range %}
-                        {% if num >= categories.number|add:-1 and num <= categories.number|add:1 %}
-                            <li class="pagination__item {% if num == categories.number %}active{% endif %}">
-                                <a class="pagination__container-icon" href="?page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if categories.number < categories.paginator.num_pages|add:-1 %}
-                        {% if categories.number < categories.paginator.num_pages|add:-1 %}
-                            <li class="pagination__item">...</li>
-                        {% endif %}
-                        <li class="pagination__item"><a class="pagination__container-icon" href="?page={{ categories.paginator.num_pages }}">{{ categories.paginator.num_pages }}</a></li>
-                    {% endif %}
-                {% endif %}
-
-                {% if categories.has_next %}
-                    <li class="pagination__item pagination__item--next">
-                        <a class="pagination__container-icon" href="?page={{ categories.next_page_number }}">
-                            <svg width="15px" height="15px">
-                                <use href="#icon-next"></use>
-                            </svg>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+        {% include 'partials/_category_table_footer.html' %} 
     </div>
+    
+    
 </div>
 
 <div class="modal-overlay"></div>
@@ -174,18 +129,6 @@
         </div>
     </form>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="modal modal--category scroll" id="modalEditCategory">
     <button class="modal__close">
@@ -250,13 +193,12 @@
 {% endif %}
 
 
-<script src="{% static 'js/search_categories.js' %}"></script>
+<script src="{% static 'js/search_categories.js' %} ?v=3"></script>
 <script src="{% static 'js/category_modal.js' %} ?v=4"></script>
+<script src="{% static 'js/modal.js' %}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
 <script src="{% static 'js/category_crud.js' %} ?v=2"></script>
 <script src="{% static 'js/tooltip.js' %}" ></script>
-<script src="{% static 'js/modal.js' %}"></script>
-
 
 
 {% endblock %}

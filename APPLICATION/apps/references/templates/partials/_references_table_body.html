@@ -1,9 +1,10 @@
-{% if reference_list|length > 0 %}
-    {% for reference in reference_list %}
+{% if paginator|length > 0 %}
+    {% for reference in paginator %}
         <tr class="table__row">
             <td class="table__cell table__cell--auto table__cell--flex">
                 <img class="table__image table__image--semi-circular"
-                    src="{{reference.archivos.imagen_1.url}}" alt="" />
+                    src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
+                    alt="" />
                 <div class="table__container-text">
                     <a href="#" class="table__container-link">{{reference.referencia_pk}}</a>
                 </div>
@@ -15,10 +16,12 @@
                 {{reference.observaciones}} 
             </td>
             <td class="table__cell table__cell--actions">
-                <svg class="svg-option svg-option--edit" width="20px" height="20px">
-                    <use href="#icon-edit"></use>
-                </svg>
-                <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                <a href="{% url 'edit_reference' reference.referencia_pk  %}">
+                    <svg class="svg-option svg-option--edit" width="20px" height="20px">
+                        <use href="#icon-edit"></use>
+                    </svg>
+                </a>
+                <svg class="svg-option svg-option--delete deleteReference" width="20px" height="20px" data-reference-id="{{reference.referencia_pk}}">
                     <use href="#icon-delete"></use>
                 </svg>
             </td>

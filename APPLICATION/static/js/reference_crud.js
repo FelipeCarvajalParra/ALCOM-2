@@ -18,7 +18,7 @@ referenceForm.addEventListener('submit', function(event) {
 
     // Capturar los valores de los campos dinámicos
     const components = [];
-    document.querySelectorAll('textarea[id^="campo_"]').forEach(textarea => {
+    document.querySelectorAll('textarea[id]').forEach(textarea => {
         const campoId = textarea.id.replace('campo_', ''); // Extraer el ID del campo
         const value = textarea.value.trim();
         if (value) {
@@ -26,7 +26,7 @@ referenceForm.addEventListener('submit', function(event) {
         }
     });
 
-    formData.components = components; // Añadir los componentes al objeto de datos
+    formData.components = components; // Añadir los componentes al objeto de datos}
 
     // Hacer una solicitud POST al servidor
     fetch(`/new_reference/${categoryId}`, { // Cambia 'id_category' según sea necesario
