@@ -22,7 +22,10 @@ referenceForm.addEventListener('submit', function(event) {
         const campoId = textarea.id.replace('campo_', ''); // Extraer el ID del campo
         const value = textarea.value.trim();
         if (value) {
-            components.push({ campoId: campoId, valor: value });
+            if (campoId !== 'accessories' && campoId !== 'observations') {
+                console.log(campoId);
+                components.push({ campoId: campoId, valor: value });
+            }
         }
     });
 

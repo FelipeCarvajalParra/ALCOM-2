@@ -1,7 +1,13 @@
+
 function searchReferences(page = 1) {
+    console.log('hola')
     var search = $('#searchReferences').val();
     const categoryId = document.getElementById('categoryId').dataset.categoryId;
-    const brand = filterBrand ? filterBrand.textContent.trim() : '';
+    var brand = filterBrand ? filterBrand.textContent.trim() : '';
+
+    if(brand === 'Marca'){
+        brand = ''
+    }
 
     $.ajax({
         url: `/view_categories/view_references/${categoryId}`,
@@ -21,7 +27,6 @@ function searchReferences(page = 1) {
 
 // Manejar la búsqueda con debounce
 let timeout;
-
 $('#searchReferences').on('input', function() {
     clearTimeout(timeout);
     timeout = setTimeout(function() {

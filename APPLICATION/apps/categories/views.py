@@ -14,7 +14,7 @@ from apps.activityLog.utils import log_activity
 
 @login_required
 def view_categories(request):
-    categories_list = Categorias.objects.annotate(num_equipos=Count('referencias')).all()
+    categories_list = Categorias.objects.annotate(num_equipos=Count('referencias')).all().order_by('-categoria_pk')
     search_query = request.GET.get('search', '')
     components = Campo.objects.all()
 
@@ -25,11 +25,12 @@ def view_categories(request):
     # Paginación
     paginator = Paginator(categories_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
-    categories = paginator.get_page(page_number)
+    paginator = paginator.get_page(page_number)
 
+    print(paginator)
     # Contexto de la vista
     context = {
-        'paginator': categories,
+        'paginator': paginator,
         'components': components,
         'search_query': search_query,  # Agrega el término de búsqueda al contexto
     }

@@ -1,3 +1,5 @@
+
+
 function searchCategories(page = 1) {
     var search = $('#searchCategories').val();
 

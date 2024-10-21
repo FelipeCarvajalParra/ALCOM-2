@@ -1,90 +1,104 @@
-const logoutLink = document.getElementById('logout');
-const deleteUser = document.getElementById('deleteUser');
-const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
-const deleteCategory = document.querySelectorAll('.deleteCategory');
-const deleteReference = document.querySelectorAll('.deleteReference');
+function setupEventListeners() {
+    const logoutLink = document.getElementById('logout');
+    const deleteUser = document.getElementById('deleteUser');
+    const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
+    const deleteCategory = document.querySelectorAll('.deleteCategory');
+    const deleteReference = document.querySelectorAll('.deleteReference');
 
-
-if (logoutLink) {
-    logoutLink.addEventListener('click', function () {
-        showConfirmationModal(
-            '¿Estás seguro?',
-            'Estás a punto de cerrar sesión.',
-            'Sí, cerrar sesión',
-            'Cancelar',
-            '/logout_user/' // URL de cierre de sesión
-        );
-    });
-}
-
-if (deleteUser) {
-    deleteUser.addEventListener('click', function () {
-        const userId = deleteUser.getAttribute('data-user');
-        showConfirmationModal(
-            '¿Estás seguro?',
-            'Si eliminas este usuario, también se eliminará toda la información relacionada (intervenciones, actividad, etc.).',
-            'Sí, eliminar',
-            'Cancelar',
-            userId, // Pasa solo el ID de usuario aquí
-            1
-        );
-    });
-}
-
-// Iterar sobre todos los elementos con clase 'deleteActivityLog'
-if (deleteActivityLogs) {
-    deleteActivityLogs.forEach(function (logElement) {
-        logElement.addEventListener('click', function () {
-            const idLog = logElement.getAttribute('data-idLog'); 
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function () {
             showConfirmationModal(
                 '¿Estás seguro?',
-                'El registro se eliminará de forma permanente.',
-                'Sí, eliminar',
+                'Estás a punto de cerrar sesión.',
+                'Sí, cerrar sesión',
                 'Cancelar',
-                idLog, // Pasa el ID del log aquí
-                2
+                '/logout_user/' // URL de cierre de sesión
             );
         });
-    });
-}
+    }
 
-if (deleteCategory) {
-    deleteCategory.forEach(function (logElement) {
-        logElement.addEventListener('click', function () {
-            const idCategory = logElement.getAttribute('data-category-id'); 
-            // Asegúrate de que el ID se pasa correctamente
+    if (deleteUser) {
+        deleteUser.addEventListener('click', function () {
+            const userId = deleteUser.getAttribute('data-user');
             showConfirmationModal(
                 '¿Estás seguro?',
-                'La categoria, equipos e intervenciones asociadas se perderan de forma permanente.',
+                'Si eliminas este usuario, también se eliminará toda la información relacionada (intervenciones, actividad, etc.).',
                 'Sí, eliminar',
                 'Cancelar',
-                idCategory,  // Pasa el ID del log aquí
-                3           // El código para la eliminación
+                userId, // Pasa solo el ID de usuario aquí
+                1
             );
         });
-    });
-}
+    }
 
-if (deleteReference) {
-    deleteReference.forEach(function (logElement) {
-        logElement.addEventListener('click', function () {
-            const idReference = logElement.getAttribute('data-reference-id'); 
-            const categoryId = document.getElementById('categoryId').dataset.categoryId;
-            console.log(categoryId)
-            // Asegúrate de que el ID se pasa correctamente
-            showConfirmationModal(
-                '¿Estás seguro?',
-                'La referencia, y existencias asociadas se perderan de forma permanente.',
-                'Sí, eliminar',
-                'Cancelar',
-                idReference,  
-                4,
-                categoryId         
-            );
+    // Iterar sobre todos los elementos con clase 'deleteActivityLog'
+    if (deleteActivityLogs) {
+        deleteActivityLogs.forEach(function (logElement) {
+            logElement.addEventListener('click', function () {
+                const idLog = logElement.getAttribute('data-idLog'); 
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'El registro se eliminará de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    idLog, // Pasa el ID del log aquí
+                    2
+                );
+            });
         });
-    });
+    }
+
+    if (deleteCategory) {
+        deleteCategory.forEach(function (logElement) {
+            logElement.addEventListener('click', function () {
+                const idCategory = logElement.getAttribute('data-category-id'); 
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'La categoria, equipos e intervenciones asociadas se perderan de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    idCategory,  // Pasa el ID del log aquí
+                    3           // El código para la eliminación
+                );
+            });
+        });
+    }
+
+    if (deleteReference) {
+        deleteReference.forEach(function (logElement) {
+            logElement.addEventListener('click', function () {
+                const idReference = logElement.getAttribute('data-reference-id'); 
+                const categoryId = document.getElementById('categoryId').dataset.categoryId;
+                console.log(categoryId);
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'La referencia, y existencias asociadas se perderan de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    idReference,  
+                    4,
+                    categoryId         
+                );
+            });
+        });
+    }
 }
 
+// Configurar el observador de cambios
+const observer = new MutationObserver(() => {
+    setupEventListeners();
+});
+
+// Comenzar a observar cambios en el body
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', () => {
+    setupEventListeners();
+});
 
 function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action, urlAutoGenerate) {
     Swal.fire({
@@ -117,7 +131,6 @@ function showConfirmationModal(title, text, confirmButtonText, cancelButtonText,
                         const idCategory2 = arguments[6];
                         deleteRequest('delete_reference', idReference, `view_categories/view_references/${idCategory2}`, true);
                         break;
-                    
                 }
             }
         }
@@ -163,7 +176,3 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-
-
-   

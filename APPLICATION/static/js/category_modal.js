@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
+function setupModals() {
+    console.log('carga')
     const modals = [
         {
             taskInput: document.getElementById('taskInput'),
@@ -127,7 +128,9 @@ document.addEventListener('DOMContentLoaded', function () {
             modals.forEach(modal => hideOptions(modal.autocompleteList));
         }
     });
-});
+
+
+
 
 document.querySelectorAll('.editCategoryButton').forEach(svg => {
     svg.addEventListener('click', function () {
@@ -188,3 +191,16 @@ closeModalButtons.forEach(button => {
 modalOverlays.forEach(overlay => {
     overlay.addEventListener('click', clearEditComponentsList);
 });
+
+}
+
+// Configurar el observador de cambios
+const observerModalCategory = new MutationObserver(() => {
+    setupModals(); // Llama a la función cada vez que haya un cambio
+});
+
+// Observar cambios en el body
+observerModalCategory.observe(document.body, { childList: true, subtree: true });
+
+// Ejecutar setupModals inicialmente cuando se cargue el DOM
+document.addEventListener('DOMContentLoaded', setupModals);

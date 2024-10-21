@@ -393,7 +393,7 @@ def update_image(request):
             if os.path.isfile(current_image_full_path):
                 os.remove(current_image_full_path)
 
-        new_image_name = f'imageProfile_{record_id}.webp'
+        new_image_name = f'image_{record_id}.webp'
 
         compressed_image = compress_and_convert_to_webp(new_image)
 
@@ -402,7 +402,7 @@ def update_image(request):
         setattr(instance, field, image_file)  # Guardar el archivo en el campo
         instance.save()
 
-        messages.success(request, 'Foto de perfil actualizada correctamente')
+        messages.success(request, 'Foto actualizada correctamente')
     except ValueError:
         messages.error(request, 'ID de registro no válido')
     except Model.DoesNotExist:

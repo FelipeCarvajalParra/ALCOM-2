@@ -14,8 +14,11 @@ from .models import Valor, Referencias, Archivos
 from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
 
+default_image = f"{settings.MEDIA_URL}default/default.jpg"
+
 @login_required
 def view_references(request, id_category):
+
     search_query = request.GET.get('search', '').strip()
     filter_brand = request.GET.get('brand', '')
 
@@ -24,17 +27,14 @@ def view_references(request, id_category):
     components = CategoriasCampo.objects.filter(categoria_fk=id_category)
     brands = Referencias.objects.values('marca').distinct()
     default_image = os.path.join(settings.MEDIA_ROOT, 'default\default.jpg')
-    default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
     if search_query:
-        print('entrada', search_query)
         references_list = references_list.filter(referencia_pk__icontains=search_query)
-        print('salida', references_list)
 
     if filter_brand and filter_brand != 'TODAS':
         references_list = references_list.filter(marca=filter_brand)
-
-    paginator = Paginator(references_list,1)  # Número de elementos por página
+    
+    paginator = Paginator(references_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
     references_list = paginator.get_page(page_number)
 
@@ -56,6 +56,7 @@ def view_references(request, id_category):
 
 @login_required
 @require_POST
+@transaction.atomic
 def new_reference(request, category_id):
     try:
         data = json.loads(request.body)
@@ -67,6 +68,8 @@ def new_reference(request, category_id):
         observations = data.get('observations', '').strip()
         components = data.get('components', [])
 
+        print(accessories, ' ', observations)
+
         print(components)
 
         # Verificar si la referencia ya existe
@@ -74,33 +77,32 @@ def new_reference(request, category_id):
             return JsonResponse({'error': 'La referencia ya existe.'}, status=400)
 
         # Crear la referencia y valores dentro de una transacción
-        with transaction.atomic():
-            category = get_object_or_404(Categorias, pk=category_id)
-            new_reference = Referencias.objects.create(
-                referencia_pk=reference_pk,
-                categoria=category,
-                marca= brand.upper(),
-                accesorios=accessories,
-                observaciones=observations,
-                url_consulta=url
-            )
+        category = get_object_or_404(Categorias, pk=category_id)
+        new_reference = Referencias.objects.create(
+            referencia_pk=reference_pk,
+            categoria=category,
+            marca= brand.upper(),
+            accesorios=accessories,
+            observaciones=observations,
+            url_consulta=url
+        )
 
-            # Guardar los valores asociados a los campos
-            for component in components:
-                field_id = component.get('campoId')
-                field_value = component.get('valor', '').strip()
+        # Guardar los valores asociados a los campos
+        for component in components:
+            field_id = component.get('campoId')
+            field_value = component.get('valor', '').strip()
 
-                if field_value:
-                    field = get_object_or_404(Campo, pk=field_id)
-                    Valor.objects.create(
-                        referencia_fk=new_reference,
-                        campo_fk=field,
-                        valor=field_value
-                    )
-            
-            new_files_instance = Archivos.objects.create(
-                referencia_pk = get_object_or_404(Referencias, pk=reference_pk)
-            )
+            if field_value:
+                field = get_object_or_404(Campo, pk=field_id)
+                Valor.objects.create(
+                    referencia_fk=new_reference,
+                    campo_fk=field,
+                    valor=field_value
+                )
+        
+        new_files_instance = Archivos.objects.create(
+            referencia_pk = get_object_or_404(Referencias, pk=reference_pk)
+        )
 
         # Registrar la actividad
         log_activity(
@@ -121,7 +123,7 @@ def new_reference(request, category_id):
     except Categorias.DoesNotExist:
         return JsonResponse({'error': 'Categoría no encontrada.'}, status=404)
     except Exception as e:
-        return JsonResponse({'error': 'Ha ocurrido un error inesperado'}, status=500)
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 
@@ -172,17 +174,23 @@ def delete_reference(request, reference_id):
         return HttpResponse(status=500)  # Error interno en el servidor
     
 def edit_reference(request, reference_id):
-
+  
     reference = get_object_or_404(Referencias, pk=reference_id)
-    components = Valor.objects.filter(referencia_fk=reference_id)
-
-    print(components)
+    category_id = reference.categoria
+    components = CategoriasCampo.objects.filter(categoria_fk=category_id)
     
-
+    components_with_values = [] #asociar campos con lo valores correspondientes
+    for component in components:
+        campo_id = component.campo_fk.campo_pk  
+        valor = Valor.objects.filter(referencia_fk=reference_id, campo_fk=campo_id).first()
+        component.valor = valor.valor if valor else ""  # Si no hay valor, dejar en blanco
+        components_with_values.append(component)
+    
     context = {
         'reference': reference,
-        'components': components,
+        'components': components_with_values, 
+        'default_image': default_image
     }
-
-
+    
+    # Renderiza la plantilla
     return render(request, 'edit_reference.html', context)

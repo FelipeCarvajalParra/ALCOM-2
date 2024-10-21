@@ -9,24 +9,31 @@
             <div class="container__section-image">
                 <div class="container__image-selector">
                     <!-- Aquí se muestra la imagen seleccionada -->
-                    <img id="image-display" class="container__image--equipment" src="/static/img/imagen_1.jpg"
-                        alt="img">
+                    <img id="image-display" class="container__image--equipment" 
+                         src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
+                         alt="img">
+                    
                     <div class="button button--edit button--input">
                         <label class="custom-file-upload pointer" for="file-upload">
                             Seleccionar archivo
-                            <input id="file-upload" class="file-upload" type="file">
+                            <input id="file-upload" class="file-upload" type="file" 
+                                   data-app="references"
+                                   data-table="archivos"
+                                   data-field="imagen_1"
+                                   data-record="Ejemplo reference">
                         </label>
                     </div>
                 </div>
 
                 <!-- Imágenes que al ser seleccionadas se mostrarán en el contenedor grande -->
                 <div class="container__selector-image">
-                    <img id="imagen_1" class="container__image--preview" src="/static/img/imagen_1.jpg" alt="img">
-                    <img id="imagen_2" class="container__image--preview" src="/static/img/imagen_2.jpg" alt="img">
-                    <img id="imagen_3" class="container__image--preview" src="/static/img/imagen_3.jpg" alt="img">
-                    <img id="imagen_4" class="container__image--preview" src="/static/img/imagen_4.jpg" alt="img">
-                    <img id="imagen_5" class="container__image--preview" src="/static/img/imagen_5.jpg" alt="img">
+                    <img id="imagen_1" class="container__image--preview" src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_2" class="container__image--preview" src="{% if reference.archivos.imagen_2 %}{{ reference.archivos.imagen_2.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_3" class="container__image--preview" src="{% if reference.archivos.imagen_3 %}{{ reference.archivos.imagen_3.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_4" class="container__image--preview" src="{% if reference.archivos.imagen_4 %}{{ reference.archivos.imagen_4.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_5" class="container__image--preview" src="{% if reference.archivos.imagen_5 %}{{ reference.archivos.imagen_5.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
                 </div>
+
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
@@ -155,12 +162,13 @@
                     <div class="form__largue form__largue--margin-top">
                         <div class="input-container">
                             <div class="input-wrapper input-wrapper--largue">
-                                <textarea class="input input--largue textarea" id="processor" maxlength="400">{{component.campo_fk.nombre_campo}}</textarea>
-                                <label class="input-container__label textarea__label" for="processor">{{component.campo_fk.nombre_campo}}</label>
+                                <textarea class="input input--largue textarea" id="" maxlength="400">{{ component.valor }}</textarea>
+                                <label class="input-container__label textarea__label" for="">{{ component.campo_fk.nombre_campo }}</label>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+
                 
                 <button class="button button--save">
                     <span>Guardar cambios</span>
@@ -305,9 +313,9 @@
 </div>
 
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
+<script src="{% static 'js/height_textarea.js' %}"></script>
+<script src="{% static 'js/images_equipment.js' %}" ></script>
 <script src="{% static 'js/sub_navigation.js' %}"></script>
-<script src="{% static 'js/images_equipment.js' %}"></script>
-<script src="{% static 'js/.js' %}"></script>
-<script src="{% static 'js/.js' %}"></script>
+<script src="{% static 'js/update_image.js' %}"></script>
 
 {% endblock %}

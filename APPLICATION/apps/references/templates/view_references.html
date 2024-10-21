@@ -96,7 +96,7 @@
                                 src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
                                 alt="" />
                             <div class="table__container-text">
-                                <a href="#" class="table__container-link">{{reference.referencia_pk}}</a>
+                                <a href="{% url 'edit_reference' reference.referencia_pk  %}" class="table__container-link">{{reference.referencia_pk}}</a>
                             </div>
                         </td>
                         <td class="table__cell table__cell--small table__cell--overflow" data-text="{{reference.marca}}">
@@ -244,8 +244,8 @@
     <script src="{% static 'js/inputs_placeholders.js' %}" ></script>
     <script src="{% static 'js/height_textarea.js' %}"></script>
     <script src="{% static 'js/filter_selector.js' %}"></script>
-    <script src="{% static 'js/reference_crud.js' %} ?v=3" ></script>
-    <script src="{% static 'js/search_references.js' %} ?v=3" ></script>
+    <script src="{% static 'js/reference_crud.js' %} ?v=4" ></script>
+    <script src="{% static 'js/search_references.js' %} ?v=4" ></script>
     <script src="{% static 'js/tooltip.js' %} ?v=2" ></script>
     <script src="{% static 'js/filter_brands.js' %}"></script>
     

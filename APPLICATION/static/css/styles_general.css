@@ -151,6 +151,10 @@ a{
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
 }
 
+.container--equipment{
+    padding-bottom: 20px;
+}
+
 .container--sub-navegation {
     display: flex;
     flex-wrap: wrap;
@@ -167,7 +171,7 @@ a{
 
 .container__section-image {
     display: flex;
-    gap: 35px;
+    gap: 20px;
     flex-direction: column;
     align-items: center;
     padding-top: 15px;
