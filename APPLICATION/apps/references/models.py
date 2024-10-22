@@ -13,6 +13,9 @@ class Referencias(models.Model):
     class Meta:
         db_table = 'Referencias'
 
+    def __str__(self):
+        return self.referencia_pk
+
 class Archivos(models.Model):
     referencia_pk = models.OneToOneField('Referencias', models.DO_NOTHING, db_column='referencia_pk', primary_key=True)
     imagen_1 = models.ImageField(max_length=400, blank=True, upload_to='References_pictures/', null=True)

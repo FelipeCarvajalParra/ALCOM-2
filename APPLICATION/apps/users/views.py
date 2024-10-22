@@ -12,8 +12,6 @@ from django.db.models import Q
 from django.db import transaction
 import json
 import os
-from io import BytesIO
-from PIL import Image
 from apps.logIn.views import group_required
 from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
@@ -316,107 +314,6 @@ def update_login_data(request, user_id):
     )
     messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
     return JsonResponse({'success': True})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def compress_and_convert_to_webp(image_file):
-    # Abrir la imagen con Pillow
-    img = Image.open(image_file)
-
-    # Convertir la imagen a RGB si es necesario (porque WebP no soporta modo RGBA)
-    if img.mode in ("RGBA", "P"):
-        img = img.convert("RGB")
-
-    # Comprimir la imagen y reducir su tamaño
-    img_io = BytesIO()
-    img.save(img_io, format='WEBP', quality=40)  # Cambiar la calidad según sea necesario
-
-    # Crear un archivo Django de la imagen comprimida
-    img_content = ContentFile(img_io.getvalue(), name=f"{image_file.name.split('.')[0]}.webp")
-    return img_content
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@require_POST
-def update_image(request):
-    app_name = request.POST.get('app_name')
-    table = request.POST.get('table')
-    field = request.POST.get('field')
-    record_id = request.POST.get('userId')
-    new_image = request.FILES.get('image')
-
-    print(app_name, table, field, record_id, new_image)
-
-    if not (app_name and table and field and record_id and new_image):
-        return messages.error(request, 'Faltan campos requeridos')
-
-    try:
-        record_id = int(record_id)
-        Model = apps.get_model(app_name, table)
-        instance = Model.objects.get(id=record_id)
-
-        if not hasattr(instance, field):
-            return messages.error(request, f'El campo "{field}" no existe en el modelo "{table}".')
-        
-
-        current_image_path = getattr(instance, field)
-
-        if current_image_path and current_image_path.url != settings.MEDIA_URL + 'default/default_user.jpg': # Eliminar la imagen anterior si no es la imagen por defecto
-            current_image_full_path = os.path.join(settings.MEDIA_ROOT, current_image_path.name)
-            if os.path.isfile(current_image_full_path):
-                os.remove(current_image_full_path)
-
-        new_image_name = f'image_{record_id}.webp'
-
-        compressed_image = compress_and_convert_to_webp(new_image)
-
-        image_file = ContentFile(compressed_image.read(), name=new_image_name)
-
-        setattr(instance, field, image_file)  # Guardar el archivo en el campo
-        instance.save()
-
-        messages.success(request, 'Foto actualizada correctamente')
-    except ValueError:
-        messages.error(request, 'ID de registro no válido')
-    except Model.DoesNotExist:
-        messages.error(request, 'El registro no existe')
-    except LookupError:
-        messages.error(request, f'La app "{app_name}" no tiene un modelo "{table}".')
-    except Exception as e:
-        messages.error(request, str(e))
-
-
-
-
-
-
 
 
 

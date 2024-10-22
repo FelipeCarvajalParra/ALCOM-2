@@ -195,6 +195,14 @@ a{
     gap: 10px;
 }
 
+.image-selector__options{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 10px;
+}
+
 .container__technical-sheet{
     display: flex;
     align-items: center;
@@ -1045,6 +1053,15 @@ display: block;
     height: 28px;
     padding: 5px;
     border-radius: 5px;
+    color: #ffffff;
+}
+
+.svg-option--selector{
+    height: 33px;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 10px;
+    background-color: #77baee;
     color: #ffffff;
 }
 

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block contend %}
 {% load static %}
+{% csrf_token %}
 
 <div class="page__equipment">
 
@@ -13,16 +14,46 @@
                          src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
                          alt="img">
                     
-                    <div class="button button--edit button--input">
-                        <label class="custom-file-upload pointer" for="file-upload">
-                            Seleccionar archivo
-                            <input id="file-upload" class="file-upload" type="file" 
-                                   data-app="references"
-                                   data-table="archivos"
-                                   data-field="imagen_1"
-                                   data-record="Ejemplo reference">
-                        </label>
+                    <div class="image-selector__options">
+                        <div class="button button--edit button--input">
+                            <label class="custom-file-upload pointer" for="equipmentFileImageInput">
+                                Seleccionar archivo
+                                <input id="equipmentFileImageInput" class="file-upload" type="file" accept=".jpg, .jpeg, .png, .webp"
+                                       data-app="references"
+                                       data-table="archivos"
+                                       data-field="imagen_1"
+                                       data-type="image"
+                                       data-record="{{reference.archivos.referencia_pk}}">
+                            </label>
+                        </div>
+
+
+                        <div>
+                            <a href="">
+                                <svg class="svg-option" fill="currentColor" viewBox="-50 -50 589.001 589.001">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> <g> <g> <path d="M2.2,168.151l-2.1-151.3c-0.1-7.7,6.2-14,13.9-13.9l151.3,2.2c12.1,0.2,18.1,14.8,9.5,23.4l-42.1,42.1l70,70l-65,65 l-70-70l-42.1,42.1C17.1,186.251,2.4,180.251,2.2,168.151z"></path> 
+                                    <path d="M421.3,136.551l42.1,42.1c8.6,8.6,23.2,2.6,23.4-9.5l2.2-151.3c0.1-7.7-6.2-14-13.9-13.9l-151.3,2.2 c-12.1,0.2-18.1,14.8-9.5,23.4l42,41.9l-70,70l65,65L421.3,136.551z"></path>
+                                    <path d="M314.2,460.451c-8.6,8.6-2.6,23.2,9.5,23.4l151.3,2.2c7.7,0.1,14-6.2,13.9-13.9l-2.2-151.3c-0.2-12.1-14.8-18.1-23.4-9.5 l-42.1,42.1l-70-70l-65,65l70,70L314.2,460.451z"></path> 
+                                    <path d="M14,485.051l151.3-2.2c12.1-0.2,18.1-14.8,9.5-23.4l-42.1-42l70-70l-65-65l-70,70l-42.1-42.1c-8.6-8.6-23.2-2.6-23.4,9.5 L0,471.151C0,478.851,6.3,485.151,14,485.051z"></path> </g> </g> </g>
+                                </svg>
+
+                            </a>
+                            <a id="downloadFileEquipment">
+                                <svg class="svg-option" fill="currentColor" viewBox="0 2 23 29" version="1.1" >
+                                    <path d="M18.313 13.625h-4.031v-6.594c0-0.563-0.469-1.031-1.031-1.031h-4.031c-0.594 0-1.063 0.469-1.063 1.031v6.594h-4.031c-0.531 0-0.719 0.344-0.313 0.75l6.688 6.656c0.188 0.188 0.438 0.281 0.719 0.281s0.563-0.094 0.75-0.281l6.656-6.656c0.375-0.406 0.25-0.75-0.313-0.75zM0 18.344v7.125c0 0.313 0.156 0.5 0.5 0.5h21.375c0.344 0 0.531-0.188 0.531-0.5v-7.125c0-0.313-0.25-0.531-0.531-0.531h-2.031c-0.281 0-0.531 0.25-0.531 0.531v4.531h-16.25v-4.531c0-0.313-0.219-0.531-0.5-0.531h-2.063c-0.281 0-0.5 0.25-0.5 0.531z">
+                                    </path> 
+                                </svg>
+                            <a id="deleteReferenceImage">
+                                <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="77" data-deletecategory="">
+                                    <use href="#icon-delete"></use>
+                                </svg>
+                            </a>
+                        </div>
+                        
                     </div>
+                    
+                    
                 </div>
 
                 <!-- Imágenes que al ser seleccionadas se mostrarán en el contenedor grande -->
@@ -34,7 +65,7 @@
                     <img id="imagen_5" class="container__image--preview" src="{% if reference.archivos.imagen_5 %}{{ reference.archivos.imagen_5.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
                 </div>
 
-            </div>
+            </div>           
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Categoria:</span>
@@ -179,15 +210,24 @@
         <div id="technicalSheet" class="container--activity scroll" style="display: none;">
             <form class="container__section-title container__section-title--button">
                 <div class="button button--edit button--input">
-                    <label class="custom-file-upload pointer" for="file-upload">
+                    <label class="custom-file-upload pointer" for="equipmentFileSheetInput">
                         Seleccionar archivo
-                        <input id="file-upload" class="file-upload" type="file">
+                        <input id="equipmentFileSheetInput" class="file-upload" type="file"
+                            data-app="references"
+                            data-table="archivos"
+                            data-field="ficha_tecnica"
+                            data-type="file"
+                            data-record="{{reference.archivos.referencia_pk}}">
                     </label>
                 </div>
             </form>
 
             <div class="container__technical-sheet">
-                <span>No se encontro ningun documento</span>
+                {% if data_sheet %}
+                    <embed src="{{ data_sheet }}" type="application/pdf" width="100%" height="600px">
+                {% else %}
+                    <span>No se encontró ningún documento</span>
+                {% endif %}
             </div>
         </div>
 
@@ -314,8 +354,9 @@
 
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
-<script src="{% static 'js/images_equipment.js' %}" ></script>
+<script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
 <script src="{% static 'js/sub_navigation.js' %}"></script>
-<script src="{% static 'js/update_image.js' %}"></script>
+<script src="{% static 'js/update_files.js' %} ?v=2"></script>
+<script src="{% static 'js/download_file.js' %} ?V=2" ></script>
 
 {% endblock %}

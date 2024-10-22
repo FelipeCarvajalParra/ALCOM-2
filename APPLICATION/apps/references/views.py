@@ -13,6 +13,8 @@ from apps.categories.models import Categorias, CategoriasCampo, Campo
 from .models import Valor, Referencias, Archivos
 from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
+from django.core.exceptions import ObjectDoesNotExist
+
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -26,7 +28,7 @@ def view_references(request, id_category):
     category_name = get_object_or_404(Categorias, pk=id_category).nombre
     components = CategoriasCampo.objects.filter(categoria_fk=id_category)
     brands = Referencias.objects.values('marca').distinct()
-    default_image = os.path.join(settings.MEDIA_ROOT, 'default\default.jpg')
+    default_image = os.path.join(settings.MEDIA_URL, 'default/default.jpg')
 
     if search_query:
         references_list = references_list.filter(referencia_pk__icontains=search_query)
@@ -67,10 +69,6 @@ def new_reference(request, category_id):
         accessories = data.get('accessories', '').strip()
         observations = data.get('observations', '').strip()
         components = data.get('components', [])
-
-        print(accessories, ' ', observations)
-
-        print(components)
 
         # Verificar si la referencia ya existe
         if Referencias.objects.filter(referencia_pk=reference_pk).exists():
@@ -185,9 +183,23 @@ def edit_reference(request, reference_id):
         valor = Valor.objects.filter(referencia_fk=reference_id, campo_fk=campo_id).first()
         component.valor = valor.valor if valor else ""  # Si no hay valor, dejar en blanco
         components_with_values.append(component)
+
+
+    try:
+        # Aquí asumimos que 'reference' tiene un atributo 'archivos' que a su vez tiene 'ficha_tecnica'
+        reference = get_object_or_404(Referencias, pk=reference_id)  # Reemplaza con tu modelo
+        data_sheet = reference.archivos.ficha_tecnica.url if reference.archivos.ficha_tecnica else None
+    except ObjectDoesNotExist:
+        object = Archivos.objects.create(pk=reference)
+        data_sheet = reference.archivos.ficha_tecnica.url if reference.archivos.ficha_tecnica else None
+    except Exception as e:
+        return HttpResponse(f"Ocurrió un error: {str(e)}")
+
+        
     
     context = {
         'reference': reference,
+        'data_sheet': data_sheet,
         'components': components_with_values, 
         'default_image': default_image
     }

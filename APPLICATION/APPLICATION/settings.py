@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,8 +30,7 @@ SECRET_KEY = 'django-insecure-t5t0z0tqom&+opfc&@o38b%z($(_1!)=8n#^c!p&&h*!9lcu(c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://f4a0-181-143-114-114.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
     'apps.equipments',
     'apps.inserts',
     'apps.partsInventory',
+    'apps.files'
 ]
 
 MIDDLEWARE = [
@@ -156,3 +160,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/redirect_user/'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
