@@ -3,6 +3,7 @@
 {% load static %}
 {% csrf_token %}
 
+<input class="input input--largue" type="text" id="reference" value="{{reference.referencia_pk}}" name="reference" hidden>
 <div class="page__equipment">
 
     <div class="page__equipment-section-info">
@@ -29,7 +30,7 @@
 
 
                         <div>
-                            <a href="">
+                            <a id="expandedImage">
                                 <svg class="svg-option" fill="currentColor" viewBox="-50 -50 589.001 589.001">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                     <g id="SVGRepo_iconCarrier"> <g> <g> <path d="M2.2,168.151l-2.1-151.3c-0.1-7.7,6.2-14,13.9-13.9l151.3,2.2c12.1,0.2,18.1,14.8,9.5,23.4l-42.1,42.1l70,70l-65,65 l-70-70l-42.1,42.1C17.1,186.251,2.4,180.251,2.2,168.151z"></path> 
@@ -37,8 +38,19 @@
                                     <path d="M314.2,460.451c-8.6,8.6-2.6,23.2,9.5,23.4l151.3,2.2c7.7,0.1,14-6.2,13.9-13.9l-2.2-151.3c-0.2-12.1-14.8-18.1-23.4-9.5 l-42.1,42.1l-70-70l-65,65l70,70L314.2,460.451z"></path> 
                                     <path d="M14,485.051l151.3-2.2c12.1-0.2,18.1-14.8,9.5-23.4l-42.1-42l70-70l-65-65l-70,70l-42.1-42.1c-8.6-8.6-23.2-2.6-23.4,9.5 L0,471.151C0,478.851,6.3,485.151,14,485.051z"></path> </g> </g> </g>
                                 </svg>
-
                             </a>
+
+                            <div class="modal-image" id="modal">
+                                <span class="modal-image__close">&times;</span>
+                                <div class="modal-image__content">
+                                    <img class="modal-image__image" id="modalImage">
+                                </div>
+                                <!-- Botones para el carrusel -->
+                                <a class="modal-image__button modal-image__button--prev">&#10094;</a>
+                                <a class="modal-image__button modal-image__button--next">&#10095;</a>
+                            </div>
+
+
                             <a id="downloadFileEquipment">
                                 <svg class="svg-option" fill="currentColor" viewBox="0 2 23 29" version="1.1" >
                                     <path d="M18.313 13.625h-4.031v-6.594c0-0.563-0.469-1.031-1.031-1.031h-4.031c-0.594 0-1.063 0.469-1.063 1.031v6.594h-4.031c-0.531 0-0.719 0.344-0.313 0.75l6.688 6.656c0.188 0.188 0.438 0.281 0.719 0.281s0.563-0.094 0.75-0.281l6.656-6.656c0.375-0.406 0.25-0.75-0.313-0.75zM0 18.344v7.125c0 0.313 0.156 0.5 0.5 0.5h21.375c0.344 0 0.531-0.188 0.531-0.5v-7.125c0-0.313-0.25-0.531-0.531-0.531h-2.031c-0.281 0-0.531 0.25-0.531 0.531v4.531h-16.25v-4.531c0-0.313-0.219-0.531-0.5-0.531h-2.063c-0.281 0-0.5 0.25-0.5 0.531z">
@@ -52,7 +64,6 @@
                         </div>
                         
                     </div>
-                    
                     
                 </div>
 
@@ -126,25 +137,36 @@
                 <span>Datos generales</span>
             </div>
 
-            <form class="container__form">
+            <form class="container__form" id="referenceEditForm">
+                {% csrf_token %}
+               
                 <div class="form__largue">
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="reference" value="{{reference.referencia_pk}}" required>
+                            <input class="input input--medium" type="text" id="reference" name="reference" value="{{reference.referencia_pk}}" required>
                             <label class="input-container__label" for="reference">Referencia</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="brand" value="{{reference.marca}}" required>
+                            <input class="input input--medium" type="text" value="{{reference.marca}}" name="brand" id="brand" oninput="filterBrands()" required>
                             <label class="input-container__label" for="brand">Marca</label>
+        
+                            <ul id="autocompleteListBrand" class="autocomplete-list scroll" role="listbox" aria-hidden="true" style="display: none;">
+                                {% if brands|length > 0 %}
+                                    {% for brand in brands %}
+                                        <li data-value="{{ brand.marca }}" style="display: none;">{{ brand.marca }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
                         </div>
 
+                        
                     </div>
                 </div>
 
-                <div class="form__largue form__largue--margin-top">
+                <div class="form__auto form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="url" maxlength="1000" value="{{reference.url_consulta}}" >
+                            <input class="input input--largue" type="text" id="url" maxlength="1000" name="url" value="{{reference.url_consulta}}" >
                             <label class="input-container__label" for="url">URL consulta</label>
                         </div>
                     </div>
@@ -153,7 +175,7 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="accessories" maxlength="1000">{{reference.accesorios}}</textarea>
+                            <textarea class="input input--largue textarea" id="accessories" name="accessories" maxlength="1000">{{reference.accesorios}}</textarea>
                             <label class="input-container__label textarea__label" for="accessories">Accesorios</label>
                         </div>
                     </div>
@@ -162,10 +184,8 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="observations"
-                                maxlength="1000">{{reference.observaciones}}</textarea>
-                            <label class="input-container__label textarea__label"
-                                for="observations">Observaciones</label>
+                            <textarea class="input input--largue textarea" id="observations" name="observations" maxlength="1000">{{reference.observaciones}}</textarea>
+                            <label class="input-container__label textarea__label" for="observations">Observaciones</label>
                         </div>
                     </div>
                 </div>
@@ -175,10 +195,9 @@
                 <button class="button button--save">
                     <span>Guardar cambios</span>
                 </button>
+                <span id="referenceEditMessageError" class="login__error-message">‎</span>
             </form>
         </div>
-
-
 
 
         <div id="components" class="container--activity scroll" style="display: block;">
@@ -193,7 +212,7 @@
                     <div class="form__largue form__largue--margin-top">
                         <div class="input-container">
                             <div class="input-wrapper input-wrapper--largue">
-                                <textarea class="input input--largue textarea" id="" maxlength="400">{{ component.valor }}</textarea>
+                                <textarea class="input input--largue textarea" id="{{ component.campo_fk.nombre_campo }}" maxlength="400">{{ component.valor }}</textarea>
                                 <label class="input-container__label textarea__label" for="">{{ component.campo_fk.nombre_campo }}</label>
                             </div>
                         </div>
@@ -283,8 +302,8 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="button">
-                                <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920"
+                            <div class="button" data-modal-id="modalNewEquipment">
+                                <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
@@ -295,31 +314,39 @@
                         <thead class="table__headed">
                             <th class="table__headed-title">Serial</th>
                             <th class="table__headed-title">Codigo de equipo</th>
+                            
+                            <th class="table__headed-title">Estado</th>
                             <th class="table__headed-title table__headed-actions">
                                 Acciones
                             </th>
                         </thead>
                         <tbody class="table__body">
-                            <tr class="table__row">
-                                <td class="table__cell table__cell--auto table__cell--flex">
-                                    <div class="table__container-text">
-                                        <a href="#" class="table__container-link">Felipe carvajal parra</a>
-                                    </div>
-                                </td>
-                                <td class="table__cell table__cell--largue table__cell--overflow"
-                                    data-text="Compuator de escritorio super pro gamer">
-                                    Compuator de escritorio super pro gamer
-                                </td>
-                                <td class="table__cell table__cell--actions">
-                                    <svg class="svg-option" width="20px" height="20px">
-                                        <use href="#icon-view"></use>
-                                    </svg>
-                                    <svg class="svg-option svg-option--delete" width="20px" height="20px">
-                                        <use href="#icon-delete"></use>
-                                    </svg>
-                                </td>
-                            </tr>
 
+                            {% for equipment in list_equipments %}
+                                <tr class="table__row">
+                                    <td class="table__cell table__cell--auto table__cell--flex">
+                                        <div class="table__container-text">
+                                            <a href="#" class="table__container-link">{{equipment.serial}}</a>
+                                        </div>
+                                    </td>
+                                    <td class="table__cell table__cell--medium table__cell--overflow"
+                                        data-text="{{equipment.cod_equipo_pk}}">
+                                        {{equipment.cod_equipo_pk}}
+                                    </td>
+                                    <td class="table__cell table__cell--small table__cell--overflow"
+                                        data-text="{{equipment.estado}}">
+                                        {{equipment.estado}}
+                                    </td>
+                                    <td class="table__cell table__cell--actions">
+                                        <svg class="svg-option" width="20px" height="20px">
+                                            <use href="#icon-view"></use>
+                                        </svg>
+                                        <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                                            <use href="#icon-delete"></use>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            {% endfor %}
 
                         </tbody>
                     </table>
@@ -352,11 +379,78 @@
     </div>
 </div>
 
+<div class="modal-overlay"></div>
+<div class="modal" id="modalNewEquipment">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Añadir nueva existencia</span>
+        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la existencia.</p>
+    </div>
+
+
+    <form class="container__form" id="newEquipmentForm">
+        {% csrf_token %}
+        <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" type="text" id="serial" name="serial" required>
+                    <label class="input-container__label" for="serial"  >Serial</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="text" id="code" name="code" required>
+                    <label class="input-container__label" for="code">Codigo ALCOM</label>
+                </div>
+                <div class="input-wrapper input-wrapper--flex">
+                    <div class="select select--filter select--state select--largue">
+                        <div class="select__selected" id="equipmentState">Estado</div>
+                        <div class="select__options scroll">
+                            <div class="select__option">Disponible</div>
+                            <div class="select__option">No disponible</div>
+                        </div>
+                        <div class="select__icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir usuario</span>
+            </button>
+            <span id="messageError" class="login__error-message">‎</span>
+        </div>
+
+    </form>
+</div>
+
+<script src="{% static 'js/reference_crud.js' %}" ></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
 <script src="{% static 'js/sub_navigation.js' %}"></script>
 <script src="{% static 'js/update_files.js' %} ?v=2"></script>
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
+<script src="{% static 'js/modal_images.js' %}"></script>
+<script src="{% static 'js/tooltip.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/equipment_crud.js' %} ?v=3"></script>
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/filter_brands.js' %}"></script>
 
 {% endblock %}

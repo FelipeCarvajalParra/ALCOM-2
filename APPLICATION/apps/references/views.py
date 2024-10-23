@@ -10,6 +10,7 @@ import os
 from django.conf import settings
 from django.core.paginator import Paginator
 from apps.categories.models import Categorias, CategoriasCampo, Campo
+from apps.equipments.models import Equipos
 from .models import Valor, Referencias, Archivos
 from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
@@ -176,6 +177,8 @@ def edit_reference(request, reference_id):
     reference = get_object_or_404(Referencias, pk=reference_id)
     category_id = reference.categoria
     components = CategoriasCampo.objects.filter(categoria_fk=category_id)
+    brands = Referencias.objects.values('marca').distinct()
+    list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
     
     components_with_values = [] #asociar campos con lo valores correspondientes
     for component in components:
@@ -186,23 +189,75 @@ def edit_reference(request, reference_id):
 
 
     try:
-        # Aquí asumimos que 'reference' tiene un atributo 'archivos' que a su vez tiene 'ficha_tecnica'
+        # Obtener la instancia de 'reference'
         reference = get_object_or_404(Referencias, pk=reference_id)  # Reemplaza con tu modelo
-        data_sheet = reference.archivos.ficha_tecnica.url if reference.archivos.ficha_tecnica else None
-    except ObjectDoesNotExist:
-        object = Archivos.objects.create(pk=reference)
-        data_sheet = reference.archivos.ficha_tecnica.url if reference.archivos.ficha_tecnica else None
+        
+        try:
+            archivos_obj = reference.archivos  
+            data_sheet = archivos_obj.ficha_tecnica.url if archivos_obj.ficha_tecnica else None
+        except Archivos.DoesNotExist:
+            # Crear el objeto relacionado si no existe
+            archivos_obj = Archivos.objects.create(referencia_pk=reference)
+            data_sheet = archivos_obj.ficha_tecnica.url if archivos_obj.ficha_tecnica else None
+
     except Exception as e:
         return HttpResponse(f"Ocurrió un error: {str(e)}")
-
-        
     
+   
+
     context = {
         'reference': reference,
         'data_sheet': data_sheet,
         'components': components_with_values, 
-        'default_image': default_image
+        'default_image': default_image,
+        'brands': brands,
+        'list_equipments': list_equipments
     }
     
     # Renderiza la plantilla
     return render(request, 'edit_reference.html', context)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def edit_reference_data_general(request, reference_id):
+    try:
+        reference = get_object_or_404(Referencias, pk=reference_id)
+        
+        fields = {
+            'referencia_pk': request.POST.get('reference'),
+            'marca': request.POST.get('brand'),
+            'url_consulta': request.POST.get('url'),  # Cambiado aquí
+            'accesorios': request.POST.get('accessories'),  
+            'observaciones': request.POST.get('observations')
+        }
+
+        new_reference_code = fields.get('referencia_pk')
+        if new_reference_code and new_reference_code != reference.referencia_pk:
+            if Referencias.objects.filter(referencia_pk=new_reference_code).exclude(pk=reference_id).exists():
+                return JsonResponse({'error': 'El código de referencia ya existe.'}, status=400)
+        
+        # Actualizar los campos
+        for field, value in fields.items():
+            if value: 
+                setattr(reference, field, value)
+        
+        reference.save()  # Guardar los cambios
+
+        messages.success(request, 'Datos generales actualizados correctamente.')
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def edit_reference_data_general(request, reference_id):
+    
+    reference = get_object_or_404(Referencias, pk=reference_id)
+        
+      
+
+  

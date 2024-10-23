@@ -36,6 +36,7 @@ function download_file(app_name, table, field, record_id) {
                 const matches = disposition.match(/filename="?([^"]+)"?/);
                 if (matches && matches[1]) {
                     fileName = matches[1];
+                    console.log(fileName)
                 }
             }
             return response.blob().then(blob => ({ blob, fileName }));

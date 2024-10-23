@@ -631,6 +631,7 @@ a{
     margin-left: auto;
 }
 
+
 @media (max-width: 910px) {
     .select{
         margin-left: 0px;
@@ -654,6 +655,10 @@ a{
     border-radius: 5px;
     border-color: #d2d2d2;
     color: #4a4f63;
+}
+
+.select--largue{
+    width: 100%;
 }
 
 .select__icon{
@@ -1613,6 +1618,87 @@ body.modal-open {
 
 .modal__close:hover {
     color: #5c6072;
+}
+
+.modal-image {
+    display: none; /* Oculto por defecto */
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(65, 65, 65, 0.8);
+}
+
+.modal-image__content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.modal-image__image {
+    width: 600px; /* Todas las imágenes tendrán el mismo tamaño en el modal */
+    height: 400px;
+    object-fit: contain; /* Mantiene la relación de aspecto de la imagen */
+    cursor: zoom-in; /* Cambia el cursor para indicar que se puede hacer zoom */
+    transition: transform 0.3s; /* Efecto de zoom */
+}
+
+.modal-image__image--zoomed {
+    transform: scale(1.5); /* Ampliar la imagen al hacer clic */
+    cursor: zoom-out; /* Cambia el cursor para indicar que se puede reducir */
+}
+
+/* Botón para cerrar el modal */
+.modal-image__close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.modal-image__close:hover,
+.modal-image__close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Botones de navegación del carrusel */
+.modal-image__button {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    transition: 0.3s;
+    user-select: none;
+}
+
+.modal-image__button--prev {
+    left: 10px;
+}
+
+.modal-image__button--next {
+    right: 10px;
+}
+
+.modal-image__button:hover {
+    color: #bbb;
 }
 
 @media (max-width: 600px) {

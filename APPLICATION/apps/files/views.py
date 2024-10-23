@@ -180,16 +180,17 @@ def download_file(request):
             messages.error(request, 'El archivo no existe en el servidor.')
             return HttpResponse(status=404)
         
+        # Abrir la imagen y convertirla a PNG
         image = Image.open(current_file_full_path)
         img_io = io.BytesIO()
         image.convert('RGB').save(img_io, 'PNG')  # Convertir a PNG
-        img_io.seek(0)
+        img_io.seek(0)  # Rewind the BytesIO object
         
-        with open(current_file_full_path, 'rb') as file:
-            response = HttpResponse(file.read(), content_type='application/octet-stream')
-            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(current_file_full_path)}"'
-            messages.success(request, 'El archivo se descargo de forma correcta.')
-            return response
+        # Preparar la respuesta con el contenido de img_io
+        response = HttpResponse(img_io.getvalue(), content_type='image/png')
+        response['Content-Disposition'] = f'attachment; filename="{os.path.splitext(os.path.basename(current_file_full_path))[0]}.png"'
+        messages.success(request, 'El archivo se descargó de forma correcta.')
+        return response
 
     except ValueError:
         messages.error(request, 'ID de registro no válido')
@@ -203,7 +204,6 @@ def download_file(request):
     except Exception as e:
         messages.error(request, f'Ha ocurrido un error: {str(e)}')
         return HttpResponse(status=500)
-   
 
 
 @require_POST
