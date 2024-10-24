@@ -2,6 +2,8 @@
 {% block contend %}
 {% load static %}
 
+<input class="input input--largue" type="text" id="reference" value="{{id_category}}" name="reference" hidden>
+
 <div class="container--large">
     <table class="table">
         <div class="table__info">
@@ -13,7 +15,7 @@
         <div class="table__info table__info--options">
 
             <div class="select select--filter">
-                <div class="select__selected" id="filterBrand">Marca</div>
+                <div class="select__selected" id="filterBrand">{% if brand %}{{ brand }}{% else %}Marca{% endif %}</div>
                 <div class="select__options scroll">
                     <div class="select__option">TODAS</div>
                     {% if brands|length > 0 %}
@@ -29,7 +31,7 @@
                 </div>
             </div>
 
-            <input class="select select--search" type="text" id="searchReferences" placeholder="Buscar por referencia" />
+            <input class="select select--search" type="text" id="searchReferences" placeholder="Buscar por referencia" value="{{search_query}}" />
 
             <div class="select select--filter select--right">
                 <div class="select__selected">
@@ -242,7 +244,7 @@
     <script src="{% static 'js/filter_selector.js' %}"></script>
     <script src="{% static 'js/delete_confirmations.js' %}"></script>
     <script src="{% static 'js/reference_crud.js' %} ?v=5" ></script>
-    <script src="{% static 'js/searchs_tables.js' %} ?v=2"></script>
+    <script src="{% static 'js/searchs_tables.js' %} ?v=3"></script>
     <script src="{% static 'js/tooltip.js' %} ?v=2" ></script>
     <script src="{% static 'js/filter_brands.js' %}"></script>
     

@@ -3,7 +3,7 @@ const messageNewEquipmentError = document.getElementById('messageError');
 
 newEquipmentForm.addEventListener('submit', function(event) {
     event.preventDefault(); // Evitar el envío del formulario
-    messageError.textContent = '‎';
+    messageNewEquipmentError.textContent = '‎';
 
     // Crear un objeto FormData para recoger los datos del formulario
     const formData = new FormData(newEquipmentForm);

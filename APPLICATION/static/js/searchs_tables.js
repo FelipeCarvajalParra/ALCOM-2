@@ -31,6 +31,18 @@ function searchTable(module, page = 1, url) {
                     console.log('error');
                 });
             break;
+        
+        case(3): // Caso para buscar categorías
+            search = $('#searchEquipment').val();
+
+            petition(url, search, page)
+                .then(() => {
+                    delete_confirmations();
+                })
+                .catch(() => {
+                    console.log('error');
+                });
+            break;
 
         default:
             search = ''; // Por si acaso
@@ -66,35 +78,18 @@ function petition(url, search, page, brand) {
 let timeout;
 
 
-
-
-
 paginatorReferences =  document.getElementById('paginatorReferences')
 
 if(paginatorReferences){
 
-    console.log('hola')
+    const category = document.getElementById('reference').value
 
     $(document).on('input', '#searchReferences', function() {// Sección búsqueda categorías
         clearTimeout(timeout);
         timeout = setTimeout(function() {
-            searchTable(1, 1, '/view_categories/view_references/85'); // Llama a searchTable para categorías (página 1 por defecto)
+            searchTable(1, 1, `/view_categories/view_references/${category}`); // Llama a searchTable para categorías (página 1 por defecto)
         }, 350); // Tiempo de espera para debouncing
     });
-
-
-
-
-
-
-    $(document).on('click', '.paginatorReferences', function(e) {
-        e.preventDefault(); // Evita que el enlace cargue la página completa
-        const page = new URLSearchParams($(this).attr('href').split('?')[1]).get('page');
-        searchTable(1, page, '/view_categories/view_references/85'); // Realiza una búsqueda en la página seleccionada
-    });
-    
-    // Observar cambios en el contenido del div filterBrand
-    
 
     const filterBrand = document.getElementById('filterBrand');
     if (filterBrand) {
@@ -102,7 +97,7 @@ if(paginatorReferences){
             for (const mutation of mutationsList) {
                 if (mutation.type === 'childList' || mutation.type === 'subtree') {
                     console.log('hola')
-                    searchTable(1, 1, '/view_categories/view_references/85'); // Realiza la búsqueda al detectar cambios en filterBrand
+                    searchTable(1, 1, `/view_categories/view_references/${category}`); // Realiza la búsqueda al detectar cambios en filterBrand
                 }
             }
         });
@@ -113,16 +108,7 @@ if(paginatorReferences){
 
 
 
-
-
-
-
-
-
-
-
 paginatorCategories =  document.getElementById('paginatorCategories')
-
 if(paginatorCategories){
     $(document).on('input', '#searchCategories', function() {// Sección búsqueda categorías
         clearTimeout(timeout);
@@ -130,12 +116,18 @@ if(paginatorCategories){
             searchTable(2, 1, '/view_categories/'); // Llama a searchTable para categorías (página 1 por defecto)
         }, 350); // Tiempo de espera para debouncing
     });
-    
-    // Manejar la paginación para categorías
-    $(document).on('click', '.paginatorCategories', function(e) {
-        e.preventDefault(); // Evita que el enlace cargue la página completa
-        const page = new URLSearchParams($(this).attr('href').split('?')[1]).get('page');
-        searchTable(2, page, '/view_categories/'); // Realiza una búsqueda en la página seleccionada
+}
+
+
+
+paginatorEquipment =  document.getElementById('paginatorEquipment')
+if(paginatorEquipment){
+    const reference = document.getElementById('reference').value
+    $(document).on('input', '#searchEquipment', function() {// Sección búsqueda categorías
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            searchTable(3, 1, `/edit_reference/${reference}`); // Llama a searchTable para categorías (página 1 por defecto)
+        }, 350); // Tiempo de espera para debouncing
     });
 }
 

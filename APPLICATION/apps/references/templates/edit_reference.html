@@ -3,7 +3,7 @@
 {% load static %}
 {% csrf_token %}
 
-<input class="input input--largue" type="text" id="reference" value="{{reference.referencia_pk}}" name="reference" hidden>
+<input type="text" id="category" value="{{reference.referencia_pk}}" hidden>
 
 <div class="page__equipment">
 
@@ -41,10 +41,10 @@
                                 </svg>
                             </a>
 
-                            <div class="modal-image" id="modal">
+                            <div class="modal-image" id="modalImage">
                                 <span class="modal-image__close">&times;</span>
                                 <div class="modal-image__content">
-                                    <img class="modal-image__image" id="modalImage">
+                                    <img class="modal-image__image" id="imageModal">
                                 </div>
                                 <!-- Botones para el carrusel -->
                                 <a class="modal-image__button modal-image__button--prev">&#10094;</a>
@@ -102,28 +102,28 @@
 
     <div class="page__equipment-section-nav">
         <div class="container--sub-navegation">
-            <div class="button button--active button--navegation" data-target="generalData,components">
+            <div class="button button--active button--navegation" id="detailsEquipment" data-target="generalData,components">
                 <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
                     <path
                         d="m16 0c8.836556 0 16 7.163444 16 16s-7.163444 16-16 16-16-7.163444-16-16 7.163444-16 16-16zm0 2c-7.7319865 0-14 6.2680135-14 14s6.2680135 14 14 14 14-6.2680135 14-14-6.2680135-14-14-14zm1.3 18.5v2.6h-2.6v-2.6zm-1.3-11.5c2.209139 0 4 1.790861 4 4 0 1.8636009-1.2744465 3.4295388-2.9993376 3.873812l-.0006624 2.126188h-2v-4h1c1.1045695 0 2-.8954305 2-2s-.8954305-2-2-2c-1.0543618 0-1.9181651.8158778-1.9945143 1.8507377l-.0054857.1492623h-2c0-2.209139 1.790861-4 4-4z" />
                 </svg>
                 <span>Detalles</span>
             </div>
-            <div class="button button--navegation button-margin-left" data-target="technicalSheet">
+            <div class="button button--navegation button-margin-left" id="dataSheetEquipment" data-target="technicalSheet">
                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V20C21 21.6569 19.6569 23 18 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H18C18.5523 21 19 20.5523 19 20V4C19 3.44772 18.5523 3 18 3ZM6.41421 7H9V4.41421L6.41421 7ZM7 13C7 12.4477 7.44772 12 8 12H16C16.5523 12 17 12.4477 17 13C17 13.5523 16.5523 14 16 14H8C7.44772 14 7 13.5523 7 13ZM7 17C7 16.4477 7.44772 16 8 16H16C16.5523 16 17 16.4477 17 17C17 17.5523 16.5523 18 16 18H8C7.44772 18 7 17.5523 7 17Z" />
                 </svg>
                 <span>Ficha tecnica</span>
             </div>
-            <div class="button button--navegation button-margin-left" data-target="stock">
+            <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
                 <svg width="20px" height="20px" fill="currentColor" viewBox="0 0 48 48"
                     xmlns="http://www.w3.org/2000/svg">
                     <g id="Layer_2" data-name="Layer 2">
                         <g id="invisible_box" data-name="invisible box">
                             <rect width="48" height="48" fill="none" />
                         </g>
-                        <g id="icons_Q2" data-name="icons Q2">
+                        <g id="icons_Q2">
                             <path
                                 d="M44,4H4A2,2,0,0,0,2,6V34a2,2,0,0,0,2,2H18v4H12a2,2,0,0,0,0,4H36a2,2,0,0,0,0-4H30V36H44a2,2,0,0,0,2-2V6A2,2,0,0,0,44,4ZM42,8V24H6V8ZM26,40H22V36h4ZM6,32V28H42v4Z" />
                         </g>
@@ -271,7 +271,7 @@
                     <table class="table">
                         <div class="table__info table__info--options">
 
-                            <input class="select select--search" type="text" placeholder="Buscar por serial" />
+                            <input class="select select--search" type="text" id="searchEquipment" placeholder="Buscar por codigo" value="{{search_query}}" />
 
                             <div class="select select--filter select--right">
                                 <div class="select__selected">
@@ -334,7 +334,7 @@
                         </thead>
                         <tbody class="table__body">
 
-                            {% for equipment in list_equipments %}
+                            {% for equipment in paginator %}
                                 <tr class="table__row">
                                     <td class="table__cell table__cell--auto table__cell--flex">
                                         <div class="table__container-text">
@@ -353,7 +353,7 @@
                                         <svg class="svg-option" width="20px" height="20px">
                                             <use href="#icon-view"></use>
                                         </svg>
-                                        <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                                        <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
                                             <use href="#icon-delete"></use>
                                         </svg>
                                     </td>
@@ -364,26 +364,9 @@
                     </table>
 
                     <div class="table__footer">
-                        <nav class="pagination">
-                            <span class="pagination__records">59 registros</span>
-                            <ul class="pagination__list">
-                                <li class="pagination__item pagination__item--previous">
-                                    <svg class="" width="15px" height="15px">
-                                        <use href="#icon-previous"></use>
-                                    </svg>
-                                </li>
-                                <li class="pagination__item pagination__item--active">1</li>
-                                <li class="pagination__item">2</li>
-                                <li class="pagination__item">3</li>
-                                <li class="pagination__item">4</li>
-                                <li class="pagination__item">5</li>
-                                <li class="pagination__item pagination__item--next">
-                                    <svg class="" width="15px" height="15px">
-                                        <use href="#icon-next"></use>
-                                    </svg>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="table__footer">
+                            {% include 'partials/_equipment_table_footer.html' %} 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -451,11 +434,12 @@
     </form>
 </div>
 
+<script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
 <script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
-<script src="{% static 'js/sub_navigation.js' %}"></script>
+<script src="{% static 'js/sub_navigation.js' %} ?v=2"></script>
 <script src="{% static 'js/update_files.js' %} ?v=2"></script>
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
 <script src="{% static 'js/modal_images.js' %}"></script>
@@ -464,5 +448,6 @@
 <script src="{% static 'js/equipment_crud.js' %} ?v=3"></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
 <script src="{% static 'js/filter_brands.js' %}"></script>
+<script src="{% static 'js/searchs_tables.js' %}"></script>
 
 {% endblock %}

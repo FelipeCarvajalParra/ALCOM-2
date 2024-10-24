@@ -1,7 +1,7 @@
  // Obtener el modal y la imagen que se mostrará
- var modal = document.getElementById("modal");
- var modalImg = document.getElementById("modalImage");
- var imageDisplay = document.getElementById("image-display");
+ const modalImage = document.getElementById("modalImage");
+ const modalImg = document.getElementById("imageModal");
+ const imageDisplay = document.getElementById("image-display");
 
  // Obtener todas las imágenes de la galería
  var images = document.querySelectorAll(".container__image--preview");
@@ -19,14 +19,14 @@
  var expandedImageLink = document.getElementById("expandedImage");
  expandedImageLink.onclick = function(e) {
      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
-     modal.style.display = "flex";
+     modalImage.style.display = "flex";
      modalImg.src = imageDisplay.src; // Mostrar la imagen actual en el modal
  }
 
  // Cerrar el modal
  var closeBtn = document.querySelector(".modal-image__close");
  closeBtn.onclick = function() {
-     modal.style.display = "none";
+     modalImage.style.display = "none";
      modalImg.classList.remove("modal-image__image--zoomed");
  }
 
@@ -60,8 +60,8 @@
 
  // Cerrar el modal al hacer clic fuera de la imagen
  window.onclick = function(event) {
-     if (event.target == modal) {
-         modal.style.display = "none";
+     if (event.target == modalImage) {
+         modalImage.style.display = "none";
          modalImg.classList.remove("modal-image__image--zoomed");
      }
  }

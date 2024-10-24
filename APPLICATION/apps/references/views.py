@@ -33,15 +33,20 @@ def view_references(request, id_category):
     if search_query:
         references_list = references_list.filter(referencia_pk__icontains=search_query)
 
+
+    if filter_brand == 'Marca':
+        filter_brand = ''
     if filter_brand and filter_brand != 'TODAS':
         references_list = references_list.filter(marca=filter_brand)
     
-    paginator = Paginator(references_list,5)  # Número de elementos por página
+    paginator = Paginator(references_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
-    references_list = paginator.get_page(page_number)
+    paginator = paginator.get_page(page_number)
 
     context = {
-        'paginator': references_list,
+        'paginator': paginator,
+        'search_query':search_query,
+        'brand': filter_brand,
         'category_name': category_name, 
         'components': components, 
         'id_category': id_category, 
@@ -175,13 +180,23 @@ def delete_reference(request, reference_id):
         messages.error(request, str(e))
         return HttpResponse(status=500)  # Error interno en el servidor
     
+
+
+@login_required
 def edit_reference(request, reference_id):
   
     reference = get_object_or_404(Referencias, pk=reference_id)
     category_id = reference.categoria
     components = CategoriasCampo.objects.filter(categoria_fk=category_id)
     brands = Referencias.objects.values('marca').distinct()
+    search_query = request.GET.get('search', '')
+
+
     list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
+    list_equipments = list_equipments.filter(cod_equipo_pk__icontains=search_query)
+    paginator = Paginator(list_equipments,11)  # Número de elementos por página
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
     
     components_with_values = []  # asociar campos con los valores correspondientes
     for component in components:
@@ -209,7 +224,6 @@ def edit_reference(request, reference_id):
 
     except Exception as e:
         return HttpResponse(f"Ocurrió un error: {str(e)}")
-    
 
     context = {
         'reference': reference,
@@ -217,9 +231,16 @@ def edit_reference(request, reference_id):
         'components': components_with_values, 
         'default_image': default_image,
         'brands': brands,
-        'list_equipments': list_equipments
+        'paginator': paginator,
+        'search_query': search_query,
     }
-    
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_equipment_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_equipment_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
+
     # Renderiza la plantilla
     return render(request, 'edit_reference.html', context)
 

@@ -57,3 +57,27 @@ def new_equipment(request):
         return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+
+@login_required
+@require_POST
+@transaction.atomic
+def delete_equipment(request, id_equipment):
+    try:
+        # Obtener y eliminar la categoría
+        equipment = get_object_or_404(Equipos, pk=id_equipment)
+        equipment.delete()
+
+        log_activity(
+            user=request.user.id,                       
+            action='DELETE',                 
+            title='Elimino equipo',      
+            description=f'El usuario elimino el equipo {equipment.cod_equipo_pk}.',  
+            category='EQUIPMENT'          
+        )
+        messages.success(request, 'Equipo eliminado correctamente.')
+        return JsonResponse({'success': True}, status=200) 
+    
+    except Exception as e:
+        messages.error(request, 'Ocurrió un error inesperado.')
+        return JsonResponse({'success': True})  

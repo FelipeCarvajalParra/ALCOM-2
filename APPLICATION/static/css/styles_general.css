@@ -163,7 +163,7 @@ a{
 
 .container--activity {
     margin-top: 15px;
-    max-height: 750px;
+    max-height: 950px;
     overflow-y: auto;
     border: 10px solid #ffff;
 }

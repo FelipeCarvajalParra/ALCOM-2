@@ -4,7 +4,8 @@ function delete_confirmations(){
     const deleteActivityLogs = document.querySelectorAll('.deleteActivityLog');
     const deleteCategory = document.querySelectorAll('.deleteCategory');
     const deleteReference = document.querySelectorAll('.deleteReference');
-    const deleteReferenceImage = document.getElementById('deleteReferenceImage')
+    const deleteReferenceImage = document.getElementById('deleteReferenceImage');
+    const deleteEquipment = document.querySelectorAll('.deleteEquipment')
     
     if (logoutLink) {
         logoutLink.addEventListener('click', function () {
@@ -87,7 +88,7 @@ function delete_confirmations(){
             deleteReferenceImage.addEventListener('click', function () {
                 showConfirmationModal(
                     '¿Estás seguro?',
-                    'La imagen se perdera de forma permanente',
+                    'La imagen se perdera de forma permanente.',
                     'Sí, eliminar',
                     'Cancelar',
                     0,  
@@ -95,8 +96,31 @@ function delete_confirmations(){
                     0         
                 );
             });
-    
     }
+
+    if (deleteEquipment) {
+        deleteEquipment.forEach(function (equipment) {
+            equipment.addEventListener('click', function () {
+                const equipmentId = equipment.getAttribute('data-id'); 
+                const referenceId = document.getElementById('reference').value; 
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'El equipo y todas las intervenciones asociadas se perderan de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    equipmentId, 
+                    6,
+                    referenceId
+                );
+            });
+        });
+    }
+
+    
+        
+           
+            
+}
     
     
     function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action, urlAutoGenerate) {
@@ -131,19 +155,20 @@ function delete_confirmations(){
                             deleteRequest('delete_reference', idReference, `view_categories/view_references/${idCategory2}`, true);
                             break;
                         case(5):
-    
                             const fileInput = document.getElementById('equipmentFileImageInput');
-    
                             const app_name = fileInput.getAttribute('data-app');
                             const table = fileInput.getAttribute('data-table');
                             const field = fileInput.getAttribute('data-field');
                             const record_id = fileInput.getAttribute('data-record');
-                                    
-    
                             deleteFile(app_name, table, field, record_id)
                             break
                         case(6):
-    
+                            const equipmentId = arguments[4];  // recibir el ID aquí
+                            const referenceId = arguments[6];
+
+                            console.log(equipmentId, referenceId)
+
+                            deleteRequest('delete_equipment', equipmentId, `edit_reference/${referenceId}`, true);
                             break
     
                     }
@@ -162,8 +187,10 @@ function delete_confirmations(){
         .then(response => {
             if (response.ok) {
                 if(autogenerate){
+                    console.log('aqui1')
                     window.location.href = `/${returnView}`; 
                 }else if(returnView){
+                    console.log('aqui2')
                     window.location.href = `/${returnView}/`; 
                 }else{
                     location.reload(true)
@@ -171,17 +198,18 @@ function delete_confirmations(){
             }
         })
         .catch(error => {
+            console.log('aqui3')
             console.error('Error:', error);
         });
     }
-    
+        
     function deleteFile(app_name, table, field, record_id) {
         const formData = new FormData(); 
         formData.append('app_name', app_name);
         formData.append('table', table);
         formData.append('field', field);
         formData.append('record_id', record_id);
-    
+
         fetch('/delete_file/', {
             method: 'POST',
             body: formData, 
@@ -195,13 +223,12 @@ function delete_confirmations(){
         .catch(error => {
             console.error('Error:', error);
         });
-    
+
         // Reiniciar el input de archivo para permitir la selección de la misma imagen
         this.value = ''; // Esto permite seleccionar la misma imagen de nuevo
     }
-    
-    
-    
+        
+        
     // Función para obtener el token CSRF
     function getCookie(name) {
         let cookieValue = null;
@@ -217,8 +244,8 @@ function delete_confirmations(){
             }
         }
         return cookieValue;
-    }
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
     delete_confirmations();

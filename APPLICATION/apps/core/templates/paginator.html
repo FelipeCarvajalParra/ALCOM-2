@@ -1,6 +1,6 @@
 <nav class="pagination">
     <span class="pagination__records">
-        Registros {{ paginator.start_index }} a {{ paginator.end_index }} de {{ paginator.paginator.count }} 
+        Registros {{ paginator.start_index }} a {{ paginator.end_index }} de {{ paginator.paginator.count }}
     </span>
 
     {% if paginator.paginator.num_pages > 1 %}
@@ -8,7 +8,7 @@
         <!-- Botón para ir a la página anterior -->
         {% if paginator.has_previous %}
             <li class="pagination__item pagination__item--previous">
-                <a class="pagination__container-icon" href="?page={{ paginator.previous_page_number }}&search={{ search_query }}">
+                <a class="pagination__container-icon" href="?page={{ paginator.previous_page_number }}&search={{ search_query }}&brand={{ brand }}">
                     <svg width="15px" height="15px">
                         <use href="#icon-previous"></use>
                     </svg>
@@ -16,44 +16,27 @@
             </li>
         {% endif %}
 
-        <!-- Primera página siempre visible si no es la página actual -->
-        {% if paginator.number > 3 %}
-            <li class="pagination__item">
-                <a class="pagination__container-icon" href="?page=1&search={{ search_query }}">1</a>
-            </li>
-            <!-- Puntos suspensivos si hay más de 3 páginas antes de la actual -->
-            {% if paginator.number > 4 %}
-                <li class="pagination__item">...</li>
-            {% endif %}
-        {% endif %}
-
-        <!-- Páginas cercanas a la actual -->
+        <!-- Lógica para mostrar solo tres páginas cercanas -->
         {% for num in paginator.paginator.page_range %}
-            {% if num == pagination.number %}
-                <li class="pagination__item pagination__item--active">
-                    <span class="pagination__container-icon">{{ num }}</span>
-                </li>
-            {% elif num >= paginator.number|add:-1 and num <= paginator.number|add:1 %}
-                <li class="pagination__item">
-                    <a class="pagination__container-icon" href="?page={{ num }}&search={{ search_query }}">{{ num }}</a>
-                </li>
+            {% if num == paginator.number or num == paginator.number|add:"-1" or num == paginator.number|add:"1" %}
+                {% if num > 0 and num <= paginator.paginator.num_pages %}
+                    {% if num == paginator.number %}
+                        <li class="pagination__item pagination__item--active">
+                            <span class="pagination__container-icon">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="pagination__item">
+                            <a class="pagination__container-icon" href="?page={{ num }}&search={{ search_query }}&brand={{ brand }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
             {% endif %}
         {% endfor %}
-
-        <!-- Última página siempre visible si no es la página actual -->
-        {% if paginator.number < paginator.paginator.num_pages|add:-2 %}
-            {% if pagination.number < pagination.paginator.num_pages|add:-3 %}
-                <li class="pagination__item">...</li>
-            {% endif %}
-            <li class="pagination__item">
-                <a class="pagination__container-icon" href="?page={{ paginator.paginator.num_pages }}&search={{ search_query }}">{{ paginator.paginator.num_pages }}</a>
-            </li>
-        {% endif %}
 
         <!-- Botón para ir a la página siguiente -->
         {% if paginator.has_next %}
             <li class="pagination__item pagination__item--next">
-                <a class="pagination__container-icon" href="?page={{ paginator.next_page_number }}&search={{ search_query }}">
+                <a class="pagination__container-icon" href="?page={{ paginator.next_page_number }}&search={{ search_query }}&brand={{ brand }}">
                     <svg width="15px" height="15px">
                         <use href="#icon-next"></use>
                     </svg>
