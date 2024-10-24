@@ -1,9 +1,9 @@
-function modals() {
+function modal(){
   const modals = document.querySelectorAll('.modal');
   const modalOverlay = document.querySelector('.modal-overlay');
   const openModalBtns = document.querySelectorAll('[data-modal-id]');
   const closeModalBtns = document.querySelectorAll('.modal__close');
-
+  
   // Función para abrir el modal
   openModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -12,7 +12,7 @@ function modals() {
       
       modal.style.display = 'block'; // Primero mostramos el modal
       modalOverlay.style.display = 'block';
-
+  
       // Forzamos el reflow para que CSS detecte el cambio y aplique la transición
       setTimeout(() => {
         modal.classList.add('modal--active');
@@ -21,19 +21,19 @@ function modals() {
       }, 10); // Usamos un pequeño retraso para permitir que la transición ocurra
     });
   });
-
+  
   // Función para cerrar el modal
   closeModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       closeModal();
     });
   });
-
+  
   // Cerrar el modal al hacer clic en el fondo oscuro
   modalOverlay.addEventListener('click', () => {
     closeModal();
   });
-
+  
   // Función que maneja el cierre con retraso para la animación
   function closeModal() {
     modals.forEach(modal => {
@@ -41,7 +41,7 @@ function modals() {
     });
     modalOverlay.classList.remove('modal-overlay--active');
     document.body.classList.remove('modal-open'); // Habilitar scroll de nuevo
-
+  
     // Esperar el tiempo de la animación antes de ocultar completamente
     setTimeout(() => {
       modals.forEach(modal => {
@@ -52,13 +52,6 @@ function modals() {
   }
 }
 
-// Configurar el observador de cambios
-const observerModal = new MutationObserver(() => {
-  modals(); // Llama a la función cada vez que haya un cambio
+document.addEventListener('DOMContentLoaded', function() {
+  modal();
 });
-
-// Observar cambios en el body
-observerModal.observe(document.body, { childList: true, subtree: true });
-
-// Ejecutar setupModals inicialmente cuando se cargue el DOM
-document.addEventListener('DOMContentLoaded', modals);

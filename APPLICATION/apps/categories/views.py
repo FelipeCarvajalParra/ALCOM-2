@@ -11,6 +11,7 @@ import json
 from apps.logIn.views import group_required
 from .models import Categorias, Campo, CategoriasCampo
 from apps.activityLog.utils import log_activity
+from apps.references.models import Valor, Referencias
 
 @login_required
 def view_categories(request):
@@ -41,7 +42,6 @@ def view_categories(request):
         return JsonResponse({'body': html_body, 'footer': html_footer})
     
     return render(request, 'view_categories.html', context)
-
 
 @login_required
 @require_POST
@@ -113,7 +113,10 @@ def update_category(request, category_id):
         categoria.nombre = name_category
         categoria.save()
 
-        components = data.get('components', []) # Obtener componentes del formulario
+        components = data.get('components', [])  # Obtener componentes del formulario
+
+        # Obtener todas las referencias de la categoría
+        referencias = Referencias.objects.filter(categoria=categoria)
 
         # Actualizar la relación de campos
         existing_components = [campo.campo_fk.nombre_campo for campo in CategoriasCampo.objects.filter(categoria_fk=categoria)]
@@ -128,28 +131,38 @@ def update_category(request, category_id):
             if campo not in existing_components:
                 CategoriasCampo.objects.get_or_create(categoria_fk=categoria, campo_fk=campo)
 
+                # Crear una instancia vacía en Valor para cada referencia asociada
+                for referencia in referencias:
+                    Valor.objects.get_or_create(referencia_fk=referencia, campo_fk=campo)
+
         # Eliminar relaciones de CategoriasCampo para campos que ya no están
         for component in existing_components:
             if component not in components:
                 campo = Campo.objects.get(nombre_campo=component)
                 CategoriasCampo.objects.filter(categoria_fk=categoria, campo_fk=campo).delete()
-    
+
+                # Eliminar instancias de Valor asociadas a este campo solo si la referencia no tiene este campo
+                for referencia in referencias:
+                    # Verificar si existe la relación en CategoriasCampo
+                    if not CategoriasCampo.objects.filter(categoria_fk=referencia.categoria, campo_fk=campo).exists():
+                        Valor.objects.filter(campo_fk=campo, referencia_fk=referencia).delete()
+
         log_activity(
-            user=request.user.id,                       
-            action='UPDATE',                 
-            title='Actualizacion de categoria',      
-            description=f'El usuario actualizo la categoria {categoria.nombre} en el sistema.',  
-            link=f'/view_categories/view_references/{categoria.categoria_pk}',      
-            category='CATEGORY'          
+            user=request.user.id,
+            action='UPDATE',
+            title='Actualizacion de categoria',
+            description=f'El usuario actualizo la categoria {categoria.nombre} en el sistema.',
+            link=f'/view_categories/view_references/{categoria.categoria_pk}',
+            category='CATEGORY'
         )
         messages.success(request, 'Categoría y campos actualizados correctamente.')
-        return JsonResponse({'success': True}, status=200)  
+        return JsonResponse({'success': True}, status=200)
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
     except Exception as e:
         messages.error(request, 'Error: ' + str(e))
-        return JsonResponse({'error': 'Ocurrió un error: ' + str(e)}, status=500)  
+        return JsonResponse({'error': 'Ocurrió un error: ' + str(e)}, status=500)
 
 @login_required
 @require_POST

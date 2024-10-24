@@ -10,5 +10,6 @@ urlpatterns = [
     path("new_reference/<category_id>", views.new_reference, name="new_reference"),
     path("delete_reference/<reference_id>", views.delete_reference, name='delete_reference'),
     path("edit_reference/<reference_id>", views.edit_reference, name='edit_reference'),
-    path("edit_reference_data_general/<reference_id>", views.edit_reference_data_general, name='edit_reference_data_general')
+    path("edit_reference_data_general/<reference_id>", views.edit_reference_data_general, name='edit_reference_data_general'),
+    path("edit_reference_components/<reference_id>", views.edit_reference_components, name='edit_reference_components')
 ]

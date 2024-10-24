@@ -4,6 +4,7 @@
 {% csrf_token %}
 
 <input class="input input--largue" type="text" id="reference" value="{{reference.referencia_pk}}" name="reference" hidden>
+
 <div class="page__equipment">
 
     <div class="page__equipment-section-info">
@@ -199,31 +200,42 @@
             </form>
         </div>
 
-
         <div id="components" class="container--activity scroll" style="display: block;">
             <div class="container__section-title">
                 <span>Componentes</span>
             </div>
 
-            <form class="container__form">
+            {% if components %}
+                <form class="container__form" id="referenceEditComponentsForm">
 
-
-                {% for component in components %}
-                    <div class="form__largue form__largue--margin-top">
-                        <div class="input-container">
-                            <div class="input-wrapper input-wrapper--largue">
-                                <textarea class="input input--largue textarea" id="{{ component.campo_fk.nombre_campo }}" maxlength="400">{{ component.valor }}</textarea>
-                                <label class="input-container__label textarea__label" for="">{{ component.campo_fk.nombre_campo }}</label>
+                    {% for component in components %}
+                        <div class="form__largue form__largue--margin-top">
+                            <div class="input-container">
+                                <div class="input-wrapper input-wrapper--largue">
+                                    <textarea 
+                                        class="input input--largue textarea" 
+                                        id="{{ component.campo_fk.nombre_campo }}" 
+                                        name="valor_{{ component.valor_id }}" 
+                                        data-id="{{ component.valor_id }}" 
+                                        maxlength="400"
+                                    >{{ component.valor }}</textarea>
+                                    <label class="input-container__label textarea__label" for="{{ component.campo_fk.nombre_campo }}">{{ component.campo_fk.nombre_campo }}</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
 
-                
-                <button class="button button--save">
-                    <span>Guardar cambios</span>
-                </button>
-            </form>
+                    
+                    <button class="button button--save" >
+                        <span>Guardar cambios</span>
+                    </button>
+                    <span id="referenceEditComponentsMessageError" class="login__error-message">‎</span>
+                </form>
+            {% else %}
+                <p style="color: #3b4056;" >No hay componentes asociados</p>
+            {% endif %}
+
+            
         </div>
 
         <div id="technicalSheet" class="container--activity scroll" style="display: none;">
@@ -439,7 +451,7 @@
     </form>
 </div>
 
-<script src="{% static 'js/reference_crud.js' %}" ></script>
+<script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>

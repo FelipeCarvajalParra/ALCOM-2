@@ -1,4 +1,4 @@
-function setupModals() {
+function modal_category(){
     console.log('carga')
     const modals = [
         {
@@ -15,6 +15,7 @@ function setupModals() {
                     hideOptions(this.autocompleteList); // Ocultar las opciones después de añadir
                     this.errorMessage.textContent = '';
                 } else {
+                    console.log('aqui')
                     this.errorMessage.textContent = 'El campo ya está asociado.';
                 }
             }
@@ -33,6 +34,7 @@ function setupModals() {
                     hideOptions(this.autocompleteList); // Ocultar las opciones después de añadir
                     this.errorMessage.textContent = '';
                 } else {
+                    console.log('aqui')
                     this.errorMessage.textContent = 'El campo ya está asociado.';
                 }
             }
@@ -192,15 +194,10 @@ modalOverlays.forEach(overlay => {
     overlay.addEventListener('click', clearEditComponentsList);
 });
 
+
 }
 
-// Configurar el observador de cambios
-const observerModalCategory = new MutationObserver(() => {
-    setupModals(); // Llama a la función cada vez que haya un cambio
+document.addEventListener('DOMContentLoaded', function() {
+    modal_category();
 });
-
-// Observar cambios en el body
-observerModalCategory.observe(document.body, { childList: true, subtree: true });
-
-// Ejecutar setupModals inicialmente cuando se cargue el DOM
-document.addEventListener('DOMContentLoaded', setupModals);
+    

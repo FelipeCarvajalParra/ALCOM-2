@@ -25,7 +25,7 @@
         </div>
         <thead class="table__headed">
             <th class="table__headed-title">Nombre</th>
-            <th class="table__headed-title">Registros</th>
+            <th class="table__headed-title">Referencias</th>
             <th class="table__headed-title table__headed-actions">Acciones</th>
         </thead>
         <tbody class="table__body">
@@ -37,7 +37,7 @@
                                 <a href="{% url 'view_references'  category.categoria_pk %}" class="table__container-link">{{ category.nombre }}</a>
                             </div>
                         </td>
-                        <td class="table__cell table__cell--small table__cell--overflow" data-text="{{category.num_equipos}}">
+                        <td class="table__cell table__cell--largue table__cell--overflow" data-text="{{category.num_equipos}}">
                             {{category.num_equipos}}
                         </td>
                         <td class="table__cell table__cell--actions">
@@ -47,7 +47,7 @@
                                 </svg>
                             </a>
   
-                            <svg class="svg-option svg-option--edit editCategoryButton" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-modal-id="modalNewCategory">
+                            <svg class="svg-option svg-option--edit editCategoryButton" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-modal-id="modalEditCategory">
                                 <use href="#icon-edit"></use>
                             </svg>
 
@@ -193,9 +193,10 @@
 {% endif %}
 
 
-<script src="{% static 'js/search_categories.js' %} ?v=4"></script>
-<script src="{% static 'js/category_modal.js' %} ?v=5"></script>
-<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/searchs_tables.js'%} ?v=9"></script>
+<script src="{% static 'js/delete_confirmations.js'%} ?v=9"></script>
+<script src="{% static 'js/modal_category.js' %} ?v=7"></script>
+<script src="{% static 'js/modal.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
 <script src="{% static 'js/category_crud.js' %} ?v=3"></script>
 <script src="{% static 'js/tooltip.js' %} ?v=2"></script>

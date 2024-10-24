@@ -10,7 +10,7 @@ class Campo(models.Model):
 class Categorias(models.Model):
     categoria_pk = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    imagen = models.ImageField(upload_to='categories_pictures/', default='default/default.jpg')
+    imagen = models.ImageField(upload_to='categories_pictures/', null=True)
 
     class Meta:
         db_table = 'categorias'
