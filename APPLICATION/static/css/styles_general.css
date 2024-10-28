@@ -119,6 +119,10 @@ a{
     margin-top: 20px;
 }
 
+.container--padding-bottom{
+    padding-bottom: 10px;
+}
+
 .container--search {
     position: absolute; 
     top: 100%; 
@@ -754,6 +758,10 @@ a{
     padding-top: 5px;
     padding-bottom: 5px;
     color: #3B4056;
+}
+
+.table__info--border-none{
+    border: none;
 }
 
 .table__info-text{

@@ -19,12 +19,10 @@ def view_categories(request):
     search_query = request.GET.get('search', '')
     components = Campo.objects.all()
 
-    # Filtrar por búsqueda si hay un término de búsqueda
     if search_query:
         categories_list = categories_list.filter(nombre__icontains=search_query)
 
-    # Paginación
-    paginator = Paginator(categories_list,15)  # Número de elementos por página
+    paginator = Paginator(categories_list,15) 
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
@@ -45,6 +43,7 @@ def view_categories(request):
 
 @login_required
 @require_POST
+@transaction.atomic
 def new_category(request):
     try:
         data = json.loads(request.body)
@@ -55,14 +54,14 @@ def new_category(request):
             return JsonResponse({'error': 'La categoría ya existe.'}, status=400)
 
         # Crear la categoría y componentes en una transacción
-        with transaction.atomic():
-            categoria = Categorias.objects.create(nombre=name_category)
+       
+        categoria = Categorias.objects.create(nombre=name_category)
 
-            components = data.get('components', [])
-            for component_name in components:
-                component_name = component_name.strip().capitalize()
-                campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
-                CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
+        components = data.get('components', [])
+        for component_name in components:
+            component_name = component_name.strip().capitalize()
+            campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
+            CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
 
         # Registrar la actividad
         log_activity(
@@ -100,6 +99,7 @@ def get_category(request, category_id):
 
 @login_required
 @require_POST
+@transaction.atomic
 def update_category(request, category_id):
     try:
         data = json.loads(request.body)
@@ -166,6 +166,7 @@ def update_category(request, category_id):
 
 @login_required
 @require_POST
+@transaction.atomic
 def delete_category(request, category_id):
     try:
         # Obtener y eliminar la categoría

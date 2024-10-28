@@ -5,9 +5,54 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.db import transaction
 from apps.references.models import Referencias
+from apps.categories.models import Categorias
+from django.template.loader import render_to_string
 from .models import Equipos
+from django.core.paginator import Paginator
 import json
 from apps.activityLog.utils import log_activity
+
+
+@login_required
+def view_equipments(request):
+    equipment_list = Equipos.objects.select_related('referencia_fk').all()
+    categories_list = Categorias.objects.values_list('nombre', flat=True)
+    brand_list = Referencias.objects.values_list('marca', flat=True).distinct()
+
+    search_query = request.GET.get('search', '').strip()
+    filter_brand = request.GET.get('brand', '').strip()
+    filter_category = request.GET.get('category', '').strip()
+
+    if search_query:
+        equipment_list = equipment_list.filter(cod_equipo_pk__icontains=search_query)
+
+    if filter_brand and filter_brand not in ['Marca', 'TODAS', '']:
+        equipment_list = equipment_list.filter(referencia_fk__marca__icontains=filter_brand)
+    
+    if filter_category and filter_category not in ['Categoría', 'TODAS', '']:
+        equipment_list = equipment_list.filter(referencia_fk__categoria__nombre__icontains=filter_category)
+
+    paginator = Paginator(equipment_list, 15)
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
+    context = {
+        'paginator': paginator,
+        'categories_list': categories_list,
+        'brand_list': brand_list,
+        'brand': filter_brand,
+        'search_query': search_query,
+        'category': filter_category
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_equipments_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_equipments_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
+    return render(request, 'equipments.html', context)
+
+
 
 
 

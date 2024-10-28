@@ -15,6 +15,10 @@ class Categorias(models.Model):
     class Meta:
         db_table = 'categorias'
 
+    def __str__(self):
+        return self.nombre
+    
+
 class CategoriasCampo(models.Model):
     id_pk = models.AutoField(primary_key=True)  
     categoria_fk = models.ForeignKey(Categorias, on_delete=models.CASCADE, db_column='categoria_fk', null=True) 

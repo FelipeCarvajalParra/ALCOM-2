@@ -43,6 +43,7 @@ def view_references(request, id_category):
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
+
     context = {
         'paginator': paginator,
         'search_query':search_query,
@@ -60,6 +61,32 @@ def view_references(request, id_category):
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_references.html', context)
+
+
+def view_all_references(request):
+
+    references_list = Referencias.objects.all()
+    brands = Referencias.objects.values('marca').distinct()
+    default_image = os.path.join(settings.MEDIA_URL, 'default/default.jpg')
+
+    paginator = Paginator(references_list,15)  # Número de elementos por página
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
+
+    context = {
+        'paginator': paginator,
+        'brands': brands,
+        'default_image': default_image
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_references_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_references_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
+    return render(request, 'view_all_references.html', context)
+
 
 @login_required
 @require_POST
@@ -250,32 +277,30 @@ def edit_reference(request, reference_id):
 @transaction.atomic
 def edit_reference_data_general(request, reference_id):
     try:
+        # Buscar la referencia existente por su ID (sin permitir cambio de PK)
         reference = get_object_or_404(Referencias, pk=reference_id)
         
+        # Definir los campos que se pueden actualizar
         fields = {
-            'referencia_pk': request.POST.get('reference'),
             'marca': request.POST.get('brand'),
-            'url_consulta': request.POST.get('url'),  # Cambiado aquí
+            'url_consulta': request.POST.get('url'),
             'accesorios': request.POST.get('accessories'),  
             'observaciones': request.POST.get('observations')
         }
 
-        new_reference_code = fields.get('referencia_pk')
-        if new_reference_code and new_reference_code != reference.referencia_pk:
-            if Referencias.objects.filter(referencia_pk=new_reference_code).exclude(pk=reference_id).exists():
-                return JsonResponse({'error': 'El código de referencia ya existe.'}, status=400)
-        
-        # Actualizar los campos
+        # Actualizar solo los campos definidos (sin cambiar `referencia_pk`)
         for field, value in fields.items():
-            if value: 
+            if value is not None:
                 setattr(reference, field, value)
         
-        reference.save()  # Guardar los cambios
+        # Guardar los cambios
+        reference.save()
 
         messages.success(request, 'Datos generales actualizados correctamente.')
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
+
 
 
 @login_required

@@ -1,0 +1,36 @@
+{% if paginator|length > 0 %}
+    {% for equipment in paginator %}
+        <tr class="table__row">
+            <td class="table__cell table__cell--auto table__cell--flex">
+                <div class="table__container-text">
+                    <a href="" class="table__container-link">{% if equipment.serial %}{{ equipment.serial }}{% else %}No serial{% endif %}</a>
+                    <span class="table__container-email">Código: {% if equipment.cod_equipo_pk %}{{ equipment.cod_equipo_pk }}{% else %}No serial{% endif %}</span>
+                </div>
+            </td>
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ equipment.referencia_fk.marca }}">
+                {% if equipment.referencia_fk.marca %}{{ equipment.referencia_fk.marca }}{% else %}No marca{% endif %}
+            </td>
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ equipment.referencia_fk.categoria }}">
+                {% if equipment.referencia_fk.categoria %}{{ equipment.referencia_fk.categoria }}{% else %}No categoría{% endif %}
+            </td>
+            <td class="table__cell table__cell--actions">
+                <svg class="svg-option svg-option--edit" width="20px" height="20px">
+                    <use href="#icon-edit"></use>
+                </svg>
+                <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                    <use href="#icon-delete"></use>
+                </svg>
+            </td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr class="table__row table__row--not-results">
+        <td class="table__cell table__cell--not-results" colspan="4">
+            <span class="table__text--not-result">
+                No se encontraron resultados
+            </span>
+        </td>
+    </tr>
+{% endif %}
+
+

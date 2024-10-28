@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+function tooltip(){
     const cells = document.querySelectorAll('.table__cell--overflow');
 
     let activeTooltip = null; // Variable para guardar el tooltip activo
@@ -61,6 +61,12 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    tooltip();
 });
+    
+
 
 
