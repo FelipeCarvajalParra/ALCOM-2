@@ -1,0 +1,75 @@
+{% if user_results or category_results or reference_results or equipment_results %}
+
+    {% if user_results %}
+        <div class="search-section">
+            <div class="search-section__title">Usuarios</div>
+            {% for user in user_results %}
+                <div class="search-section__records">
+                    <a class="search-section__record" href="/edit_user/{{user.id}}">
+                        <img class="search-section__image search-section__image--circular" src="{{ user.profile_picture.url }}" alt="img" />
+                        <div class="search-section__text">
+                            <span class="search-section__reference" href="#">{{ user.first_name }} {{ user.last_name }} </span>
+                            <span class="search-section__sub-reference"></span>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if category_results %}
+        <div class="search-section">
+            <div class="search-section__title">Categorias</div>
+            {% for category in category_results %}
+                <div class="search-section__records">
+                    <a class="search-section__record" href="/view_categories/view_references/{{category.categoria_pk}}">
+                        <img class="search-section__image search-section__image--semi-circular" 
+                        src="{% if category.imagen %}{{ category.imagen.url }}{% else %}{{ default_image }}{% endif %}" alt="img" />
+                        <div class="search-section__text">
+                            <span class="search-section__reference" href="#">{{ category.nombre }}</span>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if reference_results %}
+        <div class="search-section">
+            <div class="search-section__title">Referencias</div>    
+            {% for reference in reference_results %}
+                <div class="search-section__records">
+                    <a class="search-section__record" href="/edit_reference/{{reference.referencia_pk}}">
+                        <img class="search-section__image search-section__image--semi-circular"
+                            src="{% if reference.archivos and reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="img" />
+                        <div class="search-section__text">
+                            <span class="search-section__reference" href="#">{{ reference.referencia_pk }}</span>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+        
+    {% if equipment_results %}
+        <div class="search-section">
+            <div class="search-section__title">Equipos</div>
+            {% for equipment in equipment_results %}
+                <div class="search-section__records">
+                    <a class="search-section__record" href="#">
+                        <div class="search-section__text">
+                            <span class="search-section__reference" href="#">{{ equipment.serial }}</span>
+                            <span class="search-section__sub-reference">Codigo: {{ equipment.cod_equipo_pk }}</span>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% else %}
+    <div class="search-section">
+        <div class="search-section__title search-section__title--result-none">Sin resultados</div>
+    </div>
+{% endif %}

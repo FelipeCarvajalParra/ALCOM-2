@@ -97,23 +97,9 @@ function petition(url, search, page, brand, category) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 let timeout;
 
-
 paginatorReferences =  document.getElementById('paginatorReferences')
-
 if(paginatorReferences){
 
     const category = document.getElementById('reference').value
@@ -139,8 +125,6 @@ if(paginatorReferences){
     }
 }
 
-
-
 paginatorCategories =  document.getElementById('paginatorCategories')
 if(paginatorCategories){
     $(document).on('input', '#searchCategories', function() {// Sección búsqueda categorías
@@ -150,8 +134,6 @@ if(paginatorCategories){
         }, 350); // Tiempo de espera para debouncing
     });
 }
-
-
 
 paginatorEquipment =  document.getElementById('paginatorEquipment')
 if(paginatorEquipment){
@@ -164,11 +146,7 @@ if(paginatorEquipment){
     });
 }
 
-
-
-
 paginatorEquipment =  document.getElementById('paginatorEquipmentPage')
-
 if(paginatorEquipment){
 
     $(document).on('input', '#searchEquipment', function() {// Sección búsqueda categorías
@@ -177,8 +155,6 @@ if(paginatorEquipment){
             searchTable(4, 1, `/view_equipments/`); 
         }, 350); 
     });
-
-
 
     const filterBrand = document.getElementById('filterBrand');
     if (filterBrand) {

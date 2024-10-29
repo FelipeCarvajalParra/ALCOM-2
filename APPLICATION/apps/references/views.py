@@ -65,24 +65,39 @@ def view_references(request, id_category):
 
 def view_all_references(request):
 
+    print('holaaaaaaaaaaaaaaa')
+
     references_list = Referencias.objects.all()
+
+    search_query = request.GET.get('search', '').strip()
+    
+
     brands = Referencias.objects.values('marca').distinct()
     default_image = os.path.join(settings.MEDIA_URL, 'default/default.jpg')
+
+    if search_query:
+        references_list = references_list.filter(referencia_pk__icontains=search_query)
 
     paginator = Paginator(references_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
+ 
 
-
-    context = {
+    for reference in paginator:
+        reference.components = Valor.objects.filter(referencia_fk=reference.referencia_pk).values('valor', 'campo_fk__nombre_campo')
+        reference.cantidad_equipos = Equipos.objects.filter(referencia_fk=reference.referencia_pk).count()
+        reference.image = Archivos.objects.filter(referencia_pk=reference.referencia_pk).first()
+        
+    context = { 
         'paginator': paginator,
         'brands': brands,
+        'search_query':search_query,
         'default_image': default_image
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html_body = render_to_string('partials/_references_table_body.html', context, request=request)
-        html_footer = render_to_string('partials/_references_table_footer.html', context, request=request)
+        html_body = render_to_string('partials/references_results.html', context, request=request)
+        html_footer = render_to_string('partials/references_results_footer.html', context, request=request)
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_all_references.html', context)

@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=19" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=21" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -277,64 +277,15 @@
         <main class="main main--center">
             <header class="main__header">
                 <div class="main__search">
-                    <input class="main__search-input" type="text" placeholder="Buscar..." />
+                    <input class="main__search-input" id="inputSearchGeneral" type="text" placeholder="Buscar..." />
                     <svg class="main__search-icon" width="20px" height="20px">
                         <use href="#search"></use>
                     </svg>
-                    <div class="container--search scroll">
-                        <!-- Sección de usuarios -->
-                        <div class="search-section">
-                            <div class="search-section__title">Usuarios</div>
-                            <div class="search-section__records">
-                                <a class="search-section__record" href="#">
-                                    <img class="search-section__image search-section__image--circular" src="#" alt="img" />
-                                    <div class="search-section__text">
-                                        <span class="search-section__reference" href="#">Felipe carvajal parra</span>
-                                        <span class="search-section__sub-reference">administrador</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                    <div class="container--search scroll" id="containerSearch">
 
-                        <div class="search-section">
-                            <div class="search-section__title">Categorias</div>
-                            <div class="search-section__records">
-                                <a class="search-section__record" href="#">
-                                    <img class="search-section__image search-section__image--semi-circular" src=""
-                                        alt="img" />
-                                    <div class="search-section__text">
-                                        <span class="search-section__reference" href="#">Scaneres</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="search-section">
-                            <div class="search-section__title">Equipos</div>
-                            <div class="search-section__records">
-                                <a class="search-section__record" href="#">
-                                    <img class="search-section__image search-section__image--semi-circular"
-                                        src="/static/img/561232-800-800.png" alt="img" />
-                                    <div class="search-section__text">
-                                        <span class="search-section__reference" href="#">561232-800-800</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="search-section">
-                            <div class="search-section__title">Existencias</div>
-                            <div class="search-section__records">
-                                <a class="search-section__record" href="#">
-                                    <div class="search-section__text">
-                                        <span class="search-section__reference" href="#">7485</span>
-                                        <span class="search-section__sub-reference">228846784998575758958755654</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="search-section">
+                        {% include "partials/search_results.html" %}
+                        
+                        <!--<div class="search-section">
                             <div class="search-section__title">Partes</div>
                             <div class="search-section__records">
                                 <a class="search-section__record" href="#">
@@ -346,8 +297,9 @@
                                     </div>
                                 </a>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
+
                 </div>
 
                 <img class="main__image" src="{% static 'img/basic_alcom_logo.png' %}" alt="img" />
@@ -370,7 +322,7 @@
     </div>
    
     <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
-    <script src="{% static 'js/search-general.js'%} ?v=2"></script>
+    <!--<script src="{% static 'js/search_general.js'%} ?v=4"></script>-->
 
 
     {% if messages %}
