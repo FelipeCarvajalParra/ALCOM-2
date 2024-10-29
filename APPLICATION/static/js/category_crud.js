@@ -46,22 +46,6 @@ form.addEventListener('submit', function(event) {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Obtener referencias a los elementos del formulario de actualización
 const editForm = document.getElementById('editCategoryForm');
 const editNameCategory = document.getElementById('editNameCategory');

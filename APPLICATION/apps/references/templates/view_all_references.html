@@ -5,6 +5,23 @@
 <div class="container--large container--padding-bottom">
     <table class="table">
         <div class="table__info table__info--options table__info--border-none" style="border-bottom: none;">
+            
+            <div class="select select--filter">
+                <div class="select__selected" id="filterCategory">{% if category %}{{ category }}{% else %}Categoria{% endif %}</div>
+                <div class="select__options scroll">
+                    <div class="select__option">TODAS</div>
+                    {% if categories|length > 0 %}
+                        {% for category in categories %}
+                            <div class="select__option">{{category.nombre}}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="select__icon">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                    </svg>
+                </div>
+            </div>
             <div class="select select--filter">
                 <div class="select__selected" id="filterBrand">{% if brand %}{{ brand }}{% else %}Marca{% endif %}</div>
                 <div class="select__options scroll">
@@ -22,39 +39,23 @@
                 </div>
             </div>
 
-            <input class="select select--search" type="text" id="inputSearchReferences" placeholder="Buscar por referencia" value="{{search_query}}" />
+            <input class="select select--search select--right" type="text" id="inputSearchReferences" placeholder="Buscar por referencia" value="{{search_query}}" />
 
-            <div class="select select--filter select--right">
-                <div class="select__selected">
-                    <svg width="21px" height="17px" viewBox="0 0 21 21" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9.625 14H11.375V6.125H14L10.5 1.75L7 6.125H9.625V14Z" />
-                        <path
-                            d="M4.375 19.25H16.625C17.5901 19.25 18.375 18.4651 18.375 17.5V9.625C18.375 8.65987 17.5901 7.875 16.625 7.875H13.125V9.625H16.625V17.5H4.375V9.625H7.875V7.875H4.375C3.40987 7.875 2.625 8.65987 2.625 9.625V17.5C2.625 18.4651 3.40987 19.25 4.375 19.25Z" />
-                    </svg>
-                    <span> Exportar </span>
-                </div>
-                <div class="select__icon">
-                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                    </svg>
-                </div>
-            </div>
+
         </div>
     </table>
 </div>
 <div class="container__references">
-    {% include "partials/references_results.html" %}
+    {% include "partials/_references_results.html" %}
 </div>
 <div class="table__footer">
-    {% include "partials/references_results_footer.html" %}
+    {% include "partials/_references_results_footer.html" %}
 </div>
 
 
 
-<script src="{% static 'js/search_references.js' %}"></script>
+<script src="{% static 'js/search_references.js' %} ?v=3"></script>
+<script src="{% static 'js/filter_selector.js' %} ?v=2"></script>
 
 
 

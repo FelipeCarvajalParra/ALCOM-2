@@ -42,26 +42,22 @@ def view_users(request):
     search_query = request.GET.get('search', '')
 
     if search_query:
-        user_list = user_list.filter(
-        Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
-    )
+        user_list = user_list.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
 
-    paginator = Paginator(user_list, 13)  # Ajusta el número de usuarios por página
+    paginator = Paginator(user_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
-    users = paginator.get_page(page_number)
+    paginator = paginator.get_page(page_number)
 
-    # Verifica si es una solicitud AJAX a través del encabezado HTTP
+    context = {
+        'paginator': paginator
+    }
+
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('partials/_user_table_body.html', {'users': users}, request=request)
-        return HttpResponse(html)
+        html_body = render_to_string('partials/_user_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_user_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
 
-    context = {'users': users}
     return render(request, 'view_users.html', context)
-
-
-
-
-
 
 
 @login_required

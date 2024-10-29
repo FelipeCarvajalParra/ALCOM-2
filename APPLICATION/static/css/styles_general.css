@@ -170,6 +170,7 @@ a{
     max-height: 950px;
     overflow-y: auto;
     border: 10px solid #ffff;
+    padding-bottom: 10px;
 }
 
 .container__section-image {

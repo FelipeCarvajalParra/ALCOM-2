@@ -22,7 +22,7 @@ default_image = f"{settings.MEDIA_URL}default/default.jpg"
 def view_references(request, id_category):
 
     search_query = request.GET.get('search', '').strip()
-    filter_brand = request.GET.get('brand', '')
+    filter_brand = request.GET.get('brand', '').strip()
 
     references_list = Referencias.objects.filter(categoria=id_category).all().order_by('-referencia_pk')
     category_name = get_object_or_404(Categorias, pk=id_category).nombre
@@ -65,18 +65,32 @@ def view_references(request, id_category):
 
 def view_all_references(request):
 
-    print('holaaaaaaaaaaaaaaa')
-
     references_list = Referencias.objects.all()
 
     search_query = request.GET.get('search', '').strip()
-    
+    filter_brand = request.GET.get('brand', '').strip()
+    filter_category = request.GET.get('category', '').strip()
 
     brands = Referencias.objects.values('marca').distinct()
+    categories = Categorias.objects.values('nombre').distinct()
     default_image = os.path.join(settings.MEDIA_URL, 'default/default.jpg')
 
     if search_query:
         references_list = references_list.filter(referencia_pk__icontains=search_query)
+
+
+    if filter_brand == 'Marca':
+        filter_brand = ''
+    
+    
+    if filter_brand and filter_brand != 'TODAS':
+            references_list = references_list.filter(marca=filter_brand)
+
+    if filter_category == 'Categoria':
+        filter_category = ''
+
+    if filter_category and filter_category != 'TODAS':
+            references_list = references_list.filter(categoria__nombre=filter_category)
 
     paginator = Paginator(references_list,15)  # Número de elementos por página
     page_number = request.GET.get('page')
@@ -91,13 +105,16 @@ def view_all_references(request):
     context = { 
         'paginator': paginator,
         'brands': brands,
+        'brand': filter_brand,
+        'categories': categories,
+        'category': filter_category,
         'search_query':search_query,
         'default_image': default_image
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html_body = render_to_string('partials/references_results.html', context, request=request)
-        html_footer = render_to_string('partials/references_results_footer.html', context, request=request)
+        html_body = render_to_string('partials/_references_results.html', context, request=request)
+        html_footer = render_to_string('partials/_references_results_footer.html', context, request=request)
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_all_references.html', context)
@@ -116,8 +133,6 @@ def new_reference(request, category_id):
         accessories = data.get('accessories', '').strip()
         observations = data.get('observations', '').strip()
         components = data.get('components', [])
-
-        print('aqui:', components)
 
         # Verificar si la referencia ya existe
         if Referencias.objects.filter(referencia_pk=reference_pk).exists():

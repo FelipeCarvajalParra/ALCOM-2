@@ -63,7 +63,19 @@ function searchTable(module, page = 1, url) {
                 .catch(() => {
                     console.log('error');
                 });
-        break;
+            break;
+        case(5): // Caso para buscar categorías
+            search = $('#searchUser').val();
+
+            petition(url, search, page)
+                .then(() => {
+                    tooltip()
+                })
+                .catch(() => {
+                    console.log('error');
+                });
+            break;
+
 
         default:
             search = ''; // Por si acaso
@@ -75,17 +87,9 @@ function petition(url, search, page, brand, category) {
     let data = {
         'search': search,
         'page': page,
+        'brand': brand,
+        'category': category
     };
-
-    // Solo agregar 'brand' si tiene un valor válido
-    if (brand && brand !== 'Marca' && brand !== 'TODAS') {
-        data['brand'] = brand;
-    }
-
-    // Solo agregar 'category' si tiene un valor válido
-    if (category && category !== 'Categoria' && category !== 'TODAS') {
-        data['category'] = category;
-    }
 
     // Enviar la petición AJAX
     return $.ajax({
@@ -170,7 +174,6 @@ if(paginatorEquipment){
     }
 
     const filterCategory = document.getElementById('filterCategory');
-
     if (filterCategory) {
         const observer = new MutationObserver(function(mutationsList) {
             for (const mutation of mutationsList) {
@@ -182,4 +185,14 @@ if(paginatorEquipment){
     
         observer.observe(filterCategory, { childList: true, subtree: true });
     }
+}
+
+paginatorUsers =  document.getElementById('paginatorUsers')
+if(paginatorUsers){
+    $(document).on('input', '#searchUser', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            searchTable(5, 1, `/view_users/`); // Llama a searchTable para categorías (página 1 por defecto)
+        }, 350); // Tiempo de espera para debouncing
+    });
 }

@@ -155,18 +155,20 @@
                             </svg>
                         </div>
                         <ul class="aside__nav-option-sublist  {% if is_view_user or is_edit_user %}aside__nav-option-sublist--active{% endif %}">
-                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
-                                <svg class="" width="7" height="10">
-                                    <use href="#circle"></use>
-                                </svg>
-                                <a href="{% url 'home/construction' %}" class="aside__nav-item-link">Grupos</a>
-                            </li>
                             <li class="aside__nav-option-subitem {% if is_view_user or is_edit_user %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
                                 <a href="{% url 'view_users' %}" class="aside__nav-item-link">Usuarios registrados</a>
+                               
+                            </li>
+                            <li class="aside__nav-option-subitem {% if is_activity_log %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                               
+                                <svg class="" width="7" height="10">
+                                    <use href="#circle"></use>
+                                </svg>
+                                <a href="{% url 'view_users' %}" class="aside__nav-item-link">Actividad</a>
                                
                             </li>
                         </ul>
@@ -322,7 +324,7 @@
     </div>
    
     <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
-    <!--<script src="{% static 'js/search_general.js'%} ?v=4"></script>-->
+    <script src="{% static 'js/search_general.js'%} ?v=4"></script>
 
 
     {% if messages %}

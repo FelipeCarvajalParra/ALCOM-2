@@ -1,5 +1,6 @@
 const equipmentFileImageInput = document.getElementById('equipmentFileImageInput');
 const equipmentFileSheetInput = document.getElementById('equipmentFileSheetInput'); 
+const userFileImageInput = document.getElementById('userFileImageInput'); 
 
 if (equipmentFileImageInput) {
     equipmentFileImageInput.addEventListener('change', function() {
@@ -19,6 +20,26 @@ if (equipmentFileImageInput) {
 
 if (equipmentFileSheetInput) {
     equipmentFileSheetInput.addEventListener('change', function() {
+        const app_name = this.getAttribute('data-app');
+        const table = this.getAttribute('data-table');
+        const field = this.getAttribute('data-field');
+        const record_id = this.getAttribute('data-record');
+        const type = this.getAttribute('data-type');
+        const file = this.files[0]; 
+        
+        if (file) {
+            updateFile(app_name, table, field, record_id, file, type);
+        }
+    });
+}
+
+if (userFileImageInput) {
+    const imageProfile = document.getElementById('imageProfile');
+    imageProfile.addEventListener('click', () => {
+        userFileImageInput.click();
+    });
+    userFileImageInput.addEventListener('change', function() {
+        console.log('hola')
         const app_name = this.getAttribute('data-app');
         const table = this.getAttribute('data-table');
         const field = this.getAttribute('data-field');

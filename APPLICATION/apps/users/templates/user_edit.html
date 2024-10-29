@@ -10,12 +10,8 @@
             <div class="container__section-image">
                 <img id="imageProfile" class="container__image--profile" src="{{ user.profile_picture.url }}" alt="Profile Image">
                 
-                <input type="text" id="app_name" name="app_name" value="users" hidden>
-                <input type="text" id="table" value="customuser" hidden>
-                <input type="text" id="field" value="profile_picture" hidden>
-                <input type="number" id="userId" value="{{ user.id }}" hidden>
-                <input type="file" id="image" accept="image/*" hidden>
-
+                <input type="file" id="userFileImageInput" data-app="users" data-table="CustomUser" data-field="profile_picture" data-record="{{user.id}}" data-type="image">
+    
                 <span>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</span>
             </div>
 
@@ -270,11 +266,11 @@
 {% endif %}
 
 <script src="{% static 'js/sub_navigation.js' %}" ></script>
-<script src="{% static 'js/update_user.js' %}" ></script>
-<script src="{% static 'js/update_login_data.js' %}" ></script>
-<script src="{% static 'js/update_image_user.js' %}" ></script>
-<script src="{% static 'js/filters.js'%}"></script>
+<script src="{% static 'js/delete_confirmations.js' %}"></script>
+<script src="{% static 'js/user_crud.js' %}"></script>
+<script src="{% static 'js/filter_selector.js'%}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
+<script src="{% static 'js/update_files.js' %}"></script>
 
 
 
