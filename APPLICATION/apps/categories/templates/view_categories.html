@@ -51,9 +51,11 @@
                                 <use href="#icon-edit"></use>
                             </svg>
 
-                            <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-deleteCategory="{{category.id}}">
-                                <use href="#icon-delete"></use>
-                            </svg>
+                            {% if user.groups.first.name == 'administrators' %}
+                                <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="{{category.categoria_pk}}" data-deleteCategory="{{category.id}}">
+                                    <use href="#icon-delete"></use>
+                                </svg>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -193,7 +195,7 @@
 {% endif %}
 
 
-<script src="{% static 'js/searchs_tables.js'%} ?v=9"></script>
+<script src="{% static 'js/searchs_tables.js'%} ?v=10"></script>
 <script src="{% static 'js/delete_confirmations.js'%} ?v=9"></script>
 <script src="{% static 'js/modal_category.js' %} ?v=7"></script>
 <script src="{% static 'js/modal.js' %} ?v=2"></script>

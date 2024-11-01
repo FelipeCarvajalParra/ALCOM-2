@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block contend %}
 {% load static %}
+{% csrf_token %}
 
 <div class="container--large">
     <table class="table">
@@ -26,7 +27,7 @@
                     <span> Exportar </span>
                 </div>
                 <div class="select__options">
-                    <a class="select__option select__option--export">
+                    <div class="select__option select__option--export" id="printUsersExcel">
                         <svg fill="currentColor" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
                             data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -35,8 +36,8 @@
                                 d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
                         </svg>
                         <span >Excel</span>
-                    </a>
-                    <div class="select__option select__option--export" id="printTable">
+                    </div>
+                    <div class="select__option select__option--export" id="printUsersPdf">
                         <svg width="23px" height="18px" fill="currentColor" viewBox="-274.15 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
                             <path
@@ -82,11 +83,7 @@
     <div class="table__footer">
         {% include 'partials/_user_table_footer.html' %}
     </div>
-    
-    
 </div>
-
-
 
 <div class="modal-overlay"></div>
 <div class="modal" id="modalNewUser">
@@ -202,5 +199,7 @@
     <script src="{% static 'js/filter_selector.js'%}"></script>
     <script src="{% static 'js/tooltip.js'%}"></script>
     <script src="{% static 'js/inputs_placeholders.js' %}"></script>
+    <script src="{% static 'js/print_pdf.js' %}"></script>
+    <script src="{% static 'js/print_excel.js' %}"></script>
 
 {% endblock %}

@@ -18,15 +18,17 @@
                     
                     <div class="image-selector__options">
                         <div class="button button--edit button--input">
-                            <label class="custom-file-upload pointer" for="equipmentFileImageInput">
-                                Seleccionar archivo
-                                <input id="equipmentFileImageInput" class="file-upload" type="file" accept=".jpg, .jpeg, .png, .webp"
-                                       data-app="references"
-                                       data-table="archivos"
-                                       data-field="imagen_1"
-                                       data-type="image"
-                                       data-record="{{reference.archivos.referencia_pk}}">
-                            </label>
+                            {% if user.groups.first.name == 'administrators' %}
+                                <label class="custom-file-upload pointer" for="equipmentFileImageInput">
+                                    Seleccionar archivo
+                                    <input id="equipmentFileImageInput" class="file-upload" type="file" accept=".jpg, .jpeg, .png, .webp"
+                                        data-app="references"
+                                        data-table="archivos"
+                                        data-field="imagen_1"
+                                        data-type="image"
+                                        data-record="{{reference.archivos.referencia_pk}}">
+                                </label>
+                            {% endif %}
                         </div>
 
 
@@ -57,11 +59,15 @@
                                     <path d="M18.313 13.625h-4.031v-6.594c0-0.563-0.469-1.031-1.031-1.031h-4.031c-0.594 0-1.063 0.469-1.063 1.031v6.594h-4.031c-0.531 0-0.719 0.344-0.313 0.75l6.688 6.656c0.188 0.188 0.438 0.281 0.719 0.281s0.563-0.094 0.75-0.281l6.656-6.656c0.375-0.406 0.25-0.75-0.313-0.75zM0 18.344v7.125c0 0.313 0.156 0.5 0.5 0.5h21.375c0.344 0 0.531-0.188 0.531-0.5v-7.125c0-0.313-0.25-0.531-0.531-0.531h-2.031c-0.281 0-0.531 0.25-0.531 0.531v4.531h-16.25v-4.531c0-0.313-0.219-0.531-0.5-0.531h-2.063c-0.281 0-0.5 0.25-0.5 0.531z">
                                     </path> 
                                 </svg>
-                            <a id="deleteReferenceImage">
-                                <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="77" data-deletecategory="">
-                                    <use href="#icon-delete"></use>
-                                </svg>
                             </a>
+
+                            {% if user.groups.first.name == 'administrators' %}
+                                <a id="deleteReferenceImage">
+                                    <svg class="svg-option svg-option--delete deleteCategory" width="20px" height="20px" data-category-id="77" data-deletecategory="">
+                                        <use href="#icon-delete"></use>
+                                    </svg>
+                                </a>
+                            {% endif %}
                         </div>
                         
                     </div>
@@ -148,7 +154,7 @@
                             <label class="input-container__label" for="reference">Referencia</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" value="{{reference.marca}}" name="brand" id="brand" oninput="filterBrands()" required>
+                            <input class="input input--medium" type="text" value="{{reference.marca}}" name="brand" id="brand" oninput="filterBrands()" {% if user.groups.first.name == 'consultants' %}readonly{%endif%} required>
                             <label class="input-container__label" for="brand">Marca</label>
         
                             <ul id="autocompleteListBrand" class="autocomplete-list scroll" role="listbox" aria-hidden="true" style="display: none;">
@@ -167,7 +173,7 @@
                 <div class="form__auto form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="url" maxlength="1000" name="url" value="{{reference.url_consulta}}" >
+                            <input class="input input--largue" type="text" id="url" maxlength="1000" name="url" value="{{reference.url_consulta}}" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>
                             <label class="input-container__label" for="url">URL consulta</label>
                         </div>
                     </div>
@@ -176,7 +182,7 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="accessories" name="accessories" maxlength="1000">{{reference.accesorios}}</textarea>
+                            <textarea class="input input--largue textarea" id="accessories" name="accessories" maxlength="1000" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>{{reference.accesorios}}</textarea>
                             <label class="input-container__label textarea__label" for="accessories">Accesorios</label>
                         </div>
                     </div>
@@ -185,17 +191,18 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="observations" name="observations" maxlength="1000">{{reference.observaciones}}</textarea>
+                            <textarea class="input input--largue textarea" id="observations" name="observations" maxlength="1000" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>{{reference.observaciones}}</textarea>
                             <label class="input-container__label textarea__label" for="observations">Observaciones</label>
                         </div>
                     </div>
                 </div>
 
 
-
-                <button class="button button--save">
-                    <span>Guardar cambios</span>
-                </button>
+                {% if user.groups.first.name == 'administrators' %}
+                    <button class="button button--save">
+                        <span>Guardar cambios</span>
+                    </button>
+                {% endif %}
                 <span id="referenceEditMessageError" class="login__error-message">‎</span>
             </form>
         </div>
@@ -218,17 +225,19 @@
                                         name="valor_{{ component.valor_id }}" 
                                         data-id="{{ component.valor_id }}" 
                                         maxlength="400"
-                                    >{{ component.valor }}</textarea>
+                                        {% if user.groups.first.name == 'consultants' %}readonly{%endif%}
+                                    >{{ component.valor }} </textarea>
                                     <label class="input-container__label textarea__label" for="{{ component.campo_fk.nombre_campo }}">{{ component.campo_fk.nombre_campo }}</label>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
 
-                    
-                    <button class="button button--save" >
-                        <span>Guardar cambios</span>
-                    </button>
+                    {% if user.groups.first.name == 'administrators' %}
+                        <button class="button button--save" >
+                            <span>Guardar cambios</span>
+                        </button>
+                    {% endif %}
                     <span id="referenceEditComponentsMessageError" class="login__error-message">‎</span>
                 </form>
             {% else %}
@@ -241,15 +250,17 @@
         <div id="technicalSheet" class="container--activity scroll" style="display: none;">
             <form class="container__section-title container__section-title--button">
                 <div class="button button--edit button--input">
-                    <label class="custom-file-upload pointer" for="equipmentFileSheetInput">
-                        Seleccionar archivo
-                        <input id="equipmentFileSheetInput" class="file-upload" type="file"
-                            data-app="references"
-                            data-table="archivos"
-                            data-field="ficha_tecnica"
-                            data-type="file"
-                            data-record="{{reference.archivos.referencia_pk}}">
-                    </label>
+                    {% if user.groups.first.name == 'administrators' %}
+                        <label class="custom-file-upload pointer" for="equipmentFileSheetInput">
+                            Seleccionar archivo
+                            <input id="equipmentFileSheetInput" class="file-upload" type="file"
+                                data-app="references"
+                                data-table="archivos"
+                                data-field="ficha_tecnica"
+                                data-type="file"
+                                data-record="{{reference.archivos.referencia_pk}}">
+                        </label>
+                    {% endif %}
                 </div>
             </form>
 
@@ -314,14 +325,16 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="button" data-modal-id="modalNewEquipment">
-                                <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
-                                </svg>
-                                <span>Agregar</span>
-                            </div>
+                            {% if user.groups.first.name == 'administrators' %}
+                                <div class="button" data-modal-id="modalNewEquipment">
+                                    <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
+                                    </svg>
+                                    <span>Agregar</span>
+                                </div>
+                            {% endif %}
                         </div>
                         <thead class="table__headed">
                             <th class="table__headed-title">Serial</th>
@@ -350,12 +363,16 @@
                                         {{equipment.estado}}
                                     </td>
                                     <td class="table__cell table__cell--actions">
-                                        <svg class="svg-option" width="20px" height="20px">
-                                            <use href="#icon-view"></use>
-                                        </svg>
-                                        <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
-                                            <use href="#icon-delete"></use>
-                                        </svg>
+                                        {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
+                                            <svg class="svg-option" width="20px" height="20px">
+                                                <use href="#icon-view"></use>
+                                            </svg>
+                                        {%endif%}
+                                        {% if user.groups.first.name == 'administrators' %}
+                                            <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
+                                                <use href="#icon-delete"></use>
+                                            </svg>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -374,65 +391,67 @@
     </div>
 </div>
 
-<div class="modal-overlay"></div>
-<div class="modal" id="modalNewEquipment">
-    <button class="modal__close">
-        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </button>
+{% if user.groups.first.name == 'administrators' %}
+    <div class="modal-overlay"></div>
+    <div class="modal" id="modalNewEquipment">
+        <button class="modal__close">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
 
-    <div class="modal__header">
-        <span>Añadir nueva existencia</span>
-        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la existencia.</p>
-    </div>
+        <div class="modal__header">
+            <span>Añadir nueva existencia</span>
+            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la existencia.</p>
+        </div>
 
 
-    <form class="container__form" id="newEquipmentForm">
-        {% csrf_token %}
-        <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
-        <div class="form__largue form__largue--margin-top">
-            <div class="input-container">
-                <div class="input-wrapper input-wrapper--largue">
-                    <input class="input input--largue" type="text" id="serial" name="serial" required>
-                    <label class="input-container__label" for="serial"  >Serial</label>
+        <form class="container__form" id="newEquipmentForm">
+            {% csrf_token %}
+            <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
+            <div class="form__largue form__largue--margin-top">
+                <div class="input-container">
+                    <div class="input-wrapper input-wrapper--largue">
+                        <input class="input input--largue" type="text" id="serial" name="serial" required>
+                        <label class="input-container__label" for="serial"  >Serial</label>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="form__largue form__largue--margin-top">
-            <div class="input-container">
-                <div class="input-wrapper">
-                    <input class="input input--medium" type="text" id="code" name="code" required>
-                    <label class="input-container__label" for="code">Codigo ALCOM</label>
-                </div>
-                <div class="input-wrapper input-wrapper--flex">
-                    <div class="select select--filter select--state select--largue">
-                        <div class="select__selected" id="equipmentState">Estado</div>
-                        <div class="select__options scroll">
-                            <div class="select__option">Disponible</div>
-                            <div class="select__option">No disponible</div>
-                        </div>
-                        <div class="select__icon">
-                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                            </svg>
+            
+            <div class="form__largue form__largue--margin-top">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input class="input input--medium" type="text" id="code" name="code" required>
+                        <label class="input-container__label" for="code">Codigo ALCOM</label>
+                    </div>
+                    <div class="input-wrapper input-wrapper--flex">
+                        <div class="select select--filter select--state select--largue">
+                            <div class="select__selected" id="equipmentState">Estado</div>
+                            <div class="select__options scroll">
+                                <div class="select__option">Disponible</div>
+                                <div class="select__option">No disponible</div>
+                            </div>
+                            <div class="select__icon">
+                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="modal__options">
-            <button type="submit" class="button button--save">
-                <span>Añadir usuario</span>
-            </button>
-            <span id="messageError" class="login__error-message">‎</span>
-        </div>
+            <div class="modal__options">
+                <button type="submit" class="button button--save">
+                    <span>Añadir usuario</span>
+                </button>
+                <span id="messageError" class="login__error-message">‎</span>
+            </div>
 
-    </form>
-</div>
+        </form>
+    </div>
+{% endif %}
 
 <script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
 <script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>

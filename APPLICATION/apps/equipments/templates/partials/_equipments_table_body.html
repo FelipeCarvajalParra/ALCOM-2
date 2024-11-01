@@ -17,9 +17,11 @@
                 <svg class="svg-option svg-option--edit" width="20px" height="20px">
                     <use href="#icon-edit"></use>
                 </svg>
-                <svg class="svg-option svg-option--delete" width="20px" height="20px">
-                    <use href="#icon-delete"></use>
-                </svg>
+                {% if user.groups.first.name == 'administrators' %}
+                    <svg class="svg-option svg-option--delete" width="20px" height="20px">
+                        <use href="#icon-delete"></use>
+                    </svg>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

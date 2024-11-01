@@ -1,3 +1,6 @@
+from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.apps import apps
 from io import BytesIO
 from PIL import Image
 from django.http import HttpResponse
@@ -9,6 +12,8 @@ from django.conf import settings
 import os
 import io
 from django.db import transaction
+from django.utils import timezone
+from openpyxl import Workbook
 
 def compress_and_convert_to_webp(image_file):
 
@@ -206,9 +211,68 @@ def download_file(request):
         return HttpResponse(status=500)
 
 
+
+
 @require_POST
-@transaction.atomic
-def dowload_image(request):
+def print_pdf(request):
     app_name = request.POST.get('app_name')
-    table = request.POST.get('table')
+    table_name = request.POST.get('table')
+    fields_table = request.POST.getlist('fields_table[]')  # Lista de campos en el modelo
+    fields_pdf = request.POST.getlist('fields_pdf[]')      # Lista de nombres de columnas para el PDF
+
+    # Obtener el modelo dinámicamente
+    try:
+        model = apps.get_model(app_name, table_name)
+    except LookupError:
+        return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
+
+    # Consultar los datos de la tabla usando los campos especificados
+    queryset = model.objects.values(*fields_table)
+
+    # Preparar el contexto para la plantilla
+    context = {
+        'data': queryset,  # Cada registro como un diccionario con los campos especificados
+        'fields': [{'name': field} for field in fields_pdf],  # Nombres de los campos para la cabecera
+        'current_time': timezone.now(),  # Fecha y hora actual para el pie de página
+        'request': request  # Para utilizar `request.user` en la plantilla
+    }
+
+    # Renderizar la plantilla `print.html` con el contexto
+    return render(request, 'print.html', context)
+    
+
+@require_POST
+def print_excel(request):
+    app_name = request.POST.get('app_name')
+    table_name = request.POST.get('table')
+    fields_table = request.POST.getlist('fields_table[]')  # Campos en la base de datos
+    fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres de columnas para Excel
+
+    # Obtener el modelo dinámicamente
+    try:
+        model = apps.get_model(app_name, table_name)
+    except LookupError:
+        return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
+
+    # Consultar los datos de la tabla usando los campos especificados
+    queryset = model.objects.values(*fields_table)
+
+    # Crear un archivo Excel con openpyxl
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Registros"
+
+    # Agregar encabezados
+    worksheet.append(fields_pdf)
+
+    # Agregar datos de la consulta
+    for record in queryset:
+        row = [record[field] for field in fields_table]
+        worksheet.append(row)
+
+    # Preparar el archivo para descarga
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=registros.xlsx'
+    workbook.save(response)
+    return response
     

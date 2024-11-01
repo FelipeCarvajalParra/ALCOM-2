@@ -38,21 +38,54 @@
                     </svg>
                 </div>
             </div>
+
             <input class="select select--search select--right" type="text" id="inputSearchReferences" placeholder="Buscar por referencia" value="{{search_query}}" />
+
+
         </div>
     </table>
 </div>
-<div class="container__references">
-    {% include "partials/_references_results.html" %}
+
+<div id="activityContainer" class="container--activity scroll" style="display: block;">
+    <div class="container__section-title">
+        <span>Actividad reciente</span>
+    </div>
+    <ul class="container__list-activity">
+        {% for log in activity %}
+            <li class="list-activity__item">
+                <div class="list-activity__header">
+                    <span class="list-activity__icon
+                    {% if log.action == 'CREATE' %}list-activity__icon--create
+                    {% elif log.action == 'EDIT' %}list-activity__icon--edit
+                    {% elif log.action == 'DELETE' %}list-activity__icon--delete
+                    {% elif log.action == 'LOGIN' %}list-activity__icon--login
+                    {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
+                    {% else %}list-activity__icon{% endif %}"></span>
+                    <span class="list-activity__title">{{log.title}}</span>
+                    <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
+
+                </div>
+                <div class="list-activity__body">
+                    <p class="list-activity__description">{{log.description}}</p>
+                    {% if request.user.groups.first.name == 'administrators' %}
+                        {% if log.link %}
+                        <a href="{{log.link}}">
+                            <svg class="svg-option svg-option--notification" width="20px" height="20px">
+                                <use href="#icon-view"></use>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        <a class="deleteActivityLog" data-idLog="{{ log.id }}">
+                            <svg class="svg-option svg-option--delete svg-option--notification" width="20px" height="20px">
+                                <use href="#icon-delete"></use>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
-<div class="table__footer">
-    {% include "partials/_references_results_footer.html" %}
-</div>
-
-
-
-<script src="{% static 'js/search_references.js' %} ?v=3"></script>
-<script src="{% static 'js/filter_selector.js' %} ?v=2"></script>
 
 
 

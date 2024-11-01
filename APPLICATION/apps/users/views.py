@@ -64,8 +64,10 @@ def view_users(request):
 def edit_user(request, id):
     user = get_object_or_404(CustomUser, pk=id)
     activity = ActivityLog.objects.filter(user_id = id).order_by('-timestamp')
-    context = {'user': user, 
-               'activity': activity}
+    context = {
+        'user_account': user, 
+        'activity': activity
+    }
     return render(request, 'user_edit.html', context)
 
 

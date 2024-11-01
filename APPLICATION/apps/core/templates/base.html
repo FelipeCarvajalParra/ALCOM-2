@@ -123,7 +123,7 @@
                     </li>
 
                     <li class="aside__nav-option">
-                        <a class="aside__nav-item {% if is_profile %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'profile/construction' %}">
+                        <a class="aside__nav-item {% if is_profile %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}" href="{% url 'profile' user.id %}">
                             <svg fill="currentColor" version="1.1" id="Capa_1"
                                 width="20px" height="20px" viewBox="0 0 45.532 45.532"
                                 xml:space="preserve">
@@ -154,7 +154,7 @@
                                 <use href="#chevron-right"></use>
                             </svg>
                         </div>
-                        <ul class="aside__nav-option-sublist  {% if is_view_user or is_edit_user %}aside__nav-option-sublist--active{% endif %}">
+                        <ul class="aside__nav-option-sublist  {% if is_view_user or is_edit_user or is_activity %}aside__nav-option-sublist--active{% endif %}">
                             <li class="aside__nav-option-subitem {% if is_view_user or is_edit_user %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                
                                 <svg class="" width="7" height="10">
@@ -163,12 +163,12 @@
                                 <a href="{% url 'view_users' %}" class="aside__nav-item-link">Usuarios registrados</a>
                                
                             </li>
-                            <li class="aside__nav-option-subitem {% if is_activity_log %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                            <li class="aside__nav-option-subitem {% if is_activity %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
-                                <a href="{% url 'view_users' %}" class="aside__nav-item-link">Actividad</a>
+                                <a href="{% url 'view_activity' %}" class="aside__nav-item-link">Actividad</a>
                                
                             </li>
                         </ul>
@@ -201,7 +201,7 @@
                     </li>
                     {% endif %}
 
-                    {% if role != 'No role' %}
+                    {% if role == 'admin' or role == 'technician' %}
                     <li class="aside__nav-option">
                         <a href="{% url 'view_equipments' %}" class="aside__nav-item {% if is_view_equipments %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                             <svg width="18" height="17" viewBox="0 0 18 17" fill="currentColor"
@@ -324,7 +324,7 @@
     </div>
    
     <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
-    <script src="{% static 'js/search_general.js'%} ?v=4"></script>
+    <script src="{% static 'js/delete_confirmations.js' %}"></script>
 
 
     {% if messages %}

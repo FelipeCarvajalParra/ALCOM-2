@@ -8,23 +8,23 @@
     <div class="page__user-section-info">
         <div class="container--user">
             <div class="container__section-image">
-                <img id="imageProfile" class="container__image--profile" src="{{ user.profile_picture.url }}" alt="Profile Image">
+                <img id="imageProfile" class="container__image--profile" src="{{ user_account.profile_picture.url }}" alt="Profile Image">
                 
-                <input type="file" id="userFileImageInput" data-app="users" data-table="CustomUser" data-field="profile_picture" data-record="{{user.id}}" data-type="image">
+                <input type="file" id="userFileImageInput" data-app="users" data-table="CustomUser" data-field="profile_picture" data-record="{{user_account.id}}" data-type="image">
     
-                <span>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}No name{% endif %}</span>
+                <span>{% if user_account.first_name or user_account.last_name %}{{ user_account.first_name }} {{ user_account.last_name }}{% else %}No name{% endif %}</span>
             </div>
 
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Usuario:</span>
-                    <span class="detail__value">{% if user.username %}{{ user.username }}{% else %}No user{% endif %}</span>
+                    <span class="detail__value">{% if user_account.username %}{{ user_account.username }}{% else %}No user{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Correo:</span>
-                    <span class="detail__value">{% if user.email %}{{ user.email }}{% else %}No email{% endif %}</span>
+                    <span class="detail__value">{% if user_account.email %}{{ user_account.email }}{% else %}No email{% endif %}</span>
                 </div>
             </div>
 
@@ -32,13 +32,13 @@
                 <div class="container__section-detail">
                     <span class="detail__label">Estado:</span>
                     <span class="detail__value">
-                        {% if user.status == 'active' %}
+                        {% if user_account.status == 'active' %}
                             <div class="status status--active">
                                 <span>
                                     Activo
                                 </span>
                             </div>
-                        {% elif user.status == 'blocked' %}
+                        {% elif user_account.status == 'blocked' %}
                             <div class="status status--blocked">
                                 <span>
                                     Bloqueado
@@ -55,25 +55,27 @@
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Rol:</span>
-                    <span class="detail__value">{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}</span>
+                    <span class="detail__value">{% if user_account.groups.exists %}{% for group in user_account.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Cargo:</span>
-                    <span class="detail__value">{% if user.position %}{{ user.position }}{% else %}No position{% endif %}</span>
+                    <span class="detail__value">{% if user_account.position %}{{ user_account.position }}{% else %}No position{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Fecha de registro:</span>
-                    <span class="detail__value">{% if user.date_joined %}{{ user.date_joined|date:"d/m/y" }}{% else %}No date{% endif %}</span>
+                    <span class="detail__value">{% if user_account.date_joined %}{{ user_account.date_joined|date:"d/m/y" }}{% else %}No date{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-actions">
-                <div id="deleteUser" class="button button--delete" data-user="{{ user.id }}">
-                    <span>Eliminar</span>
-                </div>
+                {% if user.groups.first.name == 'administrators' %}
+                    <div id="deleteUser" class="button button--delete" data-user="{{ user.id }}">
+                        <span>Eliminar</span>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -159,11 +161,11 @@
                 <div class="form__largue">
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="names" value="{% if user.first_name %}{{ user.first_name }}{% endif %}">
+                            <input class="input input--medium" type="text" id="names" value="{% if user_account.first_name %}{{ user_account.first_name }}{% endif %}">
                             <label class="input-container__label" for="names">Nombres</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="lastName" value="{% if user.last_name %}{{ user.last_name }}{% endif %}">
+                            <input class="input input--medium" type="text" id="lastName" value="{% if user_account.last_name %}{{ user_account.last_name }}{% endif %}">
                             <label class="input-container__label" for="lastName">Apellidos</label>
                         </div>
                     </div>
@@ -171,7 +173,7 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="email" id="email" value="{% if user.email %}{{ user.email }}{% endif %}">
+                            <input class="input input--largue" type="email" id="email" value="{% if user_account.email %}{{ user_account.email }}{% endif %}">
                             <label class="input-container__label" for="email">Correo electrónico</label>
                         </div>
                     </div>
@@ -179,15 +181,17 @@
                 <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="jobName" value="{% if user.position %}{{ user.position }}{% endif %}">
+                            <input class="input input--largue" type="text" id="jobName" value="{% if user_account.position %}{{ user_account.position }}{% endif %}">
                             <label class="input-container__label" for="jobName">Cargo</label>
                         </div>
                     </div>
                 </div>
-                <button class="button button--save" type="submit">
-                    <span>Guardar cambios</span>
-                </button>
-                <span id="personalMessageError" class="login__error-message"></span>
+                {% if user.groups.first.name == 'administrators' %}
+                    <button class="button button--save" type="submit">
+                        <span>Guardar cambios</span>
+                    </button>
+                    <span id="personalMessageError" class="login__error-message"></span>
+                {% endif %}
             </form>
         </div>
 
@@ -196,21 +200,23 @@
                 <span>Datos de ingreso</span>
             </div>
 
-            <form id="loginDataForm" class="container__form"  data-id="{{ user.id }}">
+            <form id="loginDataForm" class="container__form"  data-id="{{ user_account.id }}">
                 {% csrf_token %}
                 <div class="form__largue">
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="username" value="{% if user.username %}{{ user.username }}{% endif %}">
+                            <input class="input input--medium" type="text" id="username" value="{% if user_account.username %}{{ user_account.username }}{% endif %}">
                             <label class="input-container__label" for="username">Usuario</label>
                         </div>
                         <div class="input-wrapper input-wrapper--flex">
                             <div class="select select--filter select--state">
                                 <div class="select__selected">Estado</div>
-                                <div class="select__options scroll">
-                                    <div class="select__option">Activo</div>
-                                    <div class="select__option">Bloqueado</div>
-                                </div>
+                                {% if user.groups.first.name == 'administrators' %}
+                                    <div class="select__options scroll">
+                                        <div class="select__option">Activo</div>
+                                        <div class="select__option">Bloqueado</div>
+                                    </div>
+                                {% endif %}
                                 <div class="select__icon">
                                     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -220,11 +226,13 @@
                             </div>
                             <div class="select select--filter select--state">
                                 <div class="select__selected">Rol</div>
-                                <div class="select__options scroll">
-                                    <div class="select__option">Consultor</div>
-                                    <div class="select__option">Administrador</div>
-                                    <div class="select__option">Tecnico</div>
-                                </div>
+                                {% if user.groups.first.name == 'administrators' %}
+                                    <div class="select__options scroll">
+                                        <div class="select__option">Consultor</div>
+                                        <div class="select__option">Administrador</div>
+                                        <div class="select__option">Tecnico</div>
+                                    </div>
+                                {% endif %}
                                 <div class="select__icon">
                                     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -246,10 +254,13 @@
 
                     </div>
 
-                    <button class="button button--save">
-                        <span>Guardar cambios</span>
-                    </button>
+                    {% if user.groups.first.name == 'administrators' %}
+                        <button class="button button--save">
+                            <span>Guardar cambios</span>
+                        </button>
+                    {% endif %}
                     <span id="loginMessageError" class="login__error-message"></span>
+                 
                 </div>
 
             </form>

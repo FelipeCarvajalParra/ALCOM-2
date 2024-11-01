@@ -187,10 +187,8 @@ function delete_confirmations(){
         .then(response => {
             if (response.ok) {
                 if(autogenerate){
-                    console.log('aqui1')
                     window.location.href = `/${returnView}`; 
                 }else if(returnView){
-                    console.log('aqui2')
                     window.location.href = `/${returnView}/`; 
                 }else{
                     location.reload(true)
@@ -198,7 +196,6 @@ function delete_confirmations(){
             }
         })
         .catch(error => {
-            console.log('aqui3')
             console.error('Error:', error);
         });
     }
@@ -244,7 +241,7 @@ function delete_confirmations(){
             }
         }
         return cookieValue;
-}
+    }
 
 
 document.addEventListener('DOMContentLoaded', function() {

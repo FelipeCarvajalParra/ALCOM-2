@@ -1,4 +1,4 @@
-function petition(url, page, search, brand, category) {
+function petitionSearchTables(url, page, search, brand, category) {
     let data = {
         'search': search,
         'brand': brand,
@@ -28,7 +28,7 @@ function executePetition() {
     const filterCategoryValue = filterCategoryElement ? filterCategoryElement.textContent.trim() : '';
     
     // Llamada a la función petition con los valores de los tres elementos
-    petition('/view_all_references/', 1, inputSearchValue, filterBrandValue, filterCategoryValue);
+    petitionSearchTables('/view_all_references/', 1, inputSearchValue, filterBrandValue, filterCategoryValue);
 }
 
 // Evento para `inputSearchReferences` que detecta cambios de input

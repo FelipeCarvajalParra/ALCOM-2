@@ -113,9 +113,11 @@
                                     <use href="#icon-edit"></use>
                                 </svg>
                             </a>
-                            <svg class="svg-option svg-option--delete deleteReference" width="20px" height="20px" data-reference-id="{{reference.referencia_pk}}">
-                                <use href="#icon-delete"></use>
-                            </svg>
+                            {% if user.groups.first.name == 'administrators' %}
+                                <svg class="svg-option svg-option--delete deleteReference" width="20px" height="20px" data-reference-id="{{reference.referencia_pk}}">
+                                    <use href="#icon-delete"></use>
+                                </svg>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

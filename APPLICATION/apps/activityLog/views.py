@@ -1,9 +1,20 @@
 from django.http import HttpResponse
 from django.contrib import messages
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from .models import ActivityLog
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+
+@login_required
+def view_activity(request):
+
+    activity = ActivityLog.objects.all()
+
+    context = {
+        'activity': activity
+    }
+
+    return render(request, 'view_activity.html', context)
 
 @require_POST
 @login_required
@@ -16,3 +27,4 @@ def delete_activity_log(request, id_log):
     except Exception as e:
         messages.error(request, f'Ha ocurrido un error al eliminar el registro: {str(e)}')
         return HttpResponse(status=500)
+    
