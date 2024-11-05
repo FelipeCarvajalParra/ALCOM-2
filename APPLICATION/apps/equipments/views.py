@@ -126,3 +126,7 @@ def delete_equipment(request, id_equipment):
     except Exception as e:
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
+    
+
+def edit_equipment(request, id_equipment):
+    return render(request, 'equipment_edit.html')
