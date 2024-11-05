@@ -16,7 +16,7 @@ from apps.logIn.views import group_required
 from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
 from apps.activityLog.utils import log_activity
-from django.core.files.base import ContentFile
+from django.http import HttpResponseForbidden
 
 group_name = {
     'Consultor': 'consultants', 
@@ -37,6 +37,7 @@ def get_group_by_name(group_name):
     
 
 @login_required
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def view_users(request):
     user_list = CustomUser.objects.exclude(id=request.user.id).order_by('-id')
     search_query = request.GET.get('search', '')
@@ -62,14 +63,19 @@ def view_users(request):
 
 @login_required
 def edit_user(request, id):
+   
+    if int(request.user.id) != int(id):
+        if not request.user.groups.filter(name='administrators').exists():
+            return HttpResponseForbidden("No tienes permiso para acceder a este perfil.")
+
     user = get_object_or_404(CustomUser, pk=id)
-    activity = ActivityLog.objects.filter(user_id = id).order_by('-timestamp')
+    activity = ActivityLog.objects.filter(user_id=id).order_by('-timestamp')
     context = {
-        'user_account': user, 
+        'user_account': user,
         'activity': activity
     }
-    return render(request, 'user_edit.html', context)
 
+    return render(request, 'user_edit.html', context)
 
 
 

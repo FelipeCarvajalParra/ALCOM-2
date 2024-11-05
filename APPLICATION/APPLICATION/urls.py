@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('apps.references.urls')),
     path('', include('apps.files.urls')),
     path('', include('apps.equipments.urls')),
+    path('', include('apps.errors.urls')),
 ]
 
 if settings.DEBUG:

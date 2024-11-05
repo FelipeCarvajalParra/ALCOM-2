@@ -8,8 +8,6 @@ from django.db.models import Q
 from apps.users.models import CustomUser
 from apps.activityLog.utils import log_activity
 
-
-
 #Funcion para limitar la navegacion por rol 
 def group_required(group_names, redirect_url='login'):
     def decorator(view_func):
@@ -18,23 +16,11 @@ def group_required(group_names, redirect_url='login'):
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
-
-@login_required
-def redirect_user(request):
-    if request.user.groups.filter(name='administrators').exists():
-        return redirect('/home/construction')
-    elif request.user.groups.filter(name='consultants').exists():
-        return redirect('/home/construction')
-    elif request.user.groups.filter(name='technicians').exists():
-        return redirect('/home/construction')
-    else:
-        return redirect('GroupNone')
     
 def expired_session(request): #Funcion que caduca la sesion por navegacion en url no permitida 
     logout(request)
     messages.error(request, 'Sesion caducada por navegacion sospechosa, evite ingresar a sitios no permitidos')
     return redirect('/accounts/login/')
-
 
 @require_POST
 def login_validate(request):
@@ -86,7 +72,7 @@ def login_validate(request):
     user.login_attempts = 0
     user.save()
 
-    return JsonResponse({'success': True, 'redirect_url': '/redirect_user/'})
+    return JsonResponse({'success': True, 'redirect_url': '/home/'})
 
 # Función para cerrar sesión 
 def logout_user(request):

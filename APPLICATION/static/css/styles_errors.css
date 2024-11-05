@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Kanit", sans-serif;
+}
+
+.body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.svg{
+    width: 30%;
+}
+
+.main-message__title{
+    text-align: center;
+}
+
+.main-message__paragraph{
+    text-decoration: none;
+    text-align: center;
+}
+
+.button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 10px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #2b689c;
+    color: #ffff;
+    font-family: "Kanit", sans-serif;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    margin-top: 5px;
+}
