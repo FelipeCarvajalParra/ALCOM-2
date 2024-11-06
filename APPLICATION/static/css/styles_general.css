@@ -698,6 +698,10 @@ a{
     color: #3d4258;
 }
 
+.select--search-largue{
+    width: 200px;
+}
+
 .select--active{
     border-color: #3b4056;
     color: #3b4056;

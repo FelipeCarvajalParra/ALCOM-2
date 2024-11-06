@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+
+<div class="container--large">
+    <table class="table">
+        <div class="table__info">
+            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M0 4.6A2.6 2.6 0 0 1 2.6 2h18.8A2.6 2.6 0 0 1 24 4.6v.8A2.6 2.6 0 0 1 21.4 8H21v10.6c0 1.33-1.07 2.4-2.4 2.4H5.4C4.07 21 3 19.93 3 18.6V8h-.4A2.6 2.6 0 0 1 0 5.4v-.8ZM2.6 4a.6.6 0 0 0-.6.6v.8a.6.6 0 0 0 .6.6h18.8a.6.6 0 0 0 .6-.6v-.8a.6.6 0 0 0-.6-.6H2.6ZM8 10a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2H8Z"></path>
+            </svg>
+            <span class="table__info-text">Inventario de piezas</span>
+        </div>
+        <div class="table__info table__info--options">
+            <input class="select select--search select--search-largue" type="text" id="searchPart" placeholder="Buscar por nombre/numero" value="{{search_query}}" />
+            <div class="button button--margin-left" data-modal-id="modalNewPart">
+                <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
+                </svg>
+                <span>Agregar</span>
+            </div>
+        </div>
+        <thead class="table__headed">
+            <th class="table__headed-title">Parte</th>
+            <th class="table__headed-title">Ubicacion</th>
+            <th class="table__headed-title">Unidades</th>
+            <th class="table__headed-title table__headed-actions">Acciones</th>
+        </thead>
+        <tbody class="table__body">
+            {% include 'partials/_parts_table_body.html' %}
+        </tbody>
+    </table>
+
+    <div class="table__footer">
+        {% include 'partials/_parts_table_footer.html' %} 
+    </div>
+
+</div>
+
+<div class="modal-overlay"></div>
+<div class="modal modal--edges scroll" id="modalNewPart">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Añadir nueva pieza</span>
+        <p class="modal__subheader">Por favor, rellene los campos para agregar una nueva pieza.</p>
+    </div>
+
+    <form class="container__form" id="newPartForm">
+        {% csrf_token %}
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" name="namePart" type="text" id="namePart" required>
+                    <label class="input-container__label" for="namePart">Nombre</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" name="partNumber" type="text" id="partNumber" required>
+                    <label class="input-container__label" for="partNumber">Numero de parte</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" name="location" type="text" id="location" required>
+                    <label class="input-container__label" for="location">Ubicacion</label>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" name="stock" type="text" id="stock" required>
+                    <label class="input-container__label" for="stock">Unidades</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir pieza</span>
+            </button>
+            <span id="messageNewPartError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
+    <script src="{% static 'js/pop-up_window.js' %}" ></script>
+{% endfor %}
+{% endif %}
+
+<script src="{% static 'js/searchs_tables.js'%} ?v=10"></script>
+<script src="{% static 'js/delete_confirmations.js'%} ?v=9"></script>
+<script src="{% static 'js/modal.js' %} ?v=2"></script>
+<script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
+<script src="{% static 'js/part_crud.js' %} ?v=3"></script>
+<script src="{% static 'js/tooltip.js' %} ?v=2"></script>
+
+
+
+{% endblock %}

@@ -33,7 +33,6 @@ def view_references(request, id_category):
     if search_query:
         references_list = references_list.filter(referencia_pk__icontains=search_query)
 
-
     if filter_brand == 'Marca':
         filter_brand = ''
     if filter_brand and filter_brand != 'TODAS':

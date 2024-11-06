@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=26" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=27" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -234,11 +234,11 @@
                                 </svg>
                                 <a href="{% url 'home/construction' %}" class="aside__nav-item-link" >Intervenciones registradas</a>
                             </li>
-                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
+                            <li class="aside__nav-option-subitem {% if is_inventory_parts or is_edit_part  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
-                                <a href="{% url 'home/construction' %}" class="aside__nav-item-link" >Inventario de piezas</a>
+                                <a href="{% url 'view_inventory_parts' %}" class="aside__nav-item-link" >Inventario de piezas</a>
                             </li>
                             <li class="aside__nav-option-subitem aside__nav-item--no-current">
                                 <svg class="" width="7" height="10">

@@ -52,10 +52,6 @@ def view_equipments(request):
 
     return render(request, 'equipments.html', context)
 
-
-
-
-
 @login_required
 @require_POST
 @transaction.atomic
@@ -86,7 +82,6 @@ def new_equipment(request):
             estado= state,
         )
 
-        
         log_activity(
             user=request.user.id,                       
             action='CREATE',                 
@@ -127,6 +122,5 @@ def delete_equipment(request, id_equipment):
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
     
-
 def edit_equipment(request, id_equipment):
     return render(request, 'equipment_edit.html')

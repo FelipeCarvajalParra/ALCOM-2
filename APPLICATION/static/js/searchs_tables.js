@@ -76,9 +76,20 @@ function searchTable(module, page = 1, url) {
                 });
             break;
 
+        case (6):
+            search = $('#searchPart').val();
+
+            petition(url, search, page)
+                .then(() => {
+                    tooltip()
+                })
+                .catch(() => {
+                    console.log('error');
+                });
+            break;
 
         default:
-            search = ''; // Por si acaso
+            search = ''; 
     }
 }
 
@@ -193,6 +204,17 @@ if(paginatorUsers){
         clearTimeout(timeout);
         timeout = setTimeout(function() {
             searchTable(5, 1, `/view_users/`); // Llama a searchTable para categorías (página 1 por defecto)
+        }, 350); // Tiempo de espera para debouncing
+    });
+}
+
+
+paginatorParts =  document.getElementById('paginatorParts')
+if(paginatorParts){
+    $(document).on('input', '#searchPart', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            searchTable(6, 1, `/view_inventory_parts/`); // Llama a searchTable para categorías (página 1 por defecto)
         }, 350); // Tiempo de espera para debouncing
     });
 }

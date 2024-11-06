@@ -39,4 +39,6 @@ def section_highlighter_processor(request):
         'is_view_category': current_path.startswith('/view_categories/'),
         'is_view_equipments': current_path.startswith('/view_equipments/'),
         'is_view_references': current_path.startswith('/view_all_references/'),
+        'is_inventory_parts': current_path.startswith('/view_inventory_parts/'),
+        'is_edit_part': current_path.startswith('/edit_part/'),
     }
