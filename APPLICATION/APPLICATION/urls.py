@@ -18,6 +18,7 @@ urlpatterns = [
     path('', include('apps.equipments.urls')),
     path('', include('apps.errors.urls')),
     path('', include('apps.partsInventory.urls')),
+    path('', include('apps.inserts.urls')),
 ]
 
 if settings.DEBUG:

@@ -247,7 +247,6 @@ def edit_reference(request, reference_id):
     brands = Referencias.objects.values('marca').distinct()
     search_query = request.GET.get('search', '')
 
-
     list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
     list_equipments = list_equipments.filter(cod_equipo_pk__icontains=search_query)
     paginator = Paginator(list_equipments,11)  # Número de elementos por página

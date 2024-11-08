@@ -95,13 +95,8 @@ if(referenceEditForm){
     });
 }
 
-
-
-
-
 const referenceEditComponentsForm = document.getElementById('referenceEditComponentsForm'); // Asegúrate de que el ID coincida
 const messageEditComponentsError = document.getElementById('referenceEditComponentsMessageError');
-
 
 if(referenceEditComponentsForm){
     referenceEditComponentsForm.addEventListener('submit', function(event) {

@@ -1,0 +1,35 @@
+{% if paginator|length > 0 %}
+    {% for movemen in paginator %}
+    <tr class="table__row">
+        <td class="table__cell table__cell--medium table__cell--overflow"
+            data-text="{{movemen.tipo_movimiento}}">
+            {{movemen.tipo_movimiento}}
+        </td>
+        <td class="table__cell table__cell--small table__cell--overflow"
+            data-text="{{movemen.fuente}}">
+            {{movemen.fuente}}
+        </td>
+        <td class="table__cell table__cell--small table__cell--overflow"
+            data-text="{{movemen.cantidad}}">
+            {{movemen.cantidad}}
+        </td>
+        <td class="table__cell table__cell--actions">
+            <a href="">
+                <svg class="svg-option" width="20px" height="20px">
+                    <use href="#icon-view"></use>
+                </svg>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <tr class="table__row table__row--not-results">
+        <td class="table__cell table__cell--not-results" colspan="4">
+            <span class="table__text--not-result">
+                No se encontraron resultados
+            </span>
+        </td>
+    </tr>
+{% endif %}
+
+

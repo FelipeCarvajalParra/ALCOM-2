@@ -35,7 +35,6 @@ def get_group_by_name(group_name):
     except Group.DoesNotExist:
         return None
     
-
 @login_required
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def view_users(request):
@@ -59,7 +58,6 @@ def view_users(request):
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_users.html', context)
-
 
 @login_required
 def edit_user(request, id):

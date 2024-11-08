@@ -3,7 +3,7 @@
 {% load static %}
 {% csrf_token %}
 
-<input type="text" id="category" value="{{reference.referencia_pk}}" hidden>
+<input type="text" id="idPart" value="{{part.num_parte_pk}}" hidden>
 
 <div class="page__equipment">
 
@@ -13,7 +13,7 @@
                 <div class="container__image-selector">
                     <!-- Aquí se muestra la imagen seleccionada -->
                     <img id="image-display" class="container__image--equipment" 
-                         src="{% if reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
+                         src="{% if part.imagen_1 %}{{ part.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" 
                          alt="img">
                     
                     <div class="image-selector__options">
@@ -22,11 +22,11 @@
                                 <label class="custom-file-upload pointer" for="equipmentFileImageInput">
                                     Seleccionar archivo
                                     <input id="equipmentFileImageInput" class="file-upload" type="file" accept=".jpg, .jpeg, .png, .webp"
-                                        data-app="references"
-                                        data-table="archivos"
+                                        data-app="partsInventory"
+                                        data-table="inventario"
                                         data-field="imagen_1"
                                         data-type="image"
-                                        data-record="{{reference.archivos.referencia_pk}}">
+                                        data-record="{{part.num_parte_pk}}">
                                 </label>
                             {% endif %}
                         </div>
@@ -76,11 +76,11 @@
 
                 <!-- Imágenes que al ser seleccionadas se mostrarán en el contenedor grande -->
                 <div class="container__selector-image">
-                    <img id="imagen_1" class="container__image--preview" src="{% if part.imagen_1 %}{{ part.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
-                    <img id="imagen_2" class="container__image--preview" src="{% if part.imagen_2 %}{{ part.archivos.imagen_2.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
-                    <img id="imagen_3" class="container__image--preview" src="{% if part.imagen_3 %}{{ part.archivos.imagen_3.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
-                    <img id="imagen_4" class="container__image--preview" src="{% if part.imagen_4 %}{{ part.archivos.imagen_4.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
-                    <img id="imagen_5" class="container__image--preview" src="{% if part.imagen_5 %}{{ part.archivos.imagen_5.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_1" class="container__image--preview" src="{% if part.imagen_1 %}{{ part.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_2" class="container__image--preview" src="{% if part.imagen_2 %}{{ part.imagen_2.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_3" class="container__image--preview" src="{% if part.imagen_3 %}{{ part.imagen_3.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_4" class="container__image--preview" src="{% if part.imagen_4 %}{{ part.imagen_4.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
+                    <img id="imagen_5" class="container__image--preview" src="{% if part.imagen_5 %}{{ part.imagen_5.url }}{% else %}{{ default_image }}{% endif %}" alt="img">
                 </div>
 
             </div>       
@@ -126,125 +126,91 @@
 
     <div class="page__equipment-section-nav">
         <div class="container--sub-navegation">
-            <div class="button button--active button--navegation" id="detailsEquipment" data-target="generalData,components">
+            <div class="button button--active button--navegation" id="detailsEquipment" data-target="generalData,technicalSheet">
                 <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32">
-                    <path
-                        d="m16 0c8.836556 0 16 7.163444 16 16s-7.163444 16-16 16-16-7.163444-16-16 7.163444-16 16-16zm0 2c-7.7319865 0-14 6.2680135-14 14s6.2680135 14 14 14 14-6.2680135 14-14-6.2680135-14-14-14zm1.3 18.5v2.6h-2.6v-2.6zm-1.3-11.5c2.209139 0 4 1.790861 4 4 0 1.8636009-1.2744465 3.4295388-2.9993376 3.873812l-.0006624 2.126188h-2v-4h1c1.1045695 0 2-.8954305 2-2s-.8954305-2-2-2c-1.0543618 0-1.9181651.8158778-1.9945143 1.8507377l-.0054857.1492623h-2c0-2.209139 1.790861-4 4-4z" />
+                    <path d="m16 0c8.836556 0 16 7.163444 16 16s-7.163444 16-16 16-16-7.163444-16-16 7.163444-16 16-16zm0 2c-7.7319865 0-14 6.2680135-14 14s6.2680135 14 14 14 14-6.2680135 14-14-6.2680135-14-14-14zm1.3 18.5v2.6h-2.6v-2.6zm-1.3-11.5c2.209139 0 4 1.790861 4 4 0 1.8636009-1.2744465 3.4295388-2.9993376 3.873812l-.0006624 2.126188h-2v-4h1c1.1045695 0 2-.8954305 2-2s-.8954305-2-2-2c-1.0543618 0-1.9181651.8158778-1.9945143 1.8507377l-.0054857.1492623h-2c0-2.209139 1.790861-4 4-4z" />
                 </svg>
                 <span>Detalles</span>
             </div>
-            <div class="button button--navegation button-margin-left" id="dataSheetEquipment" data-target="technicalSheet">
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V20C21 21.6569 19.6569 23 18 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H18C18.5523 21 19 20.5523 19 20V4C19 3.44772 18.5523 3 18 3ZM6.41421 7H9V4.41421L6.41421 7ZM7 13C7 12.4477 7.44772 12 8 12H16C16.5523 12 17 12.4477 17 13C17 13.5523 16.5523 14 16 14H8C7.44772 14 7 13.5523 7 13ZM7 17C7 16.4477 7.44772 16 8 16H16C16.5523 16 17 16.4477 17 17C17 17.5523 16.5523 18 16 18H8C7.44772 18 7 17.5523 7 17Z" />
-                </svg>
-                <span>Ficha tecnica</span>
-            </div>
             <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
-                <svg width="20px" height="20px" fill="currentColor" viewBox="0 0 48 48"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g id="Layer_2" data-name="Layer 2">
-                        <g id="invisible_box" data-name="invisible box">
-                            <rect width="48" height="48" fill="none" />
-                        </g>
-                        <g id="icons_Q2">
-                            <path
-                                d="M44,4H4A2,2,0,0,0,2,6V34a2,2,0,0,0,2,2H18v4H12a2,2,0,0,0,0,4H36a2,2,0,0,0,0-4H30V36H44a2,2,0,0,0,2-2V6A2,2,0,0,0,44,4ZM42,8V24H6V8ZM26,40H22V36h4ZM6,32V28H42v4Z" />
-                        </g>
-                    </g>
+                <svg viewBox="0 0 24 24" width="20px" height="20px" fill="currentColor">
+                    <path d="M5.01112 11.5747L6.29288 10.2929C6.68341 9.90236 7.31657 9.90236 7.7071 10.2929C8.09762 10.6834 8.09762 11.3166 7.7071 11.7071L4.7071 14.7071C4.51956 14.8946 4.26521 15 3.99999 15C3.73477 15 3.48042 14.8946 3.29288 14.7071L0.292884 11.7071C-0.0976406 11.3166 -0.0976406 10.6834 0.292884 10.2929C0.683408 9.90236 1.31657 9.90236 1.7071 10.2929L3.0081 11.5939C3.22117 6.25933 7.61317 2 13 2C18.5229 2 23 6.47715 23 12C23 17.5228 18.5229 22 13 22C9.85817 22 7.05429 20.5499 5.22263 18.2864C4.87522 17.8571 4.94163 17.2274 5.37096 16.88C5.80028 16.5326 6.42996 16.599 6.77737 17.0283C8.24562 18.8427 10.4873 20 13 20C17.4183 20 21 16.4183 21 12C21 7.58172 17.4183 4 13 4C8.72441 4 5.23221 7.35412 5.01112 11.5747ZM13 5C13.5523 5 14 5.44772 14 6V11.5858L16.7071 14.2929C17.0976 14.6834 17.0976 15.3166 16.7071 15.7071C16.3166 16.0976 15.6834 16.0976 15.2929 15.7071L12.2929 12.7071C12.1054 12.5196 12 12.2652 12 12V6C12 5.44772 12.4477 5 13 5Z"></path> 
                 </svg>
-                <span>Existencias</span>
+                <span>Historico</span>
             </div>
         </div>
 
         <div id="generalData" class="container--activity scroll" style="display: block;">
             <div class="container__section-title">
-                <span>Datos generales</span>
+                <span>Movimientos</span>
             </div>
 
-            <form class="container__form" id="referenceEditForm">
+            <form class="container__form" id="partEditForm">
                 {% csrf_token %}
-               
-                <div class="form__largue">
+
+                <div class="form__largue ">
+                    <div class="input-container">
+                        <div class="input-wrapper input-wrapper--largue">
+                            <input class="input input--medium" type="text" id="namePart" name="namePart" value="{{part.nombre}}">
+                            <label class="input-container__label" for="namePart">Nombre</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form__largue form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" id="reference" name="reference" value="{{reference.referencia_pk}}" readonly>
-                            <label class="input-container__label" for="reference">Referencia</label>
+                            <input class="input input--medium" type="text" id="numberPart" name="numberPart" value="{{part.num_parte_pk}}" readonly>
+                            <label class="input-container__label" for="numberPart">Numero de parte</label>
                         </div>
                         <div class="input-wrapper">
-                            <input class="input input--medium" type="text" value="{{reference.marca}}" name="brand" id="brand" oninput="filterBrands()" {% if user.groups.first.name == 'consultants' %}readonly{%endif%} required>
-                            <label class="input-container__label" for="brand">Marca</label>
-        
-                            <ul id="autocompleteListBrand" class="autocomplete-list scroll" role="listbox" aria-hidden="true" style="display: none;">
-                                {% if brands|length > 0 %}
-                                    {% for brand in brands %}
-                                        <li data-value="{{ brand.marca }}" style="display: none;">{{ brand.marca }}</li>
-                                    {% endfor %}
-                                {% endif %}
-                            </ul>
+                            <input class="input input--medium" type="text" value="{{part.ubicacion}}" name="location" id="location" {% if user.groups.first.name == 'consultants' %}readonly{%endif%} required>
+                            <label class="input-container__label" for="location">Ubicacion</label>
                         </div>
-
-                        
                     </div>
                 </div>
 
                 <div class="form__auto form__largue--margin-top">
                     <div class="input-container">
                         <div class="input-wrapper input-wrapper--largue">
-                            <input class="input input--largue" type="text" id="url" maxlength="1000" name="url" value="{{reference.url_consulta}}" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>
+                            <input class="input input--largue" type="text" id="url" maxlength="1000" name="url" value="{{part.link_consulta}}" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>
                             <label class="input-container__label" for="url">URL consulta</label>
                         </div>
                     </div>
                 </div>
-
-                <div class="form__largue form__largue--margin-top">
-                    <div class="input-container">
-                        <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="accessories" name="accessories" maxlength="1000" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>{{reference.accesorios}}</textarea>
-                            <label class="input-container__label textarea__label" for="accessories">Accesorios</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form__largue form__largue--margin-top">
-                    <div class="input-container">
-                        <div class="input-wrapper input-wrapper--largue">
-                            <textarea class="input input--largue textarea" id="observations" name="observations" maxlength="1000" {% if user.groups.first.name == 'consultants' %}readonly{%endif%}>{{reference.observaciones}}</textarea>
-                            <label class="input-container__label textarea__label" for="observations">Observaciones</label>
-                        </div>
-                    </div>
-                </div>
-
 
                 {% if user.groups.first.name == 'administrators' %}
                     <button class="button button--save">
                         <span>Guardar cambios</span>
                     </button>
                 {% endif %}
-                <span id="referenceEditMessageError" class="login__error-message">‎</span>
+                <span id="partEditMessageError" class="login__error-message">‎</span>
             </form>
         </div>
 
         <div id="technicalSheet" class="container--activity scroll" style="display: none;">
             <form class="container__section-title container__section-title--button">
+                <div class="container__section-title">
+                    <span>Manual</span>
+                </div>
                 <div class="button button--edit button--input">
                     {% if user.groups.first.name == 'administrators' %}
-                        <label class="custom-file-upload pointer" for="equipmentFileSheetInput">
+                        <label class="custom-file-upload pointer" for="partFileSheetInput">
                             Seleccionar archivo
-                            <input id="equipmentFileSheetInput" class="file-upload" type="file"
-                                data-app="references"
-                                data-table="archivos"
-                                data-field="ficha_tecnica"
+                            <input id="partFileSheetInput" class="file-upload" type="file"
+                                data-app="partsInventory"
+                                data-table="inventario"
+                                data-field="manual"
                                 data-type="file"
-                                data-record="{{reference.archivos.referencia_pk}}">
+                                data-record="{{part.num_parte_pk}}">
                         </label>
                     {% endif %}
                 </div>
             </form>
 
             <div class="container__technical-sheet">
-                {% if data_sheet %}
-                    <embed src="{{ data_sheet }}" type="application/pdf" width="100%" height="600px">
+                {% if part.manual %}
+                    <embed src="{{ part.manual.url }}" type="application/pdf" width="100%" height="600px">
                 {% else %}
                     <span>No se encontró ningún documento</span>
                 {% endif %}
@@ -258,112 +224,30 @@
             <div class="container__table">
                 <div class="container--large container--sub-table">
                     <table class="table">
-                        <div class="table__info table__info--options">
-
-                            <input class="select select--search" type="text" id="searchEquipment" placeholder="Buscar por codigo" value="{{search_query}}" />
-
-                            <div class="select select--filter select--right">
-                                <div class="select__selected">
-                                    <svg width="21px" height="17px" viewBox="0 0 21 21" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9.625 14H11.375V6.125H14L10.5 1.75L7 6.125H9.625V14Z" />
-                                        <path
-                                            d="M4.375 19.25H16.625C17.5901 19.25 18.375 18.4651 18.375 17.5V9.625C18.375 8.65987 17.5901 7.875 16.625 7.875H13.125V9.625H16.625V17.5H4.375V9.625H7.875V7.875H4.375C3.40987 7.875 2.625 8.65987 2.625 9.625V17.5C2.625 18.4651 3.40987 19.25 4.375 19.25Z" />
-                                    </svg>
-                                    <span> Exportar </span>
-                                </div>
-                                <div class="select__options">
-                                    <div class="select__option select__option--export">
-                                        <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
-                                            data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M46.92,0H18.74A3.44,3.44,0,0,0,15.3,3.43V52.57A3.44,3.44,0,0,0,18.74,56H53.26a3.44,3.44,0,0,0,3.44-3.43V10.62Zm.81,5.14L52,9.79H47.73Zm6.08,47.43a.55.55,0,0,1-.55.55H18.74a.55.55,0,0,1-.55-.55V3.43a.54.54,0,0,1,.55-.54H44.85v8.35a1.45,1.45,0,0,0,1.44,1.44h7.52Z" />
-                                            <path
-                                                d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
-                                        </svg>
-                                        <span>Excel</span>
-                                    </div>
-                                    <div class="select__option select__option--export">
-                                        <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
-                                            xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
-                                            <path
-                                                d="M30 161c-16.5 0-30 13.5-30 30v827.8c0 16.5 13.5 30 30 30h591.7c16.5 0 30-13.5 30-30V343.7L469 161H30zm389.6 60v134.8c0 19.9 16.3 36.2 36.2 36.2h135.9v596.8H60V221h359.6z" />
-                                            <path
-                                                d="M123.8 768.6h394.8v50H123.8zm0-124.6h394.8v50H123.8zm0-124.5h394.8v50H123.8z" />
-                                            <circle cx="194" cy="382.3" r="60" />
-                                        </svg>
-                                        <span> PDF </span>
-                                    </div>
-                                </div>
-                                <div class="select__icon">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                                    </svg>
-                                </div>
-                            </div>
+                        <div class="table__info table__info--options table__info--gap">
                             {% if user.groups.first.name == 'administrators' %}
-                                <div class="button" data-modal-id="modalNewEquipment">
-                                    <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
+                                <div class="button button--right button--part" data-modal-id="modalAdd">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20 3L22 7V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V7.00353L4 3H20ZM20 9H4V19H20V9ZM13 10V14H16L12 18L8 14H11V10H13ZM18.7639 5H5.23656L4.23744 7H19.7639L18.7639 5Z"></path>
                                     </svg>
-                                    <span>Agregar</span>
+                                    <span>Actualizar</span>
                                 </div>
                             {% endif %}
                         </div>
                         <thead class="table__headed">
-                            <th class="table__headed-title">Serial</th>
-                            <th class="table__headed-title">Codigo de equipo</th>
-                            
-                            <th class="table__headed-title">Estado</th>
+                            <th class="table__headed-title">Movimiento</th>
+                            <th class="table__headed-title">Fuente</th>
+                            <th class="table__headed-title">Cantidad</th>
                             <th class="table__headed-title table__headed-actions">
                                 Acciones
                             </th>
                         </thead>
                         <tbody class="table__body">
-
-                            {% for equipment in paginator %}
-                                <tr class="table__row">
-                                    <td class="table__cell table__cell--auto table__cell--flex">
-                                        <div class="table__container-text">
-                                            <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}" class="table__container-link">{{equipment.serial}}</a>
-                                        </div>
-                                    </td>
-                                    <td class="table__cell table__cell--medium table__cell--overflow"
-                                        data-text="{{equipment.cod_equipo_pk}}">
-                                        {{equipment.cod_equipo_pk}}
-                                    </td>
-                                    <td class="table__cell table__cell--small table__cell--overflow"
-                                        data-text="{{equipment.estado}}">
-                                        {{equipment.estado}}
-                                    </td>
-                                    <td class="table__cell table__cell--actions">
-                                        {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
-                                            <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}">
-                                                <svg class="svg-option" width="20px" height="20px">
-                                                    <use href="#icon-view"></use>
-                                                </svg>
-                                            </a>
-                                        {%endif%}
-                                        {% if user.groups.first.name == 'administrators' %}
-                                            <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
-                                                <use href="#icon-delete"></use>
-                                            </svg>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-
+                            {% include 'partials/_movements_table_body.html' %}
                         </tbody>
                     </table>
-
                     <div class="table__footer">
-                        <div class="table__footer">
-                            {% include 'partials/_equipment_table_footer.html' %} 
-                        </div>
+                        {% include 'partials/_movements_table_footer.html' %}
                     </div>
                 </div>
             </div>
@@ -373,7 +257,9 @@
 
 {% if user.groups.first.name == 'administrators' %}
     <div class="modal-overlay"></div>
-    <div class="modal" id="modalNewEquipment">
+
+
+    <div class="modal" id="modalAdd">
         <button class="modal__close">
             <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
                 <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -381,72 +267,80 @@
         </button>
 
         <div class="modal__header">
-            <span>Añadir nueva existencia</span>
-            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la existencia.</p>
+            <span>Añadir existencia</span>
+            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la actualizacion.</p>
         </div>
 
 
-        <form class="container__form" id="newEquipmentForm">
+        <form class="container__form" id="addPartForm">
             {% csrf_token %}
             <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper input-wrapper--largue">
-                        <input class="input input--largue" type="text" id="serial" name="serial" required>
-                        <label class="input-container__label" for="serial"  >Serial</label>
-                    </div>
-                </div>
-            </div>
             
             <div class="form__largue form__largue--margin-top">
                 <div class="input-container">
                     <div class="input-wrapper">
-                        <input class="input input--medium" type="text" id="code" name="code" required>
-                        <label class="input-container__label" for="code">Codigo ALCOM</label>
+                        <input class="input input--medium" maxlength="100" type="text" id="action" name="action" required>
+                        <label class="input-container__label" for="action">Fuente</label>
                     </div>
-                    <div class="input-wrapper input-wrapper--flex">
-                        <div class="select select--filter select--state select--largue">
-                            <div class="select__selected" id="equipmentState">Estado</div>
-                            <div class="select__options scroll">
-                                <div class="select__option">Disponible</div>
-                                <div class="select__option">No disponible</div>
+                    
+                        <div class="input-wrapper input-wrapper--flex">
+                            <div class="select select--filter select--state">
+                                <div class="select__selected">Accion</div>
+                                <div class="select__options scroll">
+                                    <div class="select__option">Añadir</div>
+                                    <div class="select__option">Sustraer</div>
+                                </div>
+                                <div class="select__icon">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                    </svg>
+                                </div>
                             </div>
-                            <div class="select__icon">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                                </svg>
+                            <div class="input-wrapper">
+                                <input class="input input--medium" type="number" id="amount" name="amount" required>
+                                <label class="input-container__label" for="amount">Cantidad</label>
                             </div>
                         </div>
+                </div>
+            </div>
+            <div class="form__largue form__largue--margin-top">
+                <div class="input-container">
+                    <div class="input-wrapper input-wrapper--largue">
+                        <textarea class="input input--largue textarea" id="note" name="note" maxlength="250" style="height: 45px;"></textarea>
+                        <label class="input-container__label textarea__label" for="note">Observaciones</label>
                     </div>
                 </div>
             </div>
 
+
             <div class="modal__options">
                 <button type="submit" class="button button--save">
-                    <span>Añadir usuario</span>
+                    <span>Añadir</span>
                 </button>
-                <span id="messageError" class="login__error-message">‎</span>
+                <span id="messageAddError" class="login__error-message">‎</span>
             </div>
 
         </form>
     </div>
+
 {% endif %}
 
 <script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
-<script src="{% static 'js/reference_crud.js' %} ?v=2" ></script>
+<script src="{% static 'js/part_crud.js' %} ?v=2" ></script>
+<script src="{% static 'js/inserts_crud.js' %}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
 <script src="{% static 'js/sub_navigation.js' %} ?v=2"></script>
 <script src="{% static 'js/update_files.js' %} ?v=2"></script>
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
-<script src="{% static 'js/modal_images.js' %}"></script>
-<script src="{% static 'js/tooltip.js' %}"></script>
-<script src="{% static 'js/modal.js' %}"></script>
-<script src="{% static 'js/equipment_crud.js' %} ?v=3"></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
-<script src="{% static 'js/filter_brands.js' %}"></script>
-<script src="{% static 'js/searchs_tables.js' %}"></script>
+
+
+
+
+<script src="{% static 'js/modal.js' %}"></script>
+
+
 
 {% endblock %}

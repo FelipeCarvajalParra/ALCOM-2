@@ -818,6 +818,10 @@ a{
     border: none;
 }
 
+.table__info--gap{
+    gap: 5px;
+}
+
 .table__info-text{
     font-size: clamp(1em, 1.5vw, 2rem);
     margin-left: 10px;
@@ -1308,6 +1312,14 @@ display: block;
 
 .button--delete:hover{
     background-color: rgba(237, 85, 100, 0.3);
+}
+
+.button--part{
+    gap: 7px;
+}
+
+.button--right{
+    margin-left: auto;
 }
 
 /*============= Bloque main ================*/
@@ -1896,6 +1908,8 @@ body.modal-open {
     color: red !important;
     margin: auto;
     font-size: 13px;
+    display: block;
+    margin-top: 5px;
 }
 
 input:-webkit-autofill {

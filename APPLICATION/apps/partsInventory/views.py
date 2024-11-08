@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Inventario
 from django.core.paginator import Paginator
 from django.conf import settings
@@ -9,6 +9,7 @@ from django.db import transaction
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.db.models import Q
+from apps.inserts.models import Actualizaciones
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -79,11 +80,65 @@ def new_part(request):
 def edit_part(request, part_id):
 
     part = get_object_or_404(Inventario, pk=part_id)
+    part_movements = Actualizaciones.objects.filter(num_parte_fk=part_id).order_by('-actualizacion_pk')
+
+
+    paginator = Paginator(part_movements,15) 
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
 
     context = {
+        'paginator': paginator,
         'part': part,
-        'default_image': default_image
+        'default_image': default_image,
     }
 
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_category_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_category_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
     return render(request, 'edit_part.html', context)
+
+
+
+
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def edit_part_action(request, part_id):
+    try:
+        part = Inventario.objects.get(num_parte_pk=part_id)
+        namePart = request.POST.get('namePart')
+        location = request.POST.get('location')
+        url = request.POST.get('url')
+
+        print( "nombre: ", namePart,  "locacion: ", location,  "url: ", url)
+
+        part.nombre = namePart
+        part.ubicacion = location
+        part.link_consulta = url
+
+        part.save()
+  
+        messages.success(request, 'Pieza actualizada correctamente.')
+        return JsonResponse({'succes': True})
+
+    except Inventario.DoesNotExist:
+        return JsonResponse({'error':'No se encontro el registro'})
+    except Exception as e:
+        return JsonResponse({'error':f'Error inesperado {e}'})
+
+
+
+    
+
+
+
+    
+
+    
+
     
