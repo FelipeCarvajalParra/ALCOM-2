@@ -7,7 +7,7 @@ addPartForm.addEventListener('submit', function(event) {
     messageAddError.textContent = '';
 
     // Obtener el valor seleccionado de la acción
-    const actionSelected = document.querySelector('.select__selected').textContent.trim();
+    const actionSelected = document.querySelector('.select__selected--action').textContent.trim();
 
     // Crear un objeto FormData para recoger los datos del formulario
     const formData = new FormData(addPartForm);

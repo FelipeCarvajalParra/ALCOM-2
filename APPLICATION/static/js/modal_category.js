@@ -131,9 +131,6 @@ function modal_category(){
         }
     });
 
-
-
-
 document.querySelectorAll('.editCategoryButton').forEach(svg => {
     svg.addEventListener('click', function () {
         const categoryId = this.getAttribute('data-category-id'); 
@@ -193,7 +190,6 @@ closeModalButtons.forEach(button => {
 modalOverlays.forEach(overlay => {
     overlay.addEventListener('click', clearEditComponentsList);
 });
-
 
 }
 

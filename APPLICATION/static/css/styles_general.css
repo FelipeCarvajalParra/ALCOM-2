@@ -1706,6 +1706,10 @@ display: block;
     padding-bottom: 30px;
 }
 
+.modal--parts{
+    width: 500px;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1721,6 +1725,29 @@ display: block;
 
 .modal-overlay--active {
     opacity: 1;
+}
+
+.modal__text {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    width: 100%;
+}
+
+.modal__text-date,
+.modal__text-source,
+.modal__text-quantity,
+.modal__text-observations {
+    margin-bottom: 5px;
+}
+
+.modal__text-label {
+    font-weight: bold;
+    color: #000000;
+}
+
+.modal__text-value {
+    color: #393d53;
 }
 
 body.modal-open {

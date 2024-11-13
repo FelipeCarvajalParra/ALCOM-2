@@ -88,6 +88,18 @@ function searchTable(module, page = 1, url) {
                 });
             break;
 
+        case (7): //En este caso se busca los movimientos de un part, y se pasa como filtro de busqueda el tipo de movimiento (Entrada o Salida)
+            search = filterValue;
+
+            petition(url, search, page)
+                .then(() => {
+                    tooltip()
+                })
+                .catch(() => {
+                    console.log('error');
+                });
+            break;
+
         default:
             search = ''; 
     }
@@ -95,6 +107,7 @@ function searchTable(module, page = 1, url) {
 
 function petition(url, search, page, brand, category) {
     // Crear el objeto de datos a enviar
+
     let data = {
         'search': search,
         'page': page,
@@ -218,3 +231,21 @@ if(paginatorParts){
         }, 350); // Tiempo de espera para debouncing
     });
 }
+
+
+let filterValue = null;
+const paginatorMovements = document.getElementById("paginatorMovements");
+if (paginatorMovements) {
+
+    const idPart = document.getElementById('idPart').value;
+    const options = document.querySelectorAll(".select__option--filter");
+
+    options.forEach(option => {
+        option.addEventListener("click", function () {
+            filterValue = this.textContent.trim(); // Actualiza filterValue con el contenido seleccionado
+
+            searchTable(7, 1, `/edit_part/${idPart}`); // Realiza la búsqueda
+        });
+    });
+}
+

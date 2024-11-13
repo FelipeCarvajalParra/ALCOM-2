@@ -16,9 +16,14 @@ def add_parts(request, part_id):
         # Obtener la pieza en el inventario por su ID
         part = Inventario.objects.get(num_parte_pk=part_id)
         
-        # Obtener los datos del formulario
+
         action = request.POST.get('action')
+        source = request.POST.get('source')
+
         amount = request.POST.get('amount')
+        if int(amount) <= 0:
+            return JsonResponse({'error': 'La cantidad ingresada no es válida.'})
+        
         note = request.POST.get('note')
 
         # Validaciones de campo
@@ -38,8 +43,8 @@ def add_parts(request, part_id):
         # Crear el registro en Actualizaciones
         updateStock = Actualizaciones.objects.create( 
             num_parte_fk=part,
-            tipo_movimiento='entrada' if action == 'Añadir' else 'salida',
-            fuente=action,
+            tipo_movimiento='Entrada' if action == 'Añadir' else 'Salida',
+            fuente=source,
             cantidad=amount,
             observaciones=note
         )
@@ -63,6 +68,24 @@ def add_parts(request, part_id):
 
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
-    except Exception as e:
-        return JsonResponse({'error': f'Error inesperado: {e}'})
+    except Exception:
+        return JsonResponse({'error': f'Error inesperado'})
 
+
+def consult_movements(request, movement_id):
+    try:
+        part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
+
+        return JsonResponse({
+            'movement': [
+                {
+                    'type_movement': 'Entrada' if part.tipo_movimiento == 'Entrada' else 'Salida',
+                    'source': part.fuente,
+                    'amount': part.cantidad,
+                    'observations': part.observaciones,
+                }
+            ]
+        })
+    
+    except Inventario.DoesNotExist:
+        return JsonResponse({'error': 'No se encontró el registro en Inventario'})

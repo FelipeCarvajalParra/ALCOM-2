@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.db.models import Q
 from apps.inserts.models import Actualizaciones
+from django.db.models import Sum
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -79,11 +80,24 @@ def new_part(request):
 
 def edit_part(request, part_id):
 
+    search = request.GET.get('search', '').strip()
+
     part = get_object_or_404(Inventario, pk=part_id)
     part_movements = Actualizaciones.objects.filter(num_parte_fk=part_id).order_by('-actualizacion_pk')
 
+    partsIncome = Actualizaciones.objects.filter(tipo_movimiento='Entrada', num_parte_fk=part_id).aggregate(Sum('cantidad'))['cantidad__sum'] or 0
+    partsOutcome = Actualizaciones.objects.filter(tipo_movimiento='Salida', num_parte_fk=part_id).aggregate(Sum('cantidad'))['cantidad__sum'] or 0
 
-    paginator = Paginator(part_movements,15) 
+    search_mapping = {
+        'Entradas': 'Entrada',
+        'Salidas': 'Salida'
+    }
+    
+    if search:
+        search = search_mapping.get(search, search)
+        part_movements = part_movements.filter(tipo_movimiento=search)
+
+    paginator = Paginator(part_movements,11) 
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
@@ -91,18 +105,17 @@ def edit_part(request, part_id):
         'paginator': paginator,
         'part': part,
         'default_image': default_image,
+        'search_query': search,
+        'partsIncome': partsIncome,
+        'partsOutcome': partsOutcome
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html_body = render_to_string('partials/_category_table_body.html', context, request=request)
-        html_footer = render_to_string('partials/_category_table_footer.html', context, request=request)
+        html_body = render_to_string('partials/_movements_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_movements_table_footer.html', context, request=request)
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'edit_part.html', context)
-
-
-
-
 
 
 @login_required

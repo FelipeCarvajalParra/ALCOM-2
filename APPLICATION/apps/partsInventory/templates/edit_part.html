@@ -105,13 +105,13 @@
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Ingresos:</span>
-                    <span class="detail__value">----------</span>
+                    <span class="detail__value">{{partsIncome}}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Egresos:</span>
-                    <span class="detail__value">---------</span>
+                    <span class="detail__value">{{partsOutcome}}</span>
                 </div>
             </div>
             <div class="container__section-details">
@@ -225,6 +225,19 @@
                 <div class="container--large container--sub-table">
                     <table class="table">
                         <div class="table__info table__info--options table__info--gap">
+                            <div class="select select--filter select--active">
+                                <div class="select__selected" id="filterMovements">Filtrar por</div>
+                                <div class="select__options scroll">
+                                    <div class="select__option select__option--filter">Entradas</div>
+                                    <div class="select__option select__option--filter">Salidas</div>
+                                </div>
+                                <div class="select__icon">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
                             {% if user.groups.first.name == 'administrators' %}
                                 <div class="button button--right button--part" data-modal-id="modalAdd">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
@@ -279,13 +292,13 @@
             <div class="form__largue form__largue--margin-top">
                 <div class="input-container">
                     <div class="input-wrapper">
-                        <input class="input input--medium" maxlength="100" type="text" id="action" name="action" required>
-                        <label class="input-container__label" for="action">Fuente</label>
+                        <input class="input input--medium" maxlength="100" type="text" id="source" name="source" required>
+                        <label class="input-container__label" for="source">Fuente</label>
                     </div>
                     
                         <div class="input-wrapper input-wrapper--flex">
                             <div class="select select--filter select--state">
-                                <div class="select__selected">Accion</div>
+                                <div class="select__selected select__selected--action">Accion</div>
                                 <div class="select__options scroll">
                                     <div class="select__option">Añadir</div>
                                     <div class="select__option">Sustraer</div>
@@ -325,9 +338,44 @@
 
 {% endif %}
 
-<script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
+<div class="modal modal--parts" id="modalParts">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Registro egreso de partes</span>
+    </div>
+    
+    <div class="modal__text modal__text--margin-top">
+        <span class="modal__text-date">
+            <span class="modal__text-label">Fecha:</span>
+            <span class="modal__text-value" id="movemenDate"></span>
+        </span>
+        <span class="modal__text-source">
+            <span class="modal__text-label">Fuente:</span>
+            <span class="modal__text-value" id="movementSource"></span>
+        </span>
+        <span class="modal__text-quantity">
+            <span class="modal__text-label">Cantidad:</span>
+            <span class="modal__text-value" id="movementQuantity"></span>
+        </span>
+        <span class="modal__text-observations">
+            <span class="modal__text-label">Observaciones:</span>
+            <span class="modal__text-value" id="movementObservations"></span>
+        </span>
+    </div>
+    
+</div>
+
+
+<script src="{% static 'js/tooltip.js' %}"></script>
+<script src="{% static 'js/modal_ajax.js' %}"></script>
+<script src="{% static 'js/searchs_tables.js' %} ?v=2"></script>
 <script src="{% static 'js/part_crud.js' %} ?v=2" ></script>
-<script src="{% static 'js/inserts_crud.js' %}"></script>
+<script src="{% static 'js/inserts_crud.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
@@ -335,12 +383,9 @@
 <script src="{% static 'js/update_files.js' %} ?v=2"></script>
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
-
-
-
-
 <script src="{% static 'js/modal.js' %}"></script>
 
 
 
 {% endblock %}
+
