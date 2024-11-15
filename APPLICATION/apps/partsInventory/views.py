@@ -119,6 +119,30 @@ def edit_part(request, part_id):
 
 
 @login_required
+def consult_part(request, part_id):
+    try:
+        part = Inventario.objects.get(num_parte_pk=part_id)
+
+        # Extraer la URL del archivo si existe
+        manual_url = part.manual.url if part.manual else None
+
+        return JsonResponse({
+            'part': {
+                'name': part.nombre,
+                'number': part.num_parte_pk,
+                'location': part.ubicacion,
+                'stock': part.total_unidades,
+                'url': part.link_consulta,
+                'manual': manual_url,  # Enviar la URL del archivo o None si no existe
+            }
+        })
+    except Inventario.DoesNotExist:
+        return JsonResponse({'error': 'Part not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    
+@login_required
 @require_POST
 @transaction.atomic
 def edit_part_action(request, part_id):

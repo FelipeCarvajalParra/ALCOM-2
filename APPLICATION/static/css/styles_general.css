@@ -1734,10 +1734,7 @@ display: block;
     width: 100%;
 }
 
-.modal__text-date,
-.modal__text-source,
-.modal__text-quantity,
-.modal__text-observations {
+.modal__text-general {
     margin-bottom: 5px;
 }
 

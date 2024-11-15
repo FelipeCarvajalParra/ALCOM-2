@@ -12,6 +12,7 @@ class Inventario(models.Model):
     imagen_3 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
     imagen_4 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
     imagen_5 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
+    
 
     class Meta:
         db_table = 'inventario'

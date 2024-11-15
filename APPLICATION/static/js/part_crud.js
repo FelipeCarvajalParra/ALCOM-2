@@ -1,6 +1,5 @@
 const newPartForm = document.getElementById('newPartForm');
 const messageNewPartError = document.getElementById('messageNewPartError');
-const idPart = document.getElementById('idPart').value
 
 if(newPartForm){
     newPartForm.addEventListener('submit', function(event) {
@@ -37,6 +36,7 @@ const partEditForm = document.getElementById('partEditForm'); // Asegúrate de q
 const messageEditError = document.getElementById('partEditMessageError');
 
 if(partEditForm){
+    const idPart = document.getElementById('idPart').value
     partEditForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Evitar el envío del formulario
         messageEditError.textContent = '‎'; // Limpiar mensajes de error

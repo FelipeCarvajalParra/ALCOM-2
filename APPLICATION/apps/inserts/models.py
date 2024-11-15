@@ -24,6 +24,7 @@ class Actualizaciones(models.Model):
     cantidad = models.IntegerField()
     color = models.CharField(max_length=50, blank=True, null=True)
     observaciones = models.CharField(max_length=250,blank=True,null=True)
+    fecha_hora = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = 'actualizaciones'

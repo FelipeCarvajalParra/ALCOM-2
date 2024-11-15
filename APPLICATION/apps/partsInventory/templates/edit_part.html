@@ -338,7 +338,7 @@
 
 {% endif %}
 
-<div class="modal modal--parts" id="modalParts">
+<div class="modal modal--parts" id="modalMovements">
     <button class="modal__close">
         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
             <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -346,23 +346,23 @@
     </button>
 
     <div class="modal__header">
-        <span>Registro egreso de partes</span>
+        <span>Registro <span id="movemenAction"></span> de partes</span>
     </div>
     
     <div class="modal__text modal__text--margin-top">
-        <span class="modal__text-date">
+        <span class="modal__text-general">
             <span class="modal__text-label">Fecha:</span>
             <span class="modal__text-value" id="movemenDate"></span>
         </span>
-        <span class="modal__text-source">
+        <span class="modal__text-general">
             <span class="modal__text-label">Fuente:</span>
             <span class="modal__text-value" id="movementSource"></span>
         </span>
-        <span class="modal__text-quantity">
+        <span class="modal__text-general">
             <span class="modal__text-label">Cantidad:</span>
             <span class="modal__text-value" id="movementQuantity"></span>
         </span>
-        <span class="modal__text-observations">
+        <span class="modal__text-general">
             <span class="modal__text-label">Observaciones:</span>
             <span class="modal__text-value" id="movementObservations"></span>
         </span>
@@ -370,9 +370,8 @@
     
 </div>
 
-
 <script src="{% static 'js/tooltip.js' %}"></script>
-<script src="{% static 'js/modal_ajax.js' %}"></script>
+<script src="{% static 'js/modal_movements.js' %} ?v=2"></script>
 <script src="{% static 'js/searchs_tables.js' %} ?v=2"></script>
 <script src="{% static 'js/part_crud.js' %} ?v=2" ></script>
 <script src="{% static 'js/inserts_crud.js' %} ?v=2"></script>

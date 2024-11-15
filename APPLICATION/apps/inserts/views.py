@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from apps.partsInventory.models import Inventario
-from .models import Actualizaciones
+from .models import Actualizaciones, Intervenciones
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.contrib import messages
+from django.utils import timezone
 
 
 @login_required
@@ -15,8 +16,6 @@ def add_parts(request, part_id):
     try:
         # Obtener la pieza en el inventario por su ID
         part = Inventario.objects.get(num_parte_pk=part_id)
-        
-
         action = request.POST.get('action')
         source = request.POST.get('source')
 
@@ -46,7 +45,8 @@ def add_parts(request, part_id):
             tipo_movimiento='Entrada' if action == 'Añadir' else 'Salida',
             fuente=source,
             cantidad=amount,
-            observaciones=note
+            observaciones=note, 
+            fecha_hora=timezone.now()
         )
 
         # Verificar que se creó el registro en Actualizaciones antes de proceder
@@ -68,7 +68,8 @@ def add_parts(request, part_id):
 
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
-    except Exception:
+    except Exception as e:
+        print(e)
         return JsonResponse({'error': f'Error inesperado'})
 
 
@@ -76,13 +77,20 @@ def consult_movements(request, movement_id):
     try:
         part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
 
+        if part.fecha_hora:
+            part.fecha_hora = timezone.localtime(part.fecha_hora)
+            part.fecha_hora = part.fecha_hora.strftime('%d/%m/%y - %I:%M %p')
+        else:
+            part.fecha_hora = None
+
         return JsonResponse({
             'movement': [
                 {
                     'type_movement': 'Entrada' if part.tipo_movimiento == 'Entrada' else 'Salida',
                     'source': part.fuente,
                     'amount': part.cantidad,
-                    'observations': part.observaciones,
+                    'observations': part.observaciones if part.observaciones else 'Sin observaciones',
+                    'date': part.fecha_hora
                 }
             ]
         })
