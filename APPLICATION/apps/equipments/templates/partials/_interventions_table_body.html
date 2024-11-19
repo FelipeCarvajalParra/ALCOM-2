@@ -1,0 +1,21 @@
+{% if interventions|length > 0 %}
+    {% for intervention in interventions %}
+        <li class="list-activity__item list-activity__intervention" data-id="{{intervention.num_orden_pk}}">
+            <div class="list-activity__header">
+                <span class="list-activity__icon list-activity__icon--login"></span>
+                <span class="list-activity__title">Intervencion {{intervention.num_orden_pk}}</span>
+                <span class="list-activity__timestamp">{{ intervention.fecha_hora|date:"d/m/Y" }}</span>
+            </div>
+            <div class="list-activity__body">
+                <p class="list-activity__description">{{ intervention.usuario_fk.first_name }} {{ intervention.usuario_fk.last_name }}</p>  
+            </div>
+        </li>
+    {% endfor %}
+{% else %}
+    <li class="list-activity__item">
+        <div class="list-activity__header">
+            <span class="list-activity__icon list-activity__icon--login"></span>
+            <span class="list-activity__title">No hay intervenciones registradas</span>
+        </div>
+    </li>
+{% endif %}

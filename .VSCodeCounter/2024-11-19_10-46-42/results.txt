@@ -1,0 +1,40 @@
+Date : 2024-11-19 10:46:42
+Directory : c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog
+Total : 12 files,  194 codes, 4 comments, 51 blanks, all 249 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         11 |        112 |          4 |         41 |        157 |
+| HTML     |          1 |         82 |          0 |         10 |         92 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                     | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                        |         12 |        194 |          4 |         51 |        249 |
+| . (Files)                                                                                                |          8 |         77 |          2 |         26 |        105 |
+| migrations                                                                                               |          3 |         35 |          2 |         15 |         52 |
+| templates                                                                                                |          1 |         82 |          0 |         10 |         92 |
++----------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                 | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\__init__.py                  | Python   |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\admin.py                     | Python   |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\apps.py                      | Python   |          4 |          0 |          2 |          6 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0001_initial.py   | Python   |         19 |          1 |          7 |         27 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0002_initial.py   | Python   |         16 |          1 |          7 |         24 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\__init__.py       | Python   |          0 |          0 |          1 |          1 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\models.py                    | Python   |         28 |          0 |          7 |         35 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\templates\view_activity.html | HTML     |         82 |          0 |         10 |         92 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\tests.py                     | Python   |          1 |          1 |          2 |          4 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\urls.py                      | Python   |          6 |          0 |          1 |          7 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\utils.py                     | Python   |         13 |          0 |          4 |         17 |
+| c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\views.py                     | Python   |         24 |          0 |          7 |         31 |
+| Total                                                                                                    |          |        194 |          4 |         51 |        249 |
++----------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

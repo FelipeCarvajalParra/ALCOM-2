@@ -8,6 +8,7 @@ from apps.references.models import Referencias
 from apps.categories.models import Categorias
 from django.template.loader import render_to_string
 from .models import Equipos
+from apps.inserts.models import Intervenciones, Actualizaciones
 from django.core.paginator import Paginator
 import json
 from apps.activityLog.utils import log_activity
@@ -121,6 +122,35 @@ def delete_equipment(request, id_equipment):
     except Exception as e:
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
-    
+
+
+@login_required
 def edit_equipment(request, id_equipment):
-    return render(request, 'equipment_edit.html')
+
+    equipment = get_object_or_404(Equipos, pk=id_equipment)
+    reference = equipment.referencia_fk
+    category = reference.categoria
+    interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment).order_by('-fecha_hora')
+
+    num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
+    updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
+
+    paginator_interventions = Paginator(interventions, 2)
+    page_number_interventions = request.GET.get('page_interventions')
+    paginator_interventions = paginator_interventions.get_page(page_number_interventions)
+
+    paginator = Paginator(updates, 1)
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
+    context = {
+        'equipment': equipment,
+        'reference': reference,
+        'category_equipment': category,  # Pasamos la categoría al contexto
+        'interventions': paginator_interventions, 
+        'paginator': paginator,
+        'page_number': page_number,
+        'page_number_interventions': page_number_interventions
+    }
+
+    return render(request, 'equipment_edit.html', context)

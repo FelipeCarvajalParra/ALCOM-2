@@ -1,0 +1,14 @@
+"filename", "language", "Python", "HTML", "comment", "blank", "total"
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\__init__.py", "Python", 0, 0, 0, 1, 1
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\admin.py", "Python", 1, 0, 1, 2, 4
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\apps.py", "Python", 4, 0, 0, 2, 6
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0001_initial.py", "Python", 19, 0, 1, 7, 27
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\0002_initial.py", "Python", 16, 0, 1, 7, 24
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\migrations\__init__.py", "Python", 0, 0, 0, 1, 1
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\models.py", "Python", 28, 0, 0, 7, 35
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\templates\view_activity.html", "HTML", 0, 82, 0, 10, 92
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\tests.py", "Python", 1, 0, 1, 2, 4
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\urls.py", "Python", 6, 0, 0, 1, 7
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\utils.py", "Python", 13, 0, 0, 4, 17
+"c:\Users\EQUIPO\Desktop\ALCOM TRABAJOS\ALCOM-2\APPLICATION\apps\activityLog\views.py", "Python", 24, 0, 0, 7, 31
+"Total", "-", 112, 82, 4, 51, 249

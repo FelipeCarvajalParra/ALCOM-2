@@ -1,6 +1,6 @@
 {% if user_results or category_results or reference_results or equipment_results %}
 
-    {% if user_results and user.groups.first.name == 'administrators' %}
+    {% if user_results  %}
         <div class="search-section">
             <div class="search-section__title">Usuarios</div>
             {% for user in user_results %}
@@ -17,7 +17,7 @@
         </div>
     {% endif %}
 
-    {% if category_results and user.groups.first.name == 'administrators' %}
+    {% if category_results  %}
         <div class="search-section">
             <div class="search-section__title">Categorias</div>
             {% for category in category_results %}
@@ -52,7 +52,7 @@
     {% endif %}
 
         
-    {% if equipment_results and user.groups.first.name == 'administrators' %}
+    {% if equipment_results  %}
         <div class="search-section">
             <div class="search-section__title">Equipos</div>
             {% for equipment in equipment_results %}

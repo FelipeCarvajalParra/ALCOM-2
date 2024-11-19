@@ -1,0 +1,48 @@
+<nav class="pagination">
+    <span class="pagination__records">
+        Registros {{ interventions.start_index }} a {{ interventions.end_index }} de {{ interventions.paginator.count }}
+    </span>
+
+    {% if interventions.paginator.num_pages > 1 %}
+    <ul class="pagination__list">
+        <!-- Botón para ir a la página anterior -->
+        {% if interventions.has_previous %}
+            <li class="pagination__item pagination__item--previous">
+                <a class="pagination__container-icon" href="?page_interventions={{ interventions.previous_page_number }}{% if page_number %}&page={{ page_number }}{% endif %}">
+                    <svg width="15px" height="15px">
+                        <use href="#icon-previous"></use>
+                    </svg>
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Lógica para mostrar solo tres páginas cercanas -->
+        {% for num in interventions.paginator.page_range %}
+            {% if num == interventions.number or num == interventions.number|add:"-1" or num == interventions.number|add:"1" %}
+                {% if num > 0 and num <= interventions.paginator.num_pages %}
+                    {% if num == interventions.number %}
+                        <li class="pagination__item pagination__item--active">
+                            <span class="pagination__container-icon">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="pagination__item">
+                            <a class="pagination__container-icon" href="?page_interventions={{ num }}{% if page_number %}&page={{ page_number }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        <!-- Botón para ir a la página siguiente -->
+        {% if interventions.has_next %}
+            <li class="pagination__item pagination__item--next">
+                <a class="pagination__container-icon" href="?page_interventions={{ interventions.next_page_number }}{% if page_number %}&page={{ page_number }}{% endif %}">
+                    <svg width="15px" height="15px">
+                        <use href="#icon-next"></use>
+                    </svg>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</nav>

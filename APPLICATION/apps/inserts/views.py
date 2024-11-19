@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
+from django.template.loader import render_to_string
 
 
 @login_required
@@ -97,3 +98,44 @@ def consult_movements(request, movement_id):
     
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
+    
+
+from django.conf import settings
+
+def consult_interventions(request, intervention_id):
+    try:
+        # Obtener la instancia de la intervención
+        intervention = Intervenciones.objects.get(num_orden_pk=intervention_id)
+
+        # Obtener el usuario asociado a la intervención
+        user_intervention = intervention.usuario_fk
+
+        # Obtener ingresos y salidas
+        parts_income = Actualizaciones.objects.filter(num_orden_fk=intervention.num_orden_pk, tipo_movimiento='Entrada')
+        parts_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention.num_orden_pk, tipo_movimiento='Salida')
+
+        # Obtener la URL del PDF
+        pdf_url = f"{settings.MEDIA_URL}{intervention.formato}"  # Suponiendo que 'formato' almacena la ruta relativa
+
+        # Preparar el contexto
+        context = {
+            'intervention': intervention,
+            'user_intervention': user_intervention,
+            'parts_income': parts_income,
+            'parts_outcome': parts_outcome,
+            'pdf_url': pdf_url,
+        }
+
+        # Renderizar el HTML del parcial
+        html_body = render_to_string('partials/_interventions_containers.html', context, request=request)
+
+        return JsonResponse({'body': html_body})
+
+    except Intervenciones.DoesNotExist:
+        return JsonResponse({'error': 'No se encontró el registro en Intervenciones'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+
+
+
+

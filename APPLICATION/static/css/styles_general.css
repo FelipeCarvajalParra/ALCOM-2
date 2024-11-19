@@ -192,6 +192,7 @@ a{
 }
 
 .container--equipment{
+    padding-top: 20px;
     padding-bottom: 20px;
 }
 
@@ -328,7 +329,10 @@ a{
 
 .detail__value {
     color: #797c8b;
+}
 
+.detail__value--underline{
+    text-decoration: underline;
 }
 
 .container__section-actions {

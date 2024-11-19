@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 {% block contend %}
 {% load static %}
+{% csrf_token %}
 
 <div class="layer-color"></div>
 <div class="page__user">
 
     <div class="page__user-section-info">
-        <div class="container--user">
+        <div class="container--user container--equipment">
 
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Categoria:</span>
-                    <span class="detail__value">{% if user_account.position %}{{ user_account.position }}{% else %}No position{% endif %}</span>
+                    <a href="{% url 'view_references' category_equipment.categoria_pk %}" class="detail__value detail__value--underline">{% if reference.categoria %}{{ reference.categoria }}{% else %}No category{% endif %}</a>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Codigo:</span>
-                    <span class="detail__value">{% if user_account.username %}{{ user_account.username }}{% else %}No user{% endif %}</span>
+                    <span class="detail__value">{% if equipment.cod_equipo_pk %}{{ equipment.cod_equipo_pk }}{% else %}No code{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Serial:</span>
-                    <span class="detail__value">{% if user_account.email %}{{ user_account.email }}{% else %}No email{% endif %}</span>
+                    <span class="detail__value">{% if equipment.serial %}{{ equipment.serial }}{% else %}No serial{% endif %}</span>
                 </div>
             </div>
 
@@ -31,16 +32,16 @@
                 <div class="container__section-detail">
                     <span class="detail__label">Estado:</span>
                     <span class="detail__value">
-                        {% if user_account.status == 'active' %}
+                        {% if equipment.estado == 'Disponible' %}
                             <div class="status status--active">
                                 <span>
-                                    Activo
+                                    Disponible
                                 </span>
                             </div>
-                        {% elif user_account.status == 'blocked' %}
+                        {% elif equipment.estado == 'No disponible' %}
                             <div class="status status--blocked">
                                 <span>
-                                    Bloqueado
+                                    No disponible
                                 </span>
                             </div>
                         {% else %}
@@ -54,13 +55,13 @@
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Marca:</span>
-                    <span class="detail__value">{% if user_account.groups.exists %}{% for group in user_account.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}</span>
+                    <span class="detail__value">{% if reference.marca %}{{ reference.marca }}{% else %}No Brand{% endif %}</span>
                 </div>
             </div>
             <div class="container__section-details">
                 <div class="container__section-detail">
                     <span class="detail__label">Referencia:</span>
-                    <span class="detail__value">{% if user_account.date_joined %}{{ user_account.date_joined|date:"d/m/y" }}{% else %}No date{% endif %}</span>
+                    <a href="{% url 'edit_reference' reference.referencia_pk %}" class="detail__value detail__value--underline">{% if reference.referencia_pk %}{{ reference.referencia_pk }}{% else %}No Brand{% endif %}</a>
                 </div>
             </div>
         </div>
@@ -83,44 +84,18 @@
                 <span>Actividad reciente</span>
             </div>
             <ul class="container__list-activity">
-                <a href="list-activity__link">
-                    <li class="list-activity__item">
-                        <div class="list-activity__header">
-                            <span class="list-activity__icon list-activity__icon--login"></span>
-                            <span class="list-activity__title">Intervencion 3456</span>
-                        </div>
-                        <div class="list-activity__body">
-                            <p class="list-activity__description">01/11/2024 - 4:02PM</p>
-                        </div>
-                    </li>
-                </a>
-                
-                <li class="list-activity__item">
-                    <div class="list-activity__header">
-                        <span class="list-activity__icon list-activity__icon--login"></span>
-                        <span class="list-activity__title">Intervencion 1234</span>
-                    </div>
-                    <div class="list-activity__body">
-                        <p class="list-activity__description">01/11/2024 - 4:02PM</p>
-                    </div>
-                </li>
-                <li class="list-activity__item">
-                    <div class="list-activity__header">
-                        <span class="list-activity__icon list-activity__icon--login"></span>
-                        <span class="list-activity__title">Intervencion 2323</span>
-                    </div>
-                    <div class="list-activity__body">
-                        <p class="list-activity__description">01/11/2024 - 4:02PM</p>
-                    </div>
-                </li>
+                {% include "partials/_interventions_table_body.html" %}
             </ul>
+            <div class="table__footer">
+                {% include 'partials/_interventions_table_footer.html' %} 
+            </div>
         </div>
     </div>
 
 
     <div class="page__user-section-nav">
         <div class="container--sub-navegation">
-            <div class="button button--active button--navegation" data-target="activityContainer,interventionDataContainer,1_P,2_P,orderService">
+            <div class="button button--active button--navegation" data-target="activityContainer,interventionDataContainer,orderService">
                 <svg width="20px" height="20px" viewBox="0 0 512 512" fill="currentColor">
                     <path d="M104.426,139.813l83.563,83.781c14.344-13.766,26.781-25.703,36.109-34.672l-84.297-84.5l-10.313-45.719 L54.27,12.985L33.629,33.642L12.988,54.282l45.719,75.219L104.426,139.813z"></path> 
                     <path d="M358.363,276.298L481.926,399.47c22.781,22.766,22.781,59.688,0,82.469c-22.781,22.766-59.688,22.766-82.469,0 L275.895,358.767L358.363,276.298z"></path> 
@@ -137,120 +112,7 @@
             </div>
         </div>
 
-        <div id="interventionDataContainer" class="container--activity scroll" style="display: none;" >
-            
-            <div class="container__section-title">
-                <span>Intervencion 2367</span>
-            </div>
-
-            <div class="container__contend--info-user">
-                <div class="container__intervention-details">
-                    <div class="container__section-details container__section-details--interventions">
-                        <div class="container__section-detail">
-                            <span class="detail__label">Usuario:</span>
-                            <span class="detail__value">Felipe carvajal parra</span>
-                        </div>
-                    </div>
-
-                    <div class="container__section-details container__section-details--interventions">
-                        <div class="container__section-detail">
-                            <span class="detail__label">Fecha:</span>
-                            <span class="detail__value">12/25/2024 - 12:45pm</span>
-                        </div>
-                    </div>
-
-                    <div class="container__section-details container__section-details--interventions">
-                        <div class="container__section-detail">
-                            <span class="detail__label">Tarea realizada:</span>
-                            <span class="detail__value">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit, repudiandae?</span>
-                        </div>
-                    </div>
-
-                    <div class="container__section-details container__section-details--interventions">
-                        <div class="container__section-detail">
-                            <span class="detail__label">Observaciones:</span>
-                            <span class="detail__value">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Neque illum porro et doloribus officia, totam exercitationem consequuntur, quaerat non nisi delectus fuga, sint quo corporis?</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container__section-title">
-                <span>Ingresos</span>
-            </div>
-
-            <table class="table">
-                <thead class="table__headed">
-                    <th class="table__headed-title">Parte</th>
-                    <th class="table__headed-title">Ubicacion</th>
-                    <th class="table__headed-title">Cantidad</th>
-                </thead>
-                <tbody class="table__body">
-                    <td class="table__cell table__cell--auto table__cell--flex">
-                        <img class="table__image table__image--semi-circular"
-                            src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
-                        <div class="table__container-text">
-                           
-                            <a href="/edit_equipment/56" class="table__container-link">Lector de barras</a>
-                            <span class="table__container-email">log/3467</span>
-
-                        </div>
-                    </td> 
-                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                        Cajon 6
-                    </td>
-                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                        5
-                    </td>
-                </tbody>
-            </table>
-            
-            <div class="container__section-title">
-                <span>Ingresos</span>
-            </div>
-            <table class="table">
-                <thead class="table__headed">
-                    <th class="table__headed-title">Parte</th>
-                    <th class="table__headed-title">Ubicacion</th>
-                    <th class="table__headed-title">Cantidad</th>
-                </thead>
-                <tbody class="table__body">
-                    <td class="table__cell table__cell--auto table__cell--flex">
-                        <img class="table__image table__image--semi-circular"
-                            src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
-                        <div class="table__container-text">
-                           
-                            <a href="/edit_equipment/56" class="table__container-link">Lector de barras</a>
-                            <span class="table__container-email">log/3467</span>
-
-                        </div>
-                    </td> 
-                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                        Cajon 6
-                    </td>
-                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                        5
-                    </td>
-                </tbody>
-            </table>
-        </div>
-
-
-
-        
-
-        <div id="orderService" class="container--activity scroll" style="display: block;">
-            <div class="container__section-title">
-                <span>Orden de servicio</span>
-            </div>
-
-            <div class="container__technical-sheet">
-                <embed src="/media/technical_sheets/citacion_tyt.pdf" type="application/pdf" width="100%" height="600px">
-            </div>
-        </div>
-
-
-
+        {% include "partials/_interventions_containers.html" %}
 
         <div id="parts" class="container--activity scroll" style="display: none;">
             <div class="container__section-title">
@@ -258,55 +120,25 @@
             </div>
             <div class="container__table">
                 <div class="container--large container--sub-table">
-
-
-
-
                     <table class="table">
                         <thead class="table__headed">
                             <th class="table__headed-title">Parte</th>
                             <th class="table__headed-title">Orden</th>
-                            <th class="table__headed-title">Ubicacion</th>
+                            <th class="table__headed-title">Movimiento</th>
                             <th class="table__headed-title">Cantidad</th>
                         </thead>
                         <tbody class="table__body">
-                            <td class="table__cell table__cell--largue table__cell--flex">
-                                <img class="table__image table__image--semi-circular"
-                                    src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
-                                <div class="table__container-text">
-                                   
-                                    <a href="/edit_equipment/56" class="table__container-link">Lector de barras</a>
-                                    <span class="table__container-email">log/3467</span>
-        
-                                </div>
-                            </td> 
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                                4567
-                            </td>
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                                cajon 6 
-                            </td>
-                            <td class="table__cell table__cell--mini table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                                5
-                            </td>
+                            {% include 'partials/_equipment_parts_table_body.html' %}
                         </tbody>
                     </table>
-
-
-
                     <div class="table__footer">
                         <div class="table__footer">
-                            {% include 'partials/_equipment_table_footer.html' %} 
+                            {% include 'partials/_equipment_parts_table_footer.html' %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
 
     </div>
 </div>
@@ -325,6 +157,7 @@
 <script src="{% static 'js/filter_selector.js'%}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/update_files.js' %}"></script>
+<script src="{% static 'js/search_intervention.js' %}"></script>
 
 
 

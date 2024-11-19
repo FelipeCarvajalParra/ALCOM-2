@@ -14,6 +14,10 @@ class Inventario(models.Model):
     imagen_5 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
     
 
+    def __str__(self):
+        return self.num_parte_pk
+    
+
     class Meta:
         db_table = 'inventario'
 

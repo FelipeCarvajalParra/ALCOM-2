@@ -1,0 +1,31 @@
+{% if paginator|length > 0 %}
+    {% for part in paginator  %}
+        <tr class="table__row">
+            <td class="table__cell table__cell--largue table__cell--flex">
+                <img class="table__image table__image--semi-circular"
+                    src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
+                <div class="table__container-text">
+                    <a href="{% url 'edit_part' part.num_parte_fk %}" class="table__container-link">{{ part.num_parte_fk.nombre }}</a>
+                    <span class="table__container-email">{{ part.num_parte_fk }}</span>
+                </div>
+            </td> 
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                {{ part.num_orden_fk.num_orden_pk }}
+            </td>
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                {{ part.tipo_movimiento }}
+            </td>
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                {{ part.cantidad }}
+            </td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr class="table__row table__row--not-results">
+        <td class="table__cell table__cell--not-results" colspan="4">
+            <span class="table__text--not-result">
+                No se encontraron resultados
+            </span>
+        </td>
+    </tr>
+{% endif %}
