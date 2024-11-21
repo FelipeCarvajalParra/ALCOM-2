@@ -1,143 +1,208 @@
 {% if intervention %}
-<div id="interventionContainers" >
-    <div id="interventionDataContainer" class="container--activity scroll" >       
-        <div class="container__section-title">
-            <span>Intervencion <span id="interventionOrden">{{ intervention.num_orden_pk }}</span></span>
-        </div>
+    <div id="interventionContainers" >
+        <div id="interventionDataContainer" class="container--activity scroll" >       
+            <div class="container__section-title">
+                <span>Intervencion <span id="interventionOrden">{{ intervention.num_orden_pk }}</span></span>
+            </div>
 
-        <div class="container__contend--info-user">
-            <div class="container__intervention-details">
-                <div class="container__section-details container__section-details--interventions">
-                    <div class="container__section-detail">
-                        <span class="detail__label">Usuario:</span>
-                        
-                        <a href="/edit_user/{{user_intervention.id}}" class="detail__value" id="interventionUser">{{user_intervention.first_name}} {{user_intervention.last_name}}</a>
+            <div class="container__contend--info-user">
+                <div class="container__intervention-details">
+                    <div class="container__section-details container__section-details--interventions">
+                        <div class="container__section-detail">
+                            <span class="detail__label">Usuario:</span>
+                            
+                            <a href="/edit_user/{{user_intervention.id}}" class="detail__value" id="interventionUser">{{user_intervention.first_name}} {{user_intervention.last_name}}</a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="container__section-details container__section-details--interventions">
-                    <div class="container__section-detail">
-                        <span class="detail__label">Fecha:</span>
-                        <span class="detail__value" id="interventionDate">{{ intervention.fecha_hora }}</span>
+                    <div class="container__section-details container__section-details--interventions">
+                        <div class="container__section-detail">
+                            <span class="detail__label">Fecha:</span>
+                            <span class="detail__value" id="interventionDate">{{ intervention.fecha_hora }}</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="container__section-details container__section-details--interventions">
-                    <div class="container__section-detail">
-                        <span class="detail__label">Tarea realizada:</span>
-                        <span class="detail__value" id="interventionTask">{{ intervention.tarea_realizada }}</span>
+                    <div class="container__section-details container__section-details--interventions">
+                        <div class="container__section-detail">
+                            <span class="detail__label">Tarea realizada:</span>
+                            <span class="detail__value" id="interventionTask">{{ intervention.tarea_realizada }}</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="container__section-details container__section-details--interventions">
-                    <div class="container__section-detail">
-                        <span class="detail__label">Observaciones:</span>
-                        <span class="detail__value" id="interventionObservations" >{{ intervention.observaciones }}</span>
+                    <div class="container__section-details container__section-details--interventions">
+                        <div class="container__section-detail">
+                            <span class="detail__label">Observaciones:</span>
+                            <span class="detail__value" id="interventionObservations" >{{ intervention.observaciones }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="container__section-title">
+                <span>Ingresos</span>
+            </div>
+
+            <table class="table">
+                <thead class="table__headed">
+                    <th class="table__headed-title">Parte</th>
+                    <th class="table__headed-title">Ubicacion</th>
+                    <th class="table__headed-title">Cantidad</th>
+                </thead>
+                <tbody class="table__body">
+                    {% if parts_income|length > 0 %}
+                        {% for income in parts_income %}
+                            <tr class="table__row">
+                                <td class="table__cell table__cell--auto table__cell--flex">
+                                    <img class="table__image table__image--semi-circular"
+                                        src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
+                                    <div class="table__container-text">
+                                        <a href="{% url 'edit_part' income.num_parte_fk %}" class="table__container-link">{{ income.num_parte_fk.nombre }}</a>
+                                        <span class="table__container-email">{{ income.num_parte_fk }}</span>
+                                    </div>
+                                </td> 
+                                <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                                    {{ income.num_parte_fk.ubicacion }}
+                                </td>
+                                <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                                    {{ income.cantidad }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="table__row table__row--not-results">
+                            <td class="table__cell table__cell--not-results" colspan="3">
+                                <span class="table__text--not-result">
+                                    No se encontraron resultados
+                                </span>
+                            </td>
+                    {% endif %}
+                </tbody>
+            </table>
+            
+            <div class="container__section-title">
+                <span>Egresos</span>
+            </div>
+            <table class="table">
+                <thead class="table__headed">
+                    <th class="table__headed-title">Parte</th>
+                    <th class="table__headed-title">Ubicacion</th>
+                    <th class="table__headed-title">Cantidad</th>
+                </thead>
+                <tbody class="table__body">
+                    {% if parts_outcome|length > 0 %}
+                        {% for outcome in parts_outcome %}
+                            <tr class="table__row">
+                                <td class="table__cell table__cell--auto table__cell--flex">
+                                    <img class="table__image table__image--semi-circular"
+                                        src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
+                                    <div class="table__container-text">
+                                        <a href="{% url 'edit_part' outcome.num_parte_fk %}" class="table__container-link">{{ outcome.num_parte_fk.nombre }}</a>
+                                        <span class="table__container-email">{{ outcome.num_parte_fk }}</span>
+                                    </div>
+                                </td> 
+                                <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ outcome.num_parte_fk.ubicacion }}">
+                                    {{ outcome.num_parte_fk.ubicacion }}
+                                </td>
+                                <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ outcome.cantidad }}">
+                                    {{ outcome.cantidad }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="table__row table__row--not-results">
+                            <td class="table__cell table__cell--not-results" colspan="3">
+                                <span class="table__text--not-result">
+                                    No se encontraron resultados
+                                </span>
+                            </td>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
 
-        <div class="container__section-title">
-            <span>Ingresos</span>
-        </div>
+        <div id="orderService" class="container--activity scroll" style="display: block;">
+            <div class="container__section-title">
+                <span>Orden de servicio</span>
+            </div>
 
-        <table class="table">
-            <thead class="table__headed">
-                <th class="table__headed-title">Parte</th>
-                <th class="table__headed-title">Ubicacion</th>
-                <th class="table__headed-title">Cantidad</th>
-            </thead>
-            <tbody class="table__body">
-                {% if parts_income|length > 0 %}
-                    {% for income in parts_income %}
-                        <tr class="table__row">
-                            <td class="table__cell table__cell--auto table__cell--flex">
-                                <img class="table__image table__image--semi-circular"
-                                    src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
-                                <div class="table__container-text">
-                                    <a href="{% url 'edit_part' income.num_parte_fk %}" class="table__container-link">{{ income.num_parte_fk.nombre }}</a>
-                                    <span class="table__container-email">{{ income.num_parte_fk }}</span>
-                                </div>
-                            </td> 
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                                {{ income.num_parte_fk.ubicacion }}
-                            </td>
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                                {{ income.cantidad }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr class="table__row table__row--not-results">
-                        <td class="table__cell table__cell--not-results" colspan="3">
-                            <span class="table__text--not-result">
-                                No se encontraron resultados
-                            </span>
-                        </td>
-                {% endif %}
-            </tbody>
-        </table>
-        
-        <div class="container__section-title">
-            <span>Egresos</span>
+            <div class="container__technical-sheet">
+            
+                <embed src="{{ pdf_url }}" type="application/pdf" width="100%" height="600px">
+            </div>
         </div>
-        <table class="table">
-            <thead class="table__headed">
-                <th class="table__headed-title">Parte</th>
-                <th class="table__headed-title">Ubicacion</th>
-                <th class="table__headed-title">Cantidad</th>
-            </thead>
-            <tbody class="table__body">
-                {% if parts_outcome|length > 0 %}
-                    {% for outcome in parts_outcome %}
-                        <tr class="table__row">
-                            <td class="table__cell table__cell--auto table__cell--flex">
-                                <img class="table__image table__image--semi-circular"
-                                    src="https://cdn.pccomponentes.com/img/repositorio/familia/familia-placas_base-500x500-producto.jpg" alt="" />
-                                <div class="table__container-text">
-                                    <a href="{% url 'edit_part' outcome.num_parte_fk %}" class="table__container-link">{{ outcome.num_parte_fk.nombre }}</a>
-                                    <span class="table__container-email">{{ outcome.num_parte_fk }}</span>
-                                </div>
-                            </td> 
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ outcome.num_parte_fk.ubicacion }}">
-                                {{ outcome.num_parte_fk.ubicacion }}
-                            </td>
-                            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ outcome.cantidad }}">
-                                {{ outcome.cantidad }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr class="table__row table__row--not-results">
-                        <td class="table__cell table__cell--not-results" colspan="3">
-                            <span class="table__text--not-result">
-                                No se encontraron resultados
-                            </span>
-                        </td>
-                {% endif %}
-            </tbody>
-        </table>
     </div>
-
-    <div id="orderService" class="container--activity scroll" style="display: block;">
-        <div class="container__section-title">
-            <span>Orden de servicio</span>
-        </div>
-
-        <div class="container__technical-sheet">
-         
-            <embed src="{{ pdf_url }}" type="application/pdf" width="100%" height="600px">
-        </div>
-    </div>
-</div>
 {% else %}
-<div id="interventionContainers" >
-    <div id="interventionDataContainer" class="container--activity scroll" >       
-        <div class="container__section-title">
-            <span>Seleccione una intervencion</span>
-        </div>
-    </div>
-</div>
+    <style>
+        .container__new-interventions{
+            width: 100%;
+            background-color: aqua;
+            height: auto;
+            min-height: 300px;
+            margin-top: 15px;
+            border: 10px solid #ffff;
+            padding: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+        }
 
+        .container__interventions-header{
+            width: 100%;
+            height: 100px;
+            background-color: blueviolet;
+            border-radius: 10px;
+        }
+
+        .container__update-part{
+            width: 100%;
+            padding:10px;
+            margin-top: 10px;
+            border: 1px solid #000;
+            border-radius: 10px;
+        }
+
+
+    </style>
+    <div id="interventionContainers">
+        <div class=" container__new-interventions" >
+            <div class="container__interventions-header">
+
+            </div>
+            <div class="container__update-part">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input class="input input--medium" type="text" id="Usuario" required="">
+                        <label class="input-container__label" for="Usuario">Pieza</label>
+                    </div>
+                    <div class="input-wrapper input-wrapper--flex">
+                        <div class="select select--filter select--state">
+                            <div class="select__selected">Accion</div>
+                            <div class="select__options scroll">
+                                <div class="select__option">Ingreso</div>
+                                <div class="select__option">Egreso</div>
+                            </div>
+                            <div class="select__icon">
+                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="input-wrapper">
+                            <input class="input input--medium" name="stock" type="number" id="stock" required="">
+                            <label class="input-container__label" for="stock">Unidades</label>
+                        </div>
+                    </div>
+                    <div class="form__largue form__largue--margin-top">
+                        <div class="input-container">
+                            <div class="input-wrapper input-wrapper--largue">
+                                <textarea class="input input--largue textarea" id="observations" maxlength="400" style="height: 45px;"></textarea>
+                                <label class="input-container__label textarea__label" for="observations">Observaciones</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+        </div> 
+    </div>
 {% endif %}

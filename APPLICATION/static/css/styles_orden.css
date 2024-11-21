@@ -1,0 +1,277 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.text-bold{
+    font-weight: bold;
+}
+
+/* CSS actualizado */
+.orden {
+    width: 1000px;
+    padding: 40px 50px 50px 50px;
+    background-color: white;
+}
+
+.orden__header {
+    width: 100%;
+    height: auto;
+}
+
+.orden__header-content {
+    display: flex;
+    width: 100%;
+    height: 200px;
+}
+
+.orden__logo {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.orden__logo-image {
+    width: 80%;
+    height: 80%;
+}
+
+.orden__date {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.orden__date-table {
+    width: 85%;
+    height: 75%;
+}
+
+
+.orden__date-table__head {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    padding: 10px;
+    border-top: 1px solid #2d386e;
+    border-left: 1px solid #2d386e;
+    border-right: 1px solid #2d386e;
+}
+
+.orden__date-table__title{
+    font-size: 18px;
+    color: #2d386e;
+    margin: 0 auto;
+}
+
+.orden__date-table__number {
+    font-size: 25px;
+    margin: auto;
+    font-weight: bold;
+    color: #ab3222;
+}
+
+.orden__info-enterprise {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+}
+
+.orden__enterprise-info {
+    display: flex;
+    gap: 30px;
+    font-size: 20px;
+}
+
+.orden__info-item {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.orden__info-icon {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #2d386e;
+    border-radius: 100%;
+    padding: 2px;
+    color: #2d386e;
+}
+
+.orden__info-text {
+    font-size: 22px;
+    color: #2d386e;
+}
+
+.orden__info-text--web{
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.orden__date-table__header{
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    height: 20%;
+    border-bottom: 1px solid #2d386e;
+    border-left: 1px solid #2d386e;
+    border-right: 1px solid #2d386e;
+}
+
+.orden__date-table__header--border-top{
+    border-top: 1px solid #2d386e;
+}
+
+.orden__date-table__item--border-rigth{
+    border-right: 1px solid #2d386e;
+}
+
+.orden__date-table__item{
+    height: 100%;
+    width: calc(100% / 4);
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.orden__date-table__item span{
+    color: #2d386e;
+    font-size: 17px;
+    margin: auto;
+}
+
+
+.orden__date-table__item--largue{
+    width: 50%;
+}
+
+.orden__date-table__item--body{
+    border-top: 0;
+    border-left: 0;
+}
+
+.orden__date-table__body{
+    height: 30%; 
+}
+
+.orden__main{
+    margin-top: 5px;
+}
+
+.orden__info-client, .orden__info-equipment{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #2d386e;
+    color: #2d386e;
+}
+
+.orden__info-equipment{
+    height: 50px;
+}
+
+.orden__info-name, .orden__info-service{
+    display: flex;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    margin-left: 8px;
+    gap: 10px;
+}
+
+.order__line{
+    width: 100%;
+    height: 5px;
+    background-color: #2d386e;
+}
+
+.orden__info-code, .orden__info-serial, .orden__info-brand, .orden__info-category, .orden__info-reference{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.orden__info-code, .orden__info-brand{
+    width: 15%;
+}
+
+.orden__info-serial{
+    width: 30%;
+}
+
+.orden__info-category, .orden__info-reference{
+    width: 20%;
+}
+
+.orden__description{
+    width: 100%;
+    height: auto;
+    
+}
+
+.orden__items-header{
+    display: flex;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #2d386e;
+}
+
+.orden__header-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2d386e;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.orden__header-item--small{
+    width: 10%;
+}
+
+.orden__header-item--medium{
+    width: 20%;
+}
+
+.orden__header-item--medium-largue{
+    width: 30%;
+}
+
+.orden__header-item--largue{
+    width: 40%;
+}
+
+.orden__header-item--all{
+    width: 100%;
+}
+
+.orden__items-item{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 40px;
+    border: 1px solid #2d386e;
+    word-break: break-all;
+}
+
+.orden__footer{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #2d386e;
+    color: #2d386e;
+    margin-top: 5px;
+}

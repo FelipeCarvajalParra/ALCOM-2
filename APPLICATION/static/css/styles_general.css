@@ -444,6 +444,16 @@ a{
     font-size: 14px;
 }
 
+.list-activity__item{
+    cursor: pointer;
+    padding: 5px;
+}
+
+.list-activity__item:hover{
+    background-color: aliceblue;
+    border-radius: 10px;
+}
+
 /*============= Bloque aside ================*/
 
 .aside {
@@ -1578,6 +1588,10 @@ display: block;
 .input-wrapper--flex{
     display: flex;
     gap: 5px;
+}
+
+.form__largue{
+    width: 100%;
 }
 
 .form__largue--margin-top{

@@ -137,5 +137,19 @@ def consult_interventions(request, intervention_id):
         return JsonResponse({'error': str(e)})
 
 
+def view_interventions(request):
+    
+    # Obtener todas las intervenciones
+    interventions = Intervenciones.objects.all()
+
+    # Preparar el contexto
+    context = {
+        'interventions': interventions
+    }
+
+    return render(request, 'view_interventions.html', context)
+
+    
+
 
 

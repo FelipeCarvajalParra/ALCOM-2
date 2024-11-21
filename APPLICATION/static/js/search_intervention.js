@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Verificar si hay algo en localStorage cuando se entra en la página con el script
-    if (window.location.href.includes('edit_equipment')) {
-        const savedIntervention = localStorage.getItem('selectedIntervention');
-        if (savedIntervention) {
-            // Si hay una intervención guardada, eliminarla antes de hacer cualquier cosa
-            localStorage.removeItem('selectedIntervention');
-        }
-    }
 
     const interventions = document.querySelectorAll('.list-activity__intervention');
     
@@ -14,11 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     interventions.forEach(intervention => {
         intervention.addEventListener('click', () => {
             const interventionId = intervention.getAttribute('data-id'); // Obtén el ID de la intervención
-
-            // Guardar la intervención seleccionada en localStorage solo si estamos en edit_equipment
-            if (window.location.href.includes('edit_equipment')) {
-                localStorage.setItem('selectedIntervention', interventionId);
-            }
 
             fetch(`/consult_interventions/${interventionId}`, {
                 method: 'GET',
@@ -56,8 +43,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Si hay intervenciones y no estamos en "edit_equipment", clickeamos la primera por defecto al cargar la página
-    if (interventions.length ) {
-        interventions[0].click(); // Haz clic en la primera intervención por defecto
-    }
 });
