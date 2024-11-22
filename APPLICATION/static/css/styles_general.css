@@ -1336,6 +1336,11 @@ display: block;
     margin-left: auto;
 }
 
+.button--new-part{
+    margin-top: 5px;
+    font-size: 1rem;
+}
+
 /*============= Bloque main ================*/
 
 .main {

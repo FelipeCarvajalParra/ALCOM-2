@@ -134,50 +134,77 @@
 {% else %}
     <style>
         .container__new-interventions{
+            border-radius: 15px;
             width: 100%;
-            background-color: aqua;
             height: auto;
-            min-height: 300px;
-            margin-top: 15px;
-            border: 10px solid #ffff;
-            padding: 10px;
+            background-color: #fff;
+            padding: 10px 20px 20px 20px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+            margin-top: 15px;
         }
 
         .container__interventions-header{
+            display: flex;
             width: 100%;
-            height: 100px;
-            background-color: blueviolet;
+            height: auto;
             border-radius: 10px;
+        }
+
+        .container__interventions-orden{
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .container__update-part{
+            display: flex;
             width: 100%;
             padding:10px;
             margin-top: 10px;
-            border: 1px solid #000;
+            border: 1px solid #e5e6e8;
             border-radius: 10px;
         }
 
+        .container__options-part{
+            display: flex;
+            width: 5%;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .select--intervention{
+            width: 150px;
+            height: 35px;
+        }
+
+        .container__intervention-date{
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .container__close-icon{
+            width: 20px;
+            height: 20px;
+            fill: #6c757d;
+            cursor: pointer;
+        }
 
     </style>
-    <div id="interventionContainers">
-        <div class=" container__new-interventions" >
-            <div class="container__interventions-header">
-
-            </div>
-            <div class="container__update-part">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="text" id="Usuario" required="">
-                        <label class="input-container__label" for="Usuario">Pieza</label>
-                    </div>
-                    <div class="input-wrapper input-wrapper--flex">
-                        <div class="select select--filter select--state">
-                            <div class="select__selected">Accion</div>
+        <div id="interventionContainers">
+            <div class="container__new-interventions">
+                <div class="container__section-title">
+                    <span>Nueva intervencion</span>
+                </div>
+                <div class="container__interventions-header">
+                    <div class="container__interventions-orden"> 
+                        <div class="select select--filter select--state select--intervention">
+                            <div class="select__selected">Procedimiento</div>
                             <div class="select__options scroll">
-                                <div class="select__option">Ingreso</div>
-                                <div class="select__option">Egreso</div>
+                                <div class="select__option">Intervencion</div>
+                                <div class="select__option">Cambio de parte</div>
+                                <div class="select__option">Mantenimiento</div>
                             </div>
                             <div class="select__icon">
                                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
@@ -185,24 +212,124 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="input-wrapper">
-                            <input class="input input--medium" name="stock" type="number" id="stock" required="">
-                            <label class="input-container__label" for="stock">Unidades</label>
+                        <span class="container__intervention-date" >12 de septiembre</span>
+                    </div>
+                </div>
+                
+                <div id="container">
+                    <div class="container__update-part" id="elementNewPart">
+                        <div class="input-container">
+                            <div class="input-wrapper">
+                                <input class="input input--medium" name="part" type="text" id="part" required>
+                                <label class="input-container__label" for="part">Pieza</label>
+                            </div>
+                            <div class="input-wrapper input-wrapper--flex">
+                                <div class="select select--filter select--state">
+                                    <div class="select__selected">Accion</div>
+                                    <div class="select__options scroll">
+                                        <div class="select__option">Ingreso</div>
+                                        <div class="select__option">Egreso</div>
+                                    </div>
+                                    <div class="select__icon">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="input-wrapper">
+                                    <input class="input input--medium" name="amount" type="number" id="amount" required>
+                                    <label class="input-container__label" for="amount">Unidades</label>
+                                </div>
+                            </div>
+                            <div class="form__largue form__largue--margin-top">
+                                <div class="input-container">
+                                    <div class="input-wrapper input-wrapper--largue">
+                                        <textarea class="input input--largue textarea" name="observations" id="observations" maxlength="400" style="height: 45px;"></textarea>
+                                        <label class="input-container__label textarea__label" for="observations">Observaciones</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container__options-part">
+                            <svg class="container__close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z"></path></svg>
                         </div>
                     </div>
+                </div>
+                <div class="button button--new-part" id="buttonNewPart">
+                    <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
+                    </svg>
+                    <span>Agregar</span>
+                </div>
+                <div class="input-container">
                     <div class="form__largue form__largue--margin-top">
                         <div class="input-container">
                             <div class="input-wrapper input-wrapper--largue">
-                                <textarea class="input input--largue textarea" id="observations" maxlength="400" style="height: 45px;"></textarea>
-                                <label class="input-container__label textarea__label" for="observations">Observaciones</label>
+                                <textarea class="input input--largue textarea" name="observations" id="observations" maxlength="400" style="height: 45px;"></textarea>
+                                <label class="input-container__label textarea__label" for="observations">Observaciones Generales</label>
                             </div>
                         </div>
                     </div>
                 </div>
+                <button id="saveButton">Guardar</button>
             </div>
-
-
-            
-        </div> 
-    </div>
+        </div>
+        <script>
+        let counter = 1;
+        
+        const elementNewPart = document.getElementById('elementNewPart');
+        const container = document.getElementById('container');
+        
+        document.getElementById('buttonNewPart').addEventListener('click', function() {
+            const clone = elementNewPart.cloneNode(true);
+        
+            // Asignar IDs únicos a los elementos del clon
+            const inputs = clone.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.id = input.name + counter;
+                input.name = input.name + counter;
+                input.value = '';
+            });
+        
+            const textareas = clone.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.id = textarea.name + counter;
+                textarea.value = '';
+            });
+        
+            const labels = clone.querySelectorAll('label');
+            labels.forEach(label => {
+                const forAttr = label.getAttribute('for');
+                if (forAttr) {
+                    label.setAttribute('for', forAttr + counter);
+                }
+            });
+        
+            container.appendChild(clone);
+        
+            // Añadir event listeners al nuevo clon
+            const newSelectElements = clone.querySelectorAll('.select--filter');
+            newSelectElements.forEach(selectElement => {
+                addEventListenersToSelectElement(selectElement);
+            });
+        
+            heightTextareas();
+            placeholders();
+        
+            counter++;
+        });
+        
+        document.getElementById('saveButton').addEventListener('click', function() {
+            const parts = document.querySelectorAll('.container__update-part');
+            parts.forEach(part => {
+                const partData = {
+                    part: part.querySelector('input[name^="part"]').value,
+                    amount: part.querySelector('input[name^="amount"]').value,
+                    observations: part.querySelector('textarea[name^="observations"]').value,
+                    action: part.querySelector('.select__selected').textContent
+                };
+                console.log(partData);
+            });
+        });
+        </script>
 {% endif %}
