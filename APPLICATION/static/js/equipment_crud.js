@@ -8,7 +8,6 @@ newEquipmentForm.addEventListener('submit', function(event) {
     // Crear un objeto FormData para recoger los datos del formulario
     const formData = new FormData(newEquipmentForm);
 
-    // Recoger el valor del estado seleccionado manualmente
     const selectedState = document.getElementById('equipmentState').textContent;
     formData.append('state', selectedState);
 

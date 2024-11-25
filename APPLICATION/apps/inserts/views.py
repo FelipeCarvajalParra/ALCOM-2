@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from apps.partsInventory.models import Inventario
+from django.db.models import Max
 from .models import Actualizaciones, Intervenciones
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -8,6 +9,9 @@ from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
 from django.template.loader import render_to_string
+import json
+from django.shortcuts import get_object_or_404
+from apps.equipments.models import Equipos
 
 
 @login_required
@@ -148,6 +152,124 @@ def view_interventions(request):
     }
 
     return render(request, 'view_interventions.html', context)
+
+
+def num_orden(procedure):
+    # Prefijos para cada procedimiento
+    prefixes = {
+        'Intervencion': 'INT',
+        'Cambio de parte': 'CAM',
+        'Mantenimiento': 'MAN'
+    }
+
+    # Obtener el prefijo correspondiente
+    prefix = prefixes[procedure]
+    
+    # Filtrar registros por tipo de procedimiento y obtener el último valor numérico
+    last_record = Intervenciones.objects.filter(tarea_realizada=procedure).aggregate(
+        max_num=Max('num_orden_pk'))['max_num']
+
+    if last_record:
+        # Extraer el número eliminando el prefijo y convertirlo a entero
+        last_number = int(last_record.replace(prefix, ''))
+        next_number = last_number + 1
+    else:
+        # Si no hay registros previos, comenzar desde el primer número
+        next_number = 1
+
+    # Formatear el nuevo número con el prefijo y ceros iniciales
+    return f"{prefix}{next_number:06d}"
+
+
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def new_intervention(request):
+    try:
+        # Obtener los datos enviados en formato JSON
+        data = json.loads(request.body)
+
+        # Validar procedimiento
+        procedure = data.get('procedure', '').strip()
+        print(f"Procedimiento: {procedure}")
+
+        if not procedure or procedure not in ['Intervencion', 'Cambio de parte', 'Mantenimiento']:
+            return JsonResponse({'error': 'Por favor ingrese un procedimiento válido.'}, status=400)
+
+        # Obtener las intervenciones
+        interventions = data.get('interventions', [])
+        has_part_action = bool(interventions)  # True si hay intervenciones, False si no
+
+        if has_part_action:
+            # Validar cada intervención
+            for intervention in interventions:
+                part_number = intervention.get('part')  # Número de parte
+                amount = intervention.get('amount')  # Cantidad
+                action = intervention.get('action', '').strip()  # Acción (Ingreso/Egreso)
+
+                if not part_number or not amount or not action:
+                    return JsonResponse({'error': 'Cada movimiento debe tener número de parte, cantidad y acción.'}, status=400)
+
+                try:
+                    inventario_item = Inventario.objects.get(num_parte_pk=part_number)
+                except Inventario.DoesNotExist:
+                    return JsonResponse({'error': f'El número de parte {part_number} no existe en el inventario.'}, status=404)
+
+                # Validar cantidad en caso de egreso
+                if action != 'Accion':
+                    if action == 'Egreso':
+                        if int(amount) > inventario_item.total_unidades:
+                            return JsonResponse({
+                                'error': f'Cantidad insuficiente para la parte {part_number}.'
+                            })
+                else:
+                    return JsonResponse({'error': 'Por favor seleccione una acción válida.'})
+
+        # Validar observaciones generales
+        general_observations = data.get('generalObservations', '').strip()
+        if not has_part_action and not general_observations:
+            return JsonResponse({'error': 'Debe proporcionar una descripción general si no hay intervenciones.'}, status=400)
+        
+
+        # Obtener la instancia del equipo
+        equipment_instance = get_object_or_404(Equipos, cod_equipo_pk = data.get('codeEquipment').strip())
+
+        # Crear la intervención
+        intervention = Intervenciones.objects.create(
+            num_orden_pk=num_orden(procedure),
+            fecha_hora=timezone.now(),
+            tarea_realizada=procedure,
+            observaciones=general_observations,
+            cod_equipo_fk=equipment_instance,  # Aquí pasas la instancia
+            usuario_fk=request.user,
+        )
+
+        for update in interventions:
+            part_instance = get_object_or_404(Inventario, num_parte_pk = update.get('part').strip())   # Número de parte
+            amount = update.get('amount')  # Cantidad
+            action = update.get('action', '').strip()  # Acción (Ingreso/Egreso)
+
+            intervention = Intervenciones.objects.create(
+                num_orden_fk=intervention.num_orden_pk,
+
+            )
+
+        # Respuesta de éxito
+        return JsonResponse({'success': 'Datos procesados correctamente.'}, status=200)
+
+    except json.JSONDecodeError:
+        # Error en el formato JSON
+        return JsonResponse({'error': 'Error al procesar los datos JSON.'}, status=400)
+
+
+def create_orden(request):
+    return render(request, 'create_orden.html')
+
+    
+
+    
 
     
 

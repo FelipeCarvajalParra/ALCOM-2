@@ -3,7 +3,7 @@ from apps.equipments.models import Equipos
 from apps.users.models import CustomUser
 
 class Intervenciones(models.Model):
-    num_orden_pk = models.IntegerField(primary_key=True)
+    num_orden_pk = models.CharField(primary_key=True, max_length=50)
     cod_equipo_fk = models.ForeignKey(Equipos, models.DO_NOTHING, db_column='cod_equipo_fk')
     fecha_hora = models.DateTimeField(blank=True, null=True)
     usuario_fk = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)  # Cambiado a ForeignKey

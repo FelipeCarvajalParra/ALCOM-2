@@ -28,9 +28,9 @@
                             <div class="orden__date-table__item orden__date-table__item--largue" ><span class="text-bold">Ciudad</span></div>
                         </div>
                         <div class="orden__date-table__header orden__date-table__body">
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>12</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>08</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>24</span></div>
+                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
+                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
+                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
                             <div class="orden__date-table__item orden__date-table__item--largue" ><span>Medellin</span></div>
                         </div>
                         
@@ -69,29 +69,29 @@
                 </div>
                 <div class="orden__info-service ">
                     <span class="text-bold">PROCEDIMIENTO:</span>
-                    <span>REPARACION</span>
+                    <span>{{ procedure }}</span>
                 </div>
             </div>
             <div class="orden__info-equipment">
                 <div class="orden__info-code orden__date-table__item--border-rigth">
                     <span class="text-bold">CODIGO: </span>
-                    <span> 7485</span>
+                    <span> {{ code }} </span>
                 </div>
                 <div class="orden__info-brand orden__date-table__item--border-rigth">
                     <span class="text-bold">MARCA: </span>
-                    <span> LENOVO</span>
+                    <span> {{ brand }} </span>
                 </div>
                 <div class="orden__info-serial orden__date-table__item--border-rigth">
                     <span class="text-bold">SERIAL: </span>
-                    <span>LCN0CV12D333514</span>
+                    <span> {{ serial }} </span>
                 </div>
                 <div class="orden__info-category orden__date-table__item--border-rigth">
                     <span class="text-bold">CATEGORIA: </span>
-                    <span>PORTATILES</span>
+                    <span>{{ categori }}</span>
                 </div>
                 <div class="orden__info-reference orden__date-table__item--border-rigth">
                     <span class="text-bold">REFERENCIA: </span>
-                    <span>K513EA CL7-11</span>
+                    <span>{{ reference }}</span>
                 </div>
             </div>
             <div class="order__line"></div>
@@ -135,27 +135,6 @@
             </div>
         </footer>
     </div>
-    <button id="capturar">Capturar y Descargar</button>
-    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.8/dist/html-to-image.min.js"></script>
-
-    <script>
-        document.getElementById('capturar').addEventListener('click', function () {
-            const node = document.querySelector('.orden');
-            
-            // Generar la imagen y descargarla
-            htmlToImage.toPng(node, { cacheBust: true })
-                .then(function (dataUrl) {
-                    const link = document.createElement('a'); // Crear un enlace
-                    link.href = dataUrl; // Asignar la URL generada
-                    link.download = 'orden_servicio.png'; // Nombre del archivo
-                    link.click(); // Simular el clic para descargar
-                })
-                .catch(function (error) {
-                    console.error('Error al capturar la imagen:', error);
-                });
-        });
-    </script>
-    
     
 </body>
 </html>
