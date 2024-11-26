@@ -3,6 +3,7 @@ from django.shortcuts import render
 from apps.partsInventory.models import Inventario
 from django.db.models import Max
 from .models import Actualizaciones, Intervenciones
+from apps.users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.db import transaction
@@ -12,6 +13,10 @@ from django.template.loader import render_to_string
 import json
 from django.shortcuts import get_object_or_404
 from apps.equipments.models import Equipos
+from django.shortcuts import render
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from io import BytesIO
 
 
 @login_required
@@ -181,92 +186,123 @@ def num_orden(procedure):
     return f"{prefix}{next_number:06d}"
 
 
-
-
 @login_required
 @require_POST
 @transaction.atomic
 def new_intervention(request):
     try:
-        # Obtener los datos enviados en formato JSON
+        # Parsear los datos JSON
         data = json.loads(request.body)
 
-        # Validar procedimiento
+        # Validar el procedimiento
         procedure = data.get('procedure', '').strip()
-        print(f"Procedimiento: {procedure}")
-
         if not procedure or procedure not in ['Intervencion', 'Cambio de parte', 'Mantenimiento']:
             return JsonResponse({'error': 'Por favor ingrese un procedimiento válido.'}, status=400)
 
-        # Obtener las intervenciones
+        # Obtener intervenciones
         interventions = data.get('interventions', [])
-        has_part_action = bool(interventions)  # True si hay intervenciones, False si no
+        has_part_action = bool(interventions)
 
-        if has_part_action:
-            # Validar cada intervención
-            for intervention in interventions:
-                part_number = intervention.get('part')  # Número de parte
-                amount = intervention.get('amount')  # Cantidad
-                action = intervention.get('action', '').strip()  # Acción (Ingreso/Egreso)
+        # Validar intervenciones si existen
+        for intervention in interventions:
+            part_number = intervention.get('part')  # Número de parte
+            amount = intervention.get('amount')  # Cantidad
+            action = intervention.get('action', '').strip()  # Acción (Ingreso/Egreso)
 
-                if not part_number or not amount or not action:
-                    return JsonResponse({'error': 'Cada movimiento debe tener número de parte, cantidad y acción.'}, status=400)
+            # Validación básica de intervención
+            if not part_number or not amount or not action:
+                return JsonResponse({'error': 'Cada movimiento debe tener número de parte, cantidad y acción.'}, status=400)
+            if action not in ['Ingreso', 'Egreso']:
+                return JsonResponse({'error': 'Por favor seleccione una acción válida.'}, status=400)
 
-                try:
-                    inventario_item = Inventario.objects.get(num_parte_pk=part_number)
-                except Inventario.DoesNotExist:
-                    return JsonResponse({'error': f'El número de parte {part_number} no existe en el inventario.'}, status=404)
+            # Validar existencia en inventario
+            try:
+                inventario_item = Inventario.objects.get(num_parte_pk=part_number)
+            except Inventario.DoesNotExist:
+                return JsonResponse({'error': f'El número de parte {part_number} no existe en el inventario.'}, status=404)
 
-                # Validar cantidad en caso de egreso
-                if action != 'Accion':
-                    if action == 'Egreso':
-                        if int(amount) > inventario_item.total_unidades:
-                            return JsonResponse({
-                                'error': f'Cantidad insuficiente para la parte {part_number}.'
-                            })
-                else:
-                    return JsonResponse({'error': 'Por favor seleccione una acción válida.'})
+            # Validar cantidad disponible si es egreso
+            if action == 'Ingreso' and int(amount) > inventario_item.total_unidades:
+                return JsonResponse({'error': f'Cantidad insuficiente para la parte {part_number}.'}, status=400)
 
-        # Validar observaciones generales
+        # Validar observaciones generales si no hay intervenciones
         general_observations = data.get('generalObservations', '').strip()
         if not has_part_action and not general_observations:
             return JsonResponse({'error': 'Debe proporcionar una descripción general si no hay intervenciones.'}, status=400)
-        
 
-        # Obtener la instancia del equipo
-        equipment_instance = get_object_or_404(Equipos, cod_equipo_pk = data.get('codeEquipment').strip())
+        # Validar equipo
+        try:
+            equipment_instance = Equipos.objects.get(cod_equipo_pk=data.get('codeEquipment').strip())
+        except Equipos.DoesNotExist:
+            return JsonResponse({'error': 'El equipo especificado no existe.'})
 
-        # Crear la intervención
+        # Crear la intervención principal
         intervention = Intervenciones.objects.create(
             num_orden_pk=num_orden(procedure),
             fecha_hora=timezone.now(),
             tarea_realizada=procedure,
             observaciones=general_observations,
-            cod_equipo_fk=equipment_instance,  # Aquí pasas la instancia
+            cod_equipo_fk=equipment_instance,
             usuario_fk=request.user,
         )
 
+        # Procesar intervenciones específicas
         for update in interventions:
-            part_instance = get_object_or_404(Inventario, num_parte_pk = update.get('part').strip())   # Número de parte
-            amount = update.get('amount')  # Cantidad
-            action = update.get('action', '').strip()  # Acción (Ingreso/Egreso)
+            part_instance = Inventario.objects.get(num_parte_pk=update.get('part').strip())  # Consulta segura porque ya se validó
+            amount = int(update.get('amount'))  # Convertir a entero
+            action = update.get('action', '').strip()
+            observations = update.get('observations', '').strip()
 
-            intervention = Intervenciones.objects.create(
-                num_orden_fk=intervention.num_orden_pk,
+            # Actualizar inventario
+            if action == 'Ingreso':
+                part_instance.total_unidades -= amount
+            else:
+                part_instance.total_unidades += amount
+            part_instance.save()
 
+            # Crear registro en Actualizaciones
+            Actualizaciones.objects.create(
+                num_orden_fk=intervention,
+                num_parte_fk=part_instance,
+                fuente=procedure,
+                tipo_movimiento='Entrada' if action == 'Egreso' else 'Salida',
+                observaciones=observations if observations else 'Sin observaciones',
+                cantidad=amount,
             )
 
-        # Respuesta de éxito
-        return JsonResponse({'success': 'Datos procesados correctamente.'}, status=200)
+        # Responder con éxito
+        return JsonResponse({'success': 'Datos procesados correctamente.'})
 
     except json.JSONDecodeError:
-        # Error en el formato JSON
-        return JsonResponse({'error': 'Error al procesar los datos JSON.'}, status=400)
+        return JsonResponse({'error': 'Error al procesar los datos JSON.'})
+    except Exception as e:
+        return JsonResponse({'error': f'Error inesperado: {str(e)}'})
 
 
-def create_orden(request):
-    return render(request, 'create_orden.html')
 
+@login_required
+def order_service(request, num_orden):
+
+    # Obtener la intervención por su número de orden
+    intervention = get_object_or_404(Intervenciones, num_orden_pk=num_orden)
+    equipment_instance = intervention.cod_equipo_fk
+    intervention_income = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Salida')
+    intervention_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Entrada')
+    intervention_user =  get_object_or_404(CustomUser, pk = intervention.usuario_fk_id) 
+    print(intervention_user)
+
+    if intervention.estado == 'aprobada':
+        return render(request = 'edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
+    
+    context = {
+        'equipment': equipment_instance,
+        'intervention': intervention,
+        'intervention_income': intervention_income,
+        'intervention_outcome': intervention_outcome,
+        'intervention_user': intervention_user
+    }
+
+    return render(request, 'orden_template.html', context)
     
 
     

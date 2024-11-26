@@ -135,7 +135,7 @@ def edit_equipment(request, id_equipment):
     num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
     updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
 
-    paginator_interventions = Paginator(interventions, 12)
+    paginator_interventions = Paginator(interventions, 7)
     page_number_interventions = request.GET.get('page_interventions')
     paginator_interventions = paginator_interventions.get_page(page_number_interventions)
 

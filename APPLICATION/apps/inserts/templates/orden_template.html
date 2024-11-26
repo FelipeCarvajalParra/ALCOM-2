@@ -1,140 +1,332 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+{% csrf_token %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orden de servicio</title>
-    <link rel="stylesheet" href="styles_orden.css">
-</head>
-<body>
-    <div class="orden">
-        <header class="orden__header">
-            <div class="orden__header-content">
-                <div class="orden__logo">
-                    <img class="orden__logo-image" src="data:image/png;base64,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" alt="Logo de la empresa">
-                </div>
-                <div class="orden__date">
-                    <div class="orden__date-table">
-                        <div class="orden__date-table__head">
-                            <span class="orden__date-table__title text-bold">ORDEN DE SERVICIO</span>
-                            <span class="orden__date-table__number">N° 43646</span>
-                        </div>
-                        <div class="orden__date-table__header orden__date-table__header--border-top">
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Dia</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Mes</spa></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Año</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--largue" ><span class="text-bold">Ciudad</span></div>
-                        </div>
-                        <div class="orden__date-table__header orden__date-table__body">
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{date}}</span></div>
-                            <div class="orden__date-table__item orden__date-table__item--largue" ><span>Medellin</span></div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="orden__info-enterprise"> 
-                <div class="orden__enterprise-info">
-                    <div class="orden__info-item">
-                        <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z"></path></svg>
-                        <span class="orden__info-text">alcom@une.net.co</span>
-                    </div>
-                    <div class="orden__info-item">
-                        <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4V20H17V4H7ZM6 2H18C18.5523 2 19 2.44772 19 3V21C19 21.5523 18.5523 22 18 22H6C5.44772 22 5 21.5523 5 21V3C5 2.44772 5.44772 2 6 2ZM12 17C12.5523 17 13 17.4477 13 18C13 18.5523 12.5523 19 12 19C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17Z"></path></svg>
-                        <span class="orden__info-text">3019120072</span>
-                    </div>
-                    <div class="orden__info-item">
-                        <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16.42V19.9561C21 20.4811 20.5941 20.9167 20.0705 20.9537C19.6331 20.9846 19.2763 21 19 21C10.1634 21 3 13.8366 3 5C3 4.72371 3.01545 4.36687 3.04635 3.9295C3.08337 3.40588 3.51894 3 4.04386 3H7.5801C7.83678 3 8.05176 3.19442 8.07753 3.4498C8.10067 3.67907 8.12218 3.86314 8.14207 4.00202C8.34435 5.41472 8.75753 6.75936 9.3487 8.00303C9.44359 8.20265 9.38171 8.44159 9.20185 8.57006L7.04355 10.1118C8.35752 13.1811 10.8189 15.6425 13.8882 16.9565L15.4271 14.8019C15.5572 14.6199 15.799 14.5573 16.001 14.6532C17.2446 15.2439 18.5891 15.6566 20.0016 15.8584C20.1396 15.8782 20.3225 15.8995 20.5502 15.9225C20.8056 15.9483 21 16.1633 21 16.42Z"></path></svg>
-                        <span class="orden__info-text">PBX:(604)3227408</span>
-                    </div>
-                    <div class="orden__info-item">
-                        <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.364 17.364L12 23.7279L5.63604 17.364C2.12132 13.8492 2.12132 8.15076 5.63604 4.63604C9.15076 1.12132 14.8492 1.12132 18.364 4.63604C21.8787 8.15076 21.8787 13.8492 18.364 17.364ZM12 15C14.2091 15 16 13.2091 16 11C16 8.79086 14.2091 7 12 7C9.79086 7 8 8.79086 8 11C8 13.2091 9.79086 15 12 15ZM12 13C10.8954 13 10 12.1046 10 11C10 9.89543 10.8954 9 12 9C13.1046 9 14 9.89543 14 11C14 12.1046 13.1046 13 12 13Z"></path></svg>
-                        <span class="orden__info-text">Medellín, Colombia</span>
-                    </div>
-                </div>
-                <div class="orden__enterprise-web">
-                    <span class="orden__info-text orden__info-text--web">www.alcomsas.com.co</span>
-                </div>
-            </div>
-        </header>
-        <main class="orden__main">
-            <div class="orden__info-client">
-                <div class="orden__info-name orden__date-table__item--border-rigth">
-                    <span class="text-bold">EMPRESA: </span>
-                    <span> ALCOM SAS</span>
-                </div>
-                <div class="orden__info-service ">
-                    <span class="text-bold">PROCEDIMIENTO:</span>
-                    <span>{{ procedure }}</span>
-                </div>
-            </div>
-            <div class="orden__info-equipment">
-                <div class="orden__info-code orden__date-table__item--border-rigth">
-                    <span class="text-bold">CODIGO: </span>
-                    <span> {{ code }} </span>
-                </div>
-                <div class="orden__info-brand orden__date-table__item--border-rigth">
-                    <span class="text-bold">MARCA: </span>
-                    <span> {{ brand }} </span>
-                </div>
-                <div class="orden__info-serial orden__date-table__item--border-rigth">
-                    <span class="text-bold">SERIAL: </span>
-                    <span> {{ serial }} </span>
-                </div>
-                <div class="orden__info-category orden__date-table__item--border-rigth">
-                    <span class="text-bold">CATEGORIA: </span>
-                    <span>{{ categori }}</span>
-                </div>
-                <div class="orden__info-reference orden__date-table__item--border-rigth">
-                    <span class="text-bold">REFERENCIA: </span>
-                    <span>{{ reference }}</span>
-                </div>
-            </div>
-            <div class="order__line"></div>
-            <div class="orden__description">
-                <div class="orden__items-header">
-                    <div class="text-bold orden__header-item orden__header-item--all">PIEZAS INGRESADAS</div>
-                </div>
-                <div class="orden__items-header">
-                    <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium-largue">PIEZA</div>
-                    <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium">NUMERO</div>
-                    <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">CANTIDAD</div>
-                    <div class="text-bold orden__header-item orden__header-item--largue">OBSERVACIONES</div>
-                </div>
-                <div class="orden__items-header">
-                    <div class="text-bold orden__header-item orden__header-item--all">PIEZAS EGRESADAS</div>
-                </div>
-                <div class="orden__items-item">
-                    <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium-largue">Lorem, ipsum dolor.</div>
-                    <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium">4875874568974398678645</div>
-                    <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">8</div>
-                    <div class="orden__header-item orden__header-item--largue">Lorem ipsum dolor sit amet consectetur adipisicing elit. A eius, totam iste, recusandae sunt quis commodi distinctio sit in, minus aperiam illum vel dolorum ea voluptas sequi tempore. Nobis, nostrum.</div>
-                </div>
-                <div class="orden__items-header">
-                    <div class="text-bold orden__header-item orden__header-item--all">OBSERVACIONES GENERALES</div>
-                </div>
-                <div class="orden__items-item">
-                    <div class="orden__header-item orden__header-item--largue orden__header-item--all">Lorem ipsum dolor sit amet consectetur adipisicing elit. A eius, totam iste, recusandae sunt quis commodi distinctio sit in, minus aperiam illum vel dolorum ea voluptas sequi tempore. Nobis, nostrum.</div>
-                </div>
-            </div>
-        </main>
-
-        <style>
-            
-        </style>
-        <footer>
-            <div class="orden__footer">
-                <div class="orden__footer-item">
-                    <span class="text-bold orden__footer-title">FUCIONARIO ALCOM: </span>
-                    <span class="orden__footer-name">Felipe Carvajal Parra</span>
-                </div>
-            </div>
-        </footer>
-    </div>
+    <link rel="stylesheet" href="{% static 'css/styles_orden.css' %} ?v=2">
     
-</body>
-</html>
+
+
+    <div class="container__orden">
+        <style>
+            /* Personaliza el tooltip con el tema 'custom-tooltip' */
+            .tippy-box[data-theme='custom-tooltip'] {
+                background-color: #8d9eac;
+                color: white;
+                border-radius: 5px;
+                padding: 5px;
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Personaliza la flecha del tooltip */
+            .tippy-box[data-theme='custom-tooltip'] .tippy-arrow {
+                color: #8d9eac; /* Color de la flecha */
+                background-color: #8d9eac; /* Color de la flecha */
+            }
+        
+            .floating-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+            }
+        
+            .floating-button__checkbox {
+                display: none;
+            }
+        
+            /* Transición instantánea de color */
+            .floating-button__link, .floating-button__label {
+                display: block;
+                text-decoration: none;
+                background-color: #282a42;
+                color: #fff;
+                width: 45px;
+                height: 45px;
+                line-height: 55px;
+                text-align: center;
+                border-radius: 50%;
+                box-shadow: 0px 1px 10px rgba(0,0,0,0.4);
+                transition: opacity 500ms ease, visibility 500ms ease; /* Animación de opacidad y visibilidad */
+            }
+        
+            /* Cambio de color al pasar el mouse */
+            .floating-button__link:hover {
+                background: #8d9eac;
+                color: #282a42;
+            }
+        
+            /* Animación de entrada (deslizar desde abajo) */
+            @keyframes slideIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px); /* Empiezan desplazados hacia abajo */
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0); /* Terminan en su posición original */
+                }
+            }
+        
+            /* Animación de salida (desvanecerse) */
+            @keyframes fadeOut {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(30px); /* Se desvanecen mientras se desplazan hacia abajo */
+                }
+            }
+        
+            /* Al principio, los elementos están ocultos y desplazados hacia abajo */
+            .floating-button__link {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(30px); /* Los elementos empiezan más abajo */
+                margin-bottom: 7px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .floating-button__svg{
+                width: 20px;
+                height: 20px;
+                color: #d7d8ee;
+            }
+
+            .floating-button__svg--close{
+                width: 25px;
+                height: 25px;
+                color: #d7d8ee;
+            }
+        
+            /* Cuando el checkbox está marcado, los elementos se animan entrando (de abajo hacia arriba) */
+            .floating-button__checkbox:checked ~ .floating-button__links .floating-button__link {
+                animation: slideIn 500ms forwards; /* Animación de entrada */
+                visibility: visible;
+            }
+        
+            /* Cuando el checkbox no está marcado, los elementos se desvanecen */
+            .floating-button__checkbox:not(:checked) ~ .floating-button__links .floating-button__link {
+                animation: fadeOut 500ms forwards; /* Animación de salida */
+            }
+        
+            .floating-button__label {
+                cursor: pointer;
+                background-color: #282a42;
+                font-size: 23px;
+            }
+        
+            .floating-button__checkbox:checked ~ .floating-button__toggle .floating-button__label {
+                transform: rotate(135deg);
+                font-size: 25px;
+            }
+        </style>
+        
+        <div class="floating-button">
+            <input type="checkbox" id="floating-button__checkbox" class="floating-button__checkbox">
+            <div class="floating-button__links">
+                <a href="#" class="floating-button__link" data-tooltip="PNG">
+                    <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="floating-button__link" data-tooltip="PDF">
+                    <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.5 7.5H12.5C12.5 9.98994 14.6436 12.6604 17.3162 13.5513L16.8586 15.49C13.7234 15.0421 10.4821 16.3804 7.5547 18.3321L6.3753 16.7191C7.46149 15.8502 8.50293 14.3757 9.27499 12.6534C10.0443 10.9373 10.5 9.07749 10.5 7.5ZM11.1 13.4716C11.3673 12.8752 11.6043 12.2563 11.8037 11.6285C12.2754 12.3531 12.8553 13.0182 13.5102 13.5953C12.5284 13.7711 11.5666 14.0596 10.6353 14.4276C10.8 14.1143 10.9551 13.7948 11.1 13.4716Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="floating-button__link" data-tooltip="Rechazar">
+                    <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 13C19.0928 13 20.1174 13.2922 20.9999 13.8026L20.9998 7L16 2H3.9985C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H12.8027C12.2922 21.1175 12 20.0929 12 19C12 15.6863 14.6863 13 18 13ZM21.5356 21.1212L19.4143 18.9999L21.5356 16.8786L20.1214 15.4644L18.0001 17.5857L15.8788 15.4644L14.4646 16.8786L16.5859 18.9999L14.4646 21.1212L15.8788 22.5354L18.0001 20.4141L20.1214 22.5354L21.5356 21.1212Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="floating-button__link" data-tooltip="Validar">
+                    <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.9998 7L16 2H3.9985C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H12.3414C12.1203 21.3744 12 20.7013 12 20C12 16.6863 14.6863 14 18 14C19.0928 14 20.1174 14.2922 20.9999 14.8026L20.9998 7ZM14.4646 19.4647L18.0001 23.0002L22.9498 18.0505L21.5356 16.6362L18.0001 20.1718L15.8788 18.0505L14.4646 19.4647Z"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="floating-button__toggle">
+                <label for="floating-button__checkbox" class="floating-button__label">
+                    <svg class="floating-button__svg--close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                    </svg>
+                </label>
+            </div>
+        </div>
+        
+        
+        
+        
+        <article class="orden">
+            <header class="orden__header">
+                <div class="orden__header-content">
+                    <div class="orden__logo">
+                        <img class="orden__logo-image" src="{% static 'img/logo_alcom_orden.png' %}" alt="">
+                    </div>
+                    <div class="orden__date">
+                        <div class="orden__date-table">
+                            <div class="orden__date-table__head">
+                                <span class="orden__date-table__title text-bold">ORDEN DE SERVICIO</span>
+                                <span class="orden__date-table__number">{{ intervention.num_orden_pk }}</span>
+                            </div>
+                            <div class="orden__date-table__header orden__date-table__header--border-top">
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Dia</span></div>
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Mes</spa></div>
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span class="text-bold">Año</span></div>
+                                <div class="orden__date-table__item orden__date-table__item--largue" ><span class="text-bold">Ciudad</span></div>
+                            </div>
+                            <div class="orden__date-table__header orden__date-table__body">
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{ intervention.fecha_hora|date:"d" }}</span></div>
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{ intervention.fecha_hora|date:"m" }}</span></div>
+                                <div class="orden__date-table__item orden__date-table__item--border-rigth"><span>{{ intervention.fecha_hora|date:"Y" }}</span></div>
+                                <div class="orden__date-table__item orden__date-table__item--largue" ><span>Medellin</span></div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="orden__info-enterprise"> 
+                    <div class="orden__enterprise-info">
+                        <div class="orden__info-item">
+                            <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z"></path></svg>
+                            <span class="orden__info-text">alcom@une.net.co</span>
+                        </div>
+                        <div class="orden__info-item">
+                            <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4V20H17V4H7ZM6 2H18C18.5523 2 19 2.44772 19 3V21C19 21.5523 18.5523 22 18 22H6C5.44772 22 5 21.5523 5 21V3C5 2.44772 5.44772 2 6 2ZM12 17C12.5523 17 13 17.4477 13 18C13 18.5523 12.5523 19 12 19C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17Z"></path></svg>
+                            <span class="orden__info-text">3019120072</span>
+                        </div>
+                        <div class="orden__info-item">
+                            <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16.42V19.9561C21 20.4811 20.5941 20.9167 20.0705 20.9537C19.6331 20.9846 19.2763 21 19 21C10.1634 21 3 13.8366 3 5C3 4.72371 3.01545 4.36687 3.04635 3.9295C3.08337 3.40588 3.51894 3 4.04386 3H7.5801C7.83678 3 8.05176 3.19442 8.07753 3.4498C8.10067 3.67907 8.12218 3.86314 8.14207 4.00202C8.34435 5.41472 8.75753 6.75936 9.3487 8.00303C9.44359 8.20265 9.38171 8.44159 9.20185 8.57006L7.04355 10.1118C8.35752 13.1811 10.8189 15.6425 13.8882 16.9565L15.4271 14.8019C15.5572 14.6199 15.799 14.5573 16.001 14.6532C17.2446 15.2439 18.5891 15.6566 20.0016 15.8584C20.1396 15.8782 20.3225 15.8995 20.5502 15.9225C20.8056 15.9483 21 16.1633 21 16.42Z"></path></svg>
+                            <span class="orden__info-text">PBX:(604)3227408</span>
+                        </div>
+                        <div class="orden__info-item">
+                            <svg class="orden__info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.364 17.364L12 23.7279L5.63604 17.364C2.12132 13.8492 2.12132 8.15076 5.63604 4.63604C9.15076 1.12132 14.8492 1.12132 18.364 4.63604C21.8787 8.15076 21.8787 13.8492 18.364 17.364ZM12 15C14.2091 15 16 13.2091 16 11C16 8.79086 14.2091 7 12 7C9.79086 7 8 8.79086 8 11C8 13.2091 9.79086 15 12 15ZM12 13C10.8954 13 10 12.1046 10 11C10 9.89543 10.8954 9 12 9C13.1046 9 14 9.89543 14 11C14 12.1046 13.1046 13 12 13Z"></path></svg>
+                            <span class="orden__info-text">Medellín, Colombia</span>
+                        </div>
+                    </div>
+                    <div class="orden__enterprise-web">
+                        <span class="orden__info-text orden__info-text--web">www.alcomsas.com.co</span>
+                    </div>
+                </div>
+            </header>
+            <main class="orden__main">
+                <div class="orden__info-client">
+                    <div class="orden__info-name orden__date-table__item--border-rigth">
+                        <span class="text-bold">EMPRESA: </span>
+                        <span> ALCOM SAS</span>
+                    </div>
+                    <div class="orden__info-service ">
+                        <span class="text-bold">PROCEDIMIENTO:</span>
+                        <span>{{ intervention.tarea_realizada|upper }}</span>
+                    </div>
+                </div>
+                <div class="orden__info-equipment">
+                    <div class="orden__info-code orden__date-table__item--border-rigth">
+                        <span class="text-bold">CODIGO: </span>
+                        <span> {{ equipment.cod_equipo_pk }} </span>
+                    </div>
+                    <div class="orden__info-brand orden__date-table__item--border-rigth">
+                        <span class="text-bold">MARCA: </span>
+                        <span> {{ equipment.referencia_fk.marca|upper }} </span>
+                    </div>
+                    <div class="orden__info-serial orden__date-table__item--border-rigth">
+                        <span class="text-bold">SERIAL: </span>
+                        <span> {{ equipment.serial }} </span>
+                    </div>
+                    <div class="orden__info-category orden__date-table__item--border-rigth">
+                        <span class="text-bold">CATEGORIA: </span>
+                        <span>{{ equipment.referencia_fk.categoria|upper }}</span>
+                    </div>
+                    <div class="orden__info-reference orden__date-table__item--border-rigth">
+                        <span class="text-bold">REFERENCIA: </span>
+                        <span>{{ equipment.referencia_fk.referencia_pk|upper }}</span>
+                    </div>
+                </div>
+                <div class="order__line"></div>
+                <div class="orden__description">
+                    {% if intervention_outcome|length > 0 %}
+                        <div class="orden__items-header">
+                            <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium-largue">PIEZA</div>
+                            <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium">NUMERO</div>
+                            <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">CANTIDAD</div>
+                            <div class="text-bold orden__header-item orden__header-item--largue">OBSERVACIONES</div>
+                        </div>
+                        {% for income in intervention_income %}
+                            <div class="orden__items-item">
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium-largue">{{ income.num_parte_fk.nombre }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium">{{ income.num_parte_fk.num_parte_pk }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{{ income.cantidad }}</div>
+                                <div class="orden__header-item orden__header-item--largue">{{ income.observaciones }}</div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if intervention_outcome|length > 0 %}
+                        {% if intervention_income|length <= 0 %}
+                            <div class="orden__items-header">
+                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium-largue">PIEZA</div>
+                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium">NUMERO</div>
+                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">CANTIDAD</div>
+                                <div class="text-bold orden__header-item orden__header-item--largue">OBSERVACIONES</div>
+                            </div>
+                        {% endif %}
+                        {% for outcome in intervention_outcome %}
+                            <div class="orden__items-item">
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium-largue">{{ outcome.num_parte_fk.nombre }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium">{{ outcome.num_parte_fk.num_parte_pk }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{{ outcome.cantidad }}</div>
+                                <div class="orden__header-item orden__header-item--largue">{{ outcome.observaciones }}</div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    
+    
+                    
+                    <div class="orden__items-header">
+                        <div class="text-bold orden__header-item orden__header-item--all">OBSERVACIONES GENERALES</div>
+                    </div>
+                    <div class="orden__items-item">
+                        <div class="orden__header-item orden__header-item--largue orden__header-item--all">{{ intervention.observaciones }}</div>
+                    </div>
+                    
+                    
+                </div>
+            </main>
+            <footer>
+                <div class="orden__footer">
+                    <div class="orden__footer-item">
+                        <span class="text-bold orden__footer-title">FUCIONARIO ALCOM: </span>
+                        <span class="orden__footer-name">{{intervention_user.first_name}} {{intervention_user.last_name}}</span>
+                    </div>
+                </div>
+            </footer>
+        </article>
+    </div>
+
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+        const optionsTooltips = document.querySelectorAll('.floating-button__link');
+
+        optionsTooltips.forEach(option => {
+            tippy(option, {
+                content: option.dataset.tooltip,  // Contenido del tooltip
+                placement: 'left',                // Posición del tooltip
+                animation: 'scale',               // Animación de escala
+                theme: 'custom-tooltip',                   // Tema
+                offset: [0, 10],                  // Desplazamiento del tooltip
+                duration: [0, 0],             // [entrada, salida] en milisegundos
+                arrow: true
+            });
+        });
+    </script>
+
+    
+{% endblock %}

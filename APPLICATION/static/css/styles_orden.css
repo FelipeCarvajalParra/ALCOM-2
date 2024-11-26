@@ -9,11 +9,33 @@
     font-weight: bold;
 }
 
-/* CSS actualizado */
+.container__orden {
+    width: 100%; /* El contenedor padre puede tomar todo el ancho disponible */
+    max-width: 1500px; /* Un máximo de 1500px para el contenedor padre */
+    background-color: white;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 20px;
+    height: auto;
+}
+
 .orden {
-    width: 1000px;
+    border-radius: 15px;
+    width: 1000px; /* Ancho fijo para el hijo */
+    height: auto; /* Ajuste automático de altura según el contenido */
     padding: 40px 50px 50px 50px;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+@media(max-width: 1500px){
+    .container__orden{
+        overflow-x: auto; 
+    }
+    
 }
 
 .orden__header {
@@ -237,7 +259,7 @@
 }
 
 .orden__header-item--small{
-    width: 10%;
+    width: 15%;
 }
 
 .orden__header-item--medium{
