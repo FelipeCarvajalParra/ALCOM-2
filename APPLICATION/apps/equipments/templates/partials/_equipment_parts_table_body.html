@@ -9,13 +9,13 @@
                     <span class="table__container-email">{{ part.num_parte_fk }}</span>
                 </div>
             </td> 
-            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ part.num_orden_fk.num_orden_pk }}">
                 {{ part.num_orden_fk.num_orden_pk }}
             </td>
-            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
-                {{ part.tipo_movimiento }}
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{% if part.tipo_movimiento == 'Entrada' %}Salida{% elif part.tipo_movimiento == 'Salida' %}Entrada{% else %}ERROR{% endif %}">
+                {% if part.tipo_movimiento == 'Entrada' %}Salida{% elif part.tipo_movimiento == 'Salida' %}Entrada{% else %}ERROR{% endif %}
             </td>
-            <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+            <td class="table__cell table__cell--mini table__cell--overflow" data-text=" {{ part.cantidad }}">
                 {{ part.cantidad }}
             </td>
         </tr>

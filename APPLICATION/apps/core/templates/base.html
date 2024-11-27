@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=31" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=32" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -203,7 +203,7 @@
 
                     {% if role == 'admin' or role == 'technician' %}
                     <li class="aside__nav-option">
-                        <a href="{% url 'view_equipments' %}" class="aside__nav-item {% if is_view_equipments %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                        <a href="{% url 'view_equipments' %}" class="aside__nav-item {% if is_view_equipments or is_edit_equipment or is_order_service %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                             <svg width="18" height="17" viewBox="0 0 18 17" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path

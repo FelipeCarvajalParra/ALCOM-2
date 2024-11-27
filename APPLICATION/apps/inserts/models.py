@@ -10,7 +10,7 @@ class Intervenciones(models.Model):
     procesador = models.CharField(max_length=400, blank=True, null=True)
     tarea_realizada = models.CharField(max_length=100, blank=True, null=True)
     observaciones = models.CharField(max_length=150, blank=True, null=True)
-    formato = models.FileField(upload_to='intervenciones_pdfs/', null=True, blank=True)
+    formato = models.FileField(upload_to='interventions_pdfs/', null=True, blank=True)
     estado = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:

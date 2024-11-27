@@ -1,5 +1,6 @@
-{% if intervention %}
-    <div id="interventionContainers" >
+
+<div id="interventionContainers" >
+    {% if intervention %}
         <div id="interventionDataContainer" class="container--activity scroll" >       
             <div class="container__section-title">
                 <span>Intervencion <span id="interventionOrden">{{ intervention.num_orden_pk }}</span></span>
@@ -35,6 +36,13 @@
                             <span class="detail__value" id="interventionObservations" >{{ intervention.observaciones }}</span>
                         </div>
                     </div>
+
+                    <div class="container__section-details container__section-details--interventions">
+                        <div class="container__section-detail">
+                            <span class="detail__label">Estado:</span>
+                            <span class="detail__value" id="interventionObservations" >{{ intervention.estado }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -61,10 +69,10 @@
                                             <span class="table__container-email">{{ income.num_parte_fk }}</span>
                                         </div>
                                     </td> 
-                                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                                    <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ income.num_parte_fk.ubicacion }}">
                                         {{ income.num_parte_fk.ubicacion }}
                                     </td>
-                                    <td class="table__cell table__cell--small table__cell--overflow" data-text="dato3fdghghggfghgnggjjfjvjj">
+                                    <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ income.cantidad }}">
                                         {{ income.cantidad }}
                                     </td>
                                 </tr>
@@ -112,169 +120,106 @@
                 <span>Orden de servicio</span>
             </div>
 
-            <div class="container__technical-sheet">
+            {% if pdf_url %}
+                <div class="container__technical-sheet">
+                    <embed src="{{ pdf_url }}" type="application/pdf" width="100%" height="600px">
+                </div>
+            {% else %}
+                {% if es_admin %}
+                    <a href="{% url 'order_service' intervention.num_orden_pk %}" class="button"  data-modal-id="modalAdd">
+                        <span>Validar intervencion</span>
+                    </a>
+                {% else %}
+                    <span>No hay orden de servicio registrada</span>
+                {% endif %}
+            {% endif %}
             
-                <embed src="{{ pdf_url }}" type="application/pdf" width="100%" height="600px">
-            </div>
         </div>
-    </div>
-{% else %}
-    <style>
-        .container__new-interventions{
-            border-radius: 15px;
-            width: 100%;
-            height: auto;
-            background-color: #fff;
-            padding: 10px 20px 20px 20px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
-            margin-top: 15px;
-        }
-
-        .container__interventions-header{
-            display: flex;
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .container__interventions-orden{
-            width: 100%;
-            height: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .container__update-part{
-            display: flex;
-            width: 100%;
-            padding:10px;
-            margin-top: 10px;
-            border: 1px solid #e5e6e8;
-            border-radius: 10px;
-        }
-
-        .container__options-part{
-            display: flex;
-            justify-content: center;
-            width: auto;
-            padding-left: 5px;
-            margin-bottom: 10px;
-        }
-
-        .select--intervention{
-            width: 150px;
-            height: 35px;
-        }
-
-        .container__intervention-date{
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .container__close-icon{
-            width: 20px;
-            height: 20px;
-            fill: #6c757d;
-            cursor: pointer;
-        }
-
-        .line-intervention{
-            width: 100%;
-            height: 1px;
-            background-color: #e6e7e9;
-            margin-top: 10px;
-        }
-
-    </style>
-
-
-
-        <div id="interventionContainers">
-            <div class="container__new-interventions">
-                <div class="container__section-title">
-                    <span>Nueva intervencion</span>
-                </div>
-                <div class="container__interventions-header">
-                    <div class="container__interventions-orden"> 
-                        <div class="select select--filter select--state select--intervention">
-                            <div class="select__selected">Procedimiento</div>
-                            <div class="select__options scroll">
-                                <div class="select__option">Intervencion</div>
-                                <div class="select__option">Cambio de parte</div>
-                                <div class="select__option">Mantenimiento</div>
-                            </div>
-                            <div class="select__icon">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
-                                </svg>
-                            </div>
+    {% else %}
+        <div class="container__new-interventions" id="newIntervention">
+            <div class="container__section-title">
+                <span>Nueva intervencion</span>
+            </div>
+            <div class="container__interventions-header">
+                <div class="container__interventions-orden"> 
+                    <div class="select select--filter select--state select--intervention">
+                        <div class="select__selected">Procedimiento</div>
+                        <div class="select__options scroll">
+                            <div class="select__option">Intervencion</div>
+                            <div class="select__option">Cambio de parte</div>
+                            <div class="select__option">Mantenimiento</div>
                         </div>
-                        <span class="container__intervention-date" >12 de septiembre</span>
+                        <div class="select__icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                            </svg>
+                        </div>
                     </div>
+                    <span class="container__intervention-date" >12 de septiembre</span>
                 </div>
+            </div>
 
-                <div class="line-intervention"></div>
-                
-                <div id="container">
-                    <div class="container__update-part" id="elementNewPart">
-                        <div class="input-container">
+            <div class="line-intervention"></div>
+            
+            <div id="container">
+                <div class="container__update-part" id="elementNewPart">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <input class="input input--medium" name="part" type="text" id="part" required>
+                            <label class="input-container__label" for="part">Pieza</label>
+                        </div>
+                        <div class="input-wrapper input-wrapper--flex">
+                            <div class="select select--filter select--state">
+                                <div class="select__selected">Accion</div>
+                                <div class="select__options scroll">
+                                    <div class="select__option">Ingreso</div>
+                                    <div class="select__option">Egreso</div>
+                                </div>
+                                <div class="select__icon">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                    </svg>
+                                </div>
+                            </div>
                             <div class="input-wrapper">
-                                <input class="input input--medium" name="part" type="text" id="part" required>
-                                <label class="input-container__label" for="part">Pieza</label>
-                            </div>
-                            <div class="input-wrapper input-wrapper--flex">
-                                <div class="select select--filter select--state">
-                                    <div class="select__selected">Accion</div>
-                                    <div class="select__options scroll">
-                                        <div class="select__option">Ingreso</div>
-                                        <div class="select__option">Egreso</div>
-                                    </div>
-                                    <div class="select__icon">
-                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="input-wrapper">
-                                    <input class="input input--medium" name="amount" type="number" id="amount" required>
-                                    <label class="input-container__label" for="amount">Unidades</label>
-                                </div>
-                            </div>
-                            <div class="form__largue form__largue--margin-top">
-                                <div class="input-container">
-                                    <div class="input-wrapper input-wrapper--largue">
-                                        <textarea class="input input--largue textarea" name="observations" id="observations" maxlength="400" style="height: 45px;"></textarea>
-                                        <label class="input-container__label textarea__label" for="observations">Observaciones</label>
-                                    </div>
-                                </div>
+                                <input class="input input--medium" name="amount" type="number" id="amount" required>
+                                <label class="input-container__label" for="amount">Unidades</label>
                             </div>
                         </div>
-                        <div class="container__options-part">
-                            <svg class="container__close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z"></path></svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="button button--new-part" id="buttonNewPart">
-                    <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
-                    </svg>
-                    <span>Agregar</span>
-                </div>
-                <div class="input-container">
-                    <div class="form__largue form__largue--margin-top">
-                        <div class="input-container">
-                            <div class="input-wrapper input-wrapper--largue">
-                                <textarea class="input input--largue textarea" name="generalObservations" id="generalObservations" maxlength="400" style="height: 45px;"></textarea>
-                                <label class="input-container__label textarea__label" for="generalObservations">Observaciones Generales</label>
+                        <div class="form__largue form__largue--margin-top">
+                            <div class="input-container">
+                                <div class="input-wrapper input-wrapper--largue">
+                                    <textarea class="input input--largue textarea" name="observations" id="observations" maxlength="400" style="height: 45px;"></textarea>
+                                    <label class="input-container__label textarea__label" for="observations">Observaciones</label>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="container__options-part">
+                        <svg class="container__close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z"></path></svg>
+                    </div>
                 </div>
-                <button id="saveButton">Guardar</button>
-                <span id="messageNewInterventionError" class="login__error-message"></span>
             </div>
+            <div class="button button--new-part" id="buttonNewPart">
+                <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
+                </svg>
+                <span>Agregar</span>
+            </div>
+            <div class="input-container">
+                <div class="form__largue form__largue--margin-top">
+                    <div class="input-container">
+                        <div class="input-wrapper input-wrapper--largue">
+                            <textarea class="input input--largue textarea" name="generalObservations" id="generalObservations" maxlength="400" style="height: 45px;"></textarea>
+                            <label class="input-container__label textarea__label" for="generalObservations">Observaciones Generales</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="saveButton">Guardar</button>
+            <span id="messageNewInterventionError" class="login__error-message"></span>
         </div>
+        
         <script>
             let counter = 1;
         

@@ -3,143 +3,32 @@
 {% load static %}
 {% csrf_token %}
 
-    <link rel="stylesheet" href="{% static 'css/styles_orden.css' %} ?v=2">
-    
-
+<link rel="stylesheet" href="{% static 'css/styles_orden.css' %} ?v=3">
 
     <div class="container__orden">
-        <style>
-            /* Personaliza el tooltip con el tema 'custom-tooltip' */
-            .tippy-box[data-theme='custom-tooltip'] {
-                background-color: #8d9eac;
-                color: white;
-                border-radius: 5px;
-                padding: 5px;
-                font-size: 14px;
-                font-family: Arial, sans-serif;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            /* Personaliza la flecha del tooltip */
-            .tippy-box[data-theme='custom-tooltip'] .tippy-arrow {
-                color: #8d9eac; /* Color de la flecha */
-                background-color: #8d9eac; /* Color de la flecha */
-            }
-        
-            .floating-button {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-            }
-        
-            .floating-button__checkbox {
-                display: none;
-            }
-        
-            /* Transición instantánea de color */
-            .floating-button__link, .floating-button__label {
-                display: block;
-                text-decoration: none;
-                background-color: #282a42;
-                color: #fff;
-                width: 45px;
-                height: 45px;
-                line-height: 55px;
-                text-align: center;
-                border-radius: 50%;
-                box-shadow: 0px 1px 10px rgba(0,0,0,0.4);
-                transition: opacity 500ms ease, visibility 500ms ease; /* Animación de opacidad y visibilidad */
-            }
-        
-            /* Cambio de color al pasar el mouse */
-            .floating-button__link:hover {
-                background: #8d9eac;
-                color: #282a42;
-            }
-        
-            /* Animación de entrada (deslizar desde abajo) */
-            @keyframes slideIn {
-                0% {
-                    opacity: 0;
-                    transform: translateY(30px); /* Empiezan desplazados hacia abajo */
-                }
-                100% {
-                    opacity: 1;
-                    transform: translateY(0); /* Terminan en su posición original */
-                }
-            }
-        
-            /* Animación de salida (desvanecerse) */
-            @keyframes fadeOut {
-                0% {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                100% {
-                    opacity: 0;
-                    transform: translateY(30px); /* Se desvanecen mientras se desplazan hacia abajo */
-                }
-            }
-        
-            /* Al principio, los elementos están ocultos y desplazados hacia abajo */
-            .floating-button__link {
-                opacity: 0;
-                visibility: hidden;
-                transform: translateY(30px); /* Los elementos empiezan más abajo */
-                margin-bottom: 7px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .floating-button__svg{
-                width: 20px;
-                height: 20px;
-                color: #d7d8ee;
-            }
-
-            .floating-button__svg--close{
-                width: 25px;
-                height: 25px;
-                color: #d7d8ee;
-            }
-        
-            /* Cuando el checkbox está marcado, los elementos se animan entrando (de abajo hacia arriba) */
-            .floating-button__checkbox:checked ~ .floating-button__links .floating-button__link {
-                animation: slideIn 500ms forwards; /* Animación de entrada */
-                visibility: visible;
-            }
-        
-            /* Cuando el checkbox no está marcado, los elementos se desvanecen */
-            .floating-button__checkbox:not(:checked) ~ .floating-button__links .floating-button__link {
-                animation: fadeOut 500ms forwards; /* Animación de salida */
-            }
-        
-            .floating-button__label {
-                cursor: pointer;
-                background-color: #282a42;
-                font-size: 23px;
-            }
-        
-            .floating-button__checkbox:checked ~ .floating-button__toggle .floating-button__label {
-                transform: rotate(135deg);
-                font-size: 25px;
-            }
-        </style>
         
         <div class="floating-button">
             <input type="checkbox" id="floating-button__checkbox" class="floating-button__checkbox">
             <div class="floating-button__links">
-                <a href="#" class="floating-button__link" data-tooltip="PNG">
+                <a id="downloadPNG" class="floating-button__link" data-tooltip="PNG">
                     <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z"></path>
                     </svg>
                 </a>
-                <a href="#" class="floating-button__link" data-tooltip="PDF">
+                <a id="downloadPDF" class="floating-button__link" data-tooltip="PDF">
                     <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.5 7.5H12.5C12.5 9.98994 14.6436 12.6604 17.3162 13.5513L16.8586 15.49C13.7234 15.0421 10.4821 16.3804 7.5547 18.3321L6.3753 16.7191C7.46149 15.8502 8.50293 14.3757 9.27499 12.6534C10.0443 10.9373 10.5 9.07749 10.5 7.5ZM11.1 13.4716C11.3673 12.8752 11.6043 12.2563 11.8037 11.6285C12.2754 12.3531 12.8553 13.0182 13.5102 13.5953C12.5284 13.7711 11.5666 14.0596 10.6353 14.4276C10.8 14.1143 10.9551 13.7948 11.1 13.4716Z"></path>
                     </svg>
                 </a>
+                <a id="uploadFileButton" class="floating-button__link" data-tooltip="Subir archivo">
+                    <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 2L21 7V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3 22 3 21.5447 3 21.0082V2.9918C3 2.44405 3.44495 2 3.9934 2H16ZM13 12H16L12 8L8 12H11V16H13V12Z"></path>
+                    </svg>
+                </a>
+                
+                <!-- Input oculto para cargar archivos -->
+                <input id="uploadFile" type="file" accept="application/pdf" style="display: none;">
+                
                 <a href="#" class="floating-button__link" data-tooltip="Rechazar">
                     <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18 13C19.0928 13 20.1174 13.2922 20.9999 13.8026L20.9998 7L16 2H3.9985C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H12.8027C12.2922 21.1175 12 20.0929 12 19C12 15.6863 14.6863 13 18 13ZM21.5356 21.1212L19.4143 18.9999L21.5356 16.8786L20.1214 15.4644L18.0001 17.5857L15.8788 15.4644L14.4646 16.8786L16.5859 18.9999L14.4646 21.1212L15.8788 22.5354L18.0001 20.4141L20.1214 22.5354L21.5356 21.1212Z"></path>
@@ -159,11 +48,9 @@
                 </label>
             </div>
         </div>
-        
-        
-        
-        
-        <article class="orden">
+
+        <article class="orden" id="orderService">
+            <link rel="stylesheet" href="{% static 'css/styles_orden.css' %} ?v=3">
             <header class="orden__header">
                 <div class="orden__header-content">
                     <div class="orden__logo">
@@ -250,11 +137,12 @@
                 </div>
                 <div class="order__line"></div>
                 <div class="orden__description">
-                    {% if intervention_outcome|length > 0 %}
+                    {% if intervention_outcome|length > 0  or intervention_income|length > 0 %}
                         <div class="orden__items-header">
                             <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium-largue">PIEZA</div>
                             <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium">NUMERO</div>
                             <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">CANTIDAD</div>
+                            <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">ACCION</div>
                             <div class="text-bold orden__header-item orden__header-item--largue">OBSERVACIONES</div>
                         </div>
                         {% for income in intervention_income %}
@@ -262,32 +150,20 @@
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium-largue">{{ income.num_parte_fk.nombre }}</div>
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium">{{ income.num_parte_fk.num_parte_pk }}</div>
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{{ income.cantidad }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{% if income.tipo_movimiento == 'Entrada' %}Salida{% elif income.tipo_movimiento == 'Salida' %}Entrada{% else %}ERROR{% endif %}</div>
                                 <div class="orden__header-item orden__header-item--largue">{{ income.observaciones }}</div>
                             </div>
                         {% endfor %}
-                    {% endif %}
-
-                    {% if intervention_outcome|length > 0 %}
-                        {% if intervention_income|length <= 0 %}
-                            <div class="orden__items-header">
-                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium-largue">PIEZA</div>
-                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--medium">NUMERO</div>
-                                <div class="orden__date-table__item--border-rigth text-bold orden__header-item orden__header-item--small">CANTIDAD</div>
-                                <div class="text-bold orden__header-item orden__header-item--largue">OBSERVACIONES</div>
-                            </div>
-                        {% endif %}
                         {% for outcome in intervention_outcome %}
                             <div class="orden__items-item">
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium-largue">{{ outcome.num_parte_fk.nombre }}</div>
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--medium">{{ outcome.num_parte_fk.num_parte_pk }}</div>
                                 <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{{ outcome.cantidad }}</div>
+                                <div class="orden__date-table__item--border-rigth orden__header-item orden__header-item--small">{% if outcome.tipo_movimiento == 'Entrada' %}Salida{% elif outcome.tipo_movimiento == 'Salida' %}Entrada{% else %}ERROR{% endif %}</div>
                                 <div class="orden__header-item orden__header-item--largue">{{ outcome.observaciones }}</div>
                             </div>
                         {% endfor %}
                     {% endif %}
-                    
-                    
-    
                     
                     <div class="orden__items-header">
                         <div class="text-bold orden__header-item orden__header-item--all">OBSERVACIONES GENERALES</div>
@@ -295,8 +171,6 @@
                     <div class="orden__items-item">
                         <div class="orden__header-item orden__header-item--largue orden__header-item--all">{{ intervention.observaciones }}</div>
                     </div>
-                    
-                    
                 </div>
             </main>
             <footer>
@@ -312,21 +186,9 @@
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    <script>
-        const optionsTooltips = document.querySelectorAll('.floating-button__link');
-
-        optionsTooltips.forEach(option => {
-            tippy(option, {
-                content: option.dataset.tooltip,  // Contenido del tooltip
-                placement: 'left',                // Posición del tooltip
-                animation: 'scale',               // Animación de escala
-                theme: 'custom-tooltip',                   // Tema
-                offset: [0, 10],                  // Desplazamiento del tooltip
-                duration: [0, 0],             // [entrada, salida] en milisegundos
-                arrow: true
-            });
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{% static 'js/order_service.js' %}"></script>
 
     
 {% endblock %}

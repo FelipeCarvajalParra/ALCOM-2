@@ -118,21 +118,24 @@ def consult_interventions(request, intervention_id):
 
         # Obtener el usuario asociado a la intervención
         user_intervention = intervention.usuario_fk
+        es_admin = request.user.groups.filter(name='Administrators').exists()
 
         # Obtener ingresos y salidas
         parts_income = Actualizaciones.objects.filter(num_orden_fk=intervention.num_orden_pk, tipo_movimiento='Entrada')
         parts_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention.num_orden_pk, tipo_movimiento='Salida')
 
         # Obtener la URL del PDF
-        pdf_url = f"{settings.MEDIA_URL}{intervention.formato}"  # Suponiendo que 'formato' almacena la ruta relativa
+        
+        pdf_url = f"{settings.MEDIA_URL}{intervention.formato}" if intervention.formato else ""
 
-        # Preparar el contexto
+    
         context = {
             'intervention': intervention,
             'user_intervention': user_intervention,
             'parts_income': parts_income,
             'parts_outcome': parts_outcome,
             'pdf_url': pdf_url,
+            'es_admin': es_admin
         }
 
         # Renderizar el HTML del parcial
@@ -236,7 +239,6 @@ def new_intervention(request):
         except Equipos.DoesNotExist:
             return JsonResponse({'error': 'El equipo especificado no existe.'})
 
-        # Crear la intervención principal
         intervention = Intervenciones.objects.create(
             num_orden_pk=num_orden(procedure),
             fecha_hora=timezone.now(),
@@ -244,6 +246,7 @@ def new_intervention(request):
             observaciones=general_observations,
             cod_equipo_fk=equipment_instance,
             usuario_fk=request.user,
+            estado = 'Pendiente'
         )
 
         # Procesar intervenciones específicas
@@ -293,6 +296,8 @@ def order_service(request, num_orden):
 
     if intervention.estado == 'aprobada':
         return render(request = 'edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
+    
+    print( "outcome: " ,intervention_outcome, "income: " ,intervention_income)
     
     context = {
         'equipment': equipment_instance,

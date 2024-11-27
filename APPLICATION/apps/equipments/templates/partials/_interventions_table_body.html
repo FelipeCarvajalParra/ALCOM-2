@@ -2,7 +2,12 @@
     {% for intervention in interventions %}
         <li class="list-activity__item list-activity__intervention" data-id="{{intervention.num_orden_pk}}">
             <div class="list-activity__header">
-                <span class="list-activity__icon list-activity__icon--login"></span>
+                {% if intervention.estado == 'Pendiente' %}
+                    <span class="list-activity__icon list-activity__icon--intervention-earring"></span>
+                {% elif intervention.estado == 'Validada' %}
+                    <span class="list-activity__icon list-activity__icon--intervention"></span>
+                {% endif %}
+                
                 <span class="list-activity__title">{{intervention.num_orden_pk}}</span>
                 <span class="list-activity__timestamp">{{ intervention.fecha_hora|date:"d/m/Y" }}</span>
             </div>
