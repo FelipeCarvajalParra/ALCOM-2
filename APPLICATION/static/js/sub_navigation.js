@@ -16,16 +16,24 @@ navButtons.forEach(button => {
         // Guardar en localStorage el ID del botón clicado
         localStorage.setItem('activeButton', this.getAttribute('data-target'));
 
-        // Ocultar todos los contenedores con la clase 'container--activity'
-        document.querySelectorAll('.container--activity').forEach(container => {
-            container.style.display = 'none';
+        // Obtener todos los IDs que están en los data-target de los botones
+        const allTargetIds = Array.from(navButtons)
+            .flatMap(btn => btn.getAttribute('data-target').split(','))
+            .map(id => id.trim());
+
+        // Ocultar todos los contenedores cuyo ID esté en la lista general de data-target
+        allTargetIds.forEach(id => {
+            const container = document.getElementById(id);
+            if (container) {
+                container.style.display = 'none';
+            }
         });
 
-        // Mostrar todos los contenedores correspondientes al botón clicado
+        // Mostrar los contenedores correspondientes al botón clicado
         targetIds.forEach(targetId => {
             const targetContainer = document.getElementById(targetId.trim());
             if (targetContainer) {
-                targetContainer.style.display = 'block';  // Asegurar que se muestre
+                targetContainer.style.display = 'block'; // Mostrar el contenedor
             }
         });
     });
@@ -47,3 +55,4 @@ document.addEventListener('DOMContentLoaded', () => {
         navButtons[0].click();
     }
 });
+

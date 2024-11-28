@@ -1,20 +1,7 @@
-// Inicialización de tooltips para los botones flotantes
-const optionsTooltips = document.querySelectorAll('.floating-button__link');
-optionsTooltips.forEach(option => {
-    tippy(option, {
-        content: option.dataset.tooltip,  // Contenido del tooltip
-        placement: 'left',                // Posición del tooltip
-        animation: 'scale',               // Animación de escala
-        theme: 'custom-tooltip',          // Tema
-        offset: [0, 10],                  // Desplazamiento del tooltip
-        duration: [0, 0],                 // [entrada, salida] en milisegundos
-        arrow: true
-    });
-});
-
 // Referencias a los elementos clave
 const order = document.getElementById('orderService'); // Elemento donde se muestra la orden
 const numOrder = document.querySelector('.orden__date-table__number').textContent; // Número de la orden
+let selectedFile = null; // Variable para almacenar el archivo seleccionado
 
 // Listener para descargar PNG
 document.getElementById('downloadPNG').addEventListener('click', () => {
@@ -56,6 +43,7 @@ document.getElementById('uploadFileButton').addEventListener('click', () => {
 // Listener para manejar el archivo seleccionado
 document.getElementById('uploadFile').addEventListener('change', (event) => {
     const file = event.target.files[0]; // Obtiene el archivo seleccionado
+    selectedFile = file; // Guarda el archivo en la variable global
 
     if (file && file.type === 'application/pdf') {
         const fileURL = URL.createObjectURL(file); // Crea un enlace temporal al archivo
@@ -73,3 +61,102 @@ document.getElementById('uploadFile').addEventListener('change', (event) => {
         alert('Por favor, selecciona un archivo PDF válido.');
     }
 });
+
+// Rechazar intervención
+document.getElementById('orderDenied').addEventListener('click', () => {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'La intervención y todos sus movimientos se perderán de forma permanente.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            saveIntervention('denied', null);
+        }
+    });
+});
+
+// Aprobar intervención
+document.getElementById('orderPassed').addEventListener('click', () => {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Una vez aprobada la intervención no podrá ser modificada.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, aprobar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const file = selectedFile || generatePDF(); // Usar archivo cargado o generar el PDF
+            saveIntervention('passed', file);
+        }
+    });
+});
+
+// Generar PDF del contenido de la orden
+function generatePDF() {
+    const canvas = document.createElement('canvas');
+    html2canvas(order).then(canvas => {
+        canvas.toBlob(blob => {
+            const pdfFile = new File([blob], `${numOrder}.pdf`, { type: 'application/pdf' });
+            saveIntervention('passed', pdfFile);
+        });
+    });
+}
+
+function getCSRFToken() {
+    // Busca el token CSRF desde las cookies
+    const csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return csrfToken ? csrfToken.split('=')[1] : null;
+}
+
+function saveIntervention(result, file) {
+    const formData = new FormData();
+    formData.append('result', result);
+    formData.append('numOrder', numOrder);
+
+    if (file) {
+        formData.append('file', file); // Adjunta el archivo si existe
+    }
+
+    fetch(`/save_result_intervention/${numOrder}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken() // Agrega el token CSRF al encabezado
+        },
+        body: formData // Envía FormData para manejar datos y archivos
+    })
+    .then(response => {
+        if (response.ok) {
+            // Si el servidor responde correctamente, recarga la página
+            Swal.fire({
+                title: 'Éxito',
+                text: 'La intervención se ha guardado correctamente.',
+                icon: 'success'
+            }).then(() => {
+                window.location.reload();
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al guardar la intervención.',
+                icon: 'error'
+            });
+        }
+    })
+    .catch(error => {
+        // Manejar errores de red u otros problemas
+        console.error('Error en la solicitud:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'No se pudo conectar con el servidor.',
+            icon: 'error'
+        });
+    });
+}

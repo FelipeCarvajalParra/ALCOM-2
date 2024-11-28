@@ -124,33 +124,106 @@ def delete_equipment(request, id_equipment):
         return JsonResponse({'success': True})  
 
 
+
+
+
+from django.conf import settings
+
 @login_required
 def edit_equipment(request, id_equipment):
-
+    # Obtener el equipo y sus datos asociados
     equipment = get_object_or_404(Equipos, pk=id_equipment)
     reference = equipment.referencia_fk
     category = reference.categoria
+
+    # Obtener todas las intervenciones para el equipo
     interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment).order_by('-fecha_hora')
 
-    num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
-    updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
-
+    # Paginación de intervenciones
     paginator_interventions = Paginator(interventions, 7)
     page_number_interventions = request.GET.get('page_interventions')
     paginator_interventions = paginator_interventions.get_page(page_number_interventions)
 
-    paginator = Paginator(updates, 10)
+    # Obtener el parámetro de la intervención seleccionada (si existe)
+    selected_intervention_id = request.GET.get('intervention_id')
+    selected_intervention = None
+    intervention_context = {}  # Se asegura de que intervention_context siempre esté definido
+
+    if selected_intervention_id:
+        try:
+            selected_intervention = Intervenciones.objects.get(num_orden_pk=selected_intervention_id)
+
+            # Obtener el usuario asociado a la intervención
+            user_intervention = selected_intervention.usuario_fk
+            es_admin = request.user.groups.filter(name='Administrators').exists()
+
+            # Obtener ingresos y salidas
+            parts_income = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Entrada')
+            parts_outcome = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Salida')
+
+            # Obtener la URL del PDF
+            pdf_url = f"{settings.MEDIA_URL}{selected_intervention.formato}" if selected_intervention.formato else ""
+
+            # Contexto para la intervención seleccionada
+            intervention_context = {
+                'intervention': selected_intervention,
+                'user_intervention': user_intervention,
+                'parts_income': parts_income,
+                'parts_outcome': parts_outcome,
+                'pdf_url': pdf_url,
+                'es_admin': es_admin
+            }
+        except Intervenciones.DoesNotExist:
+            selected_intervention = None
+            # Si la intervención no existe, intervention_context ya está vacío
+
+    # Si no se seleccionó ninguna intervención, se toma la más reciente
+    if not selected_intervention:
+        if interventions.exists():
+            selected_intervention = interventions.first()
+
+            # Obtener el usuario asociado a la intervención
+            user_intervention = selected_intervention.usuario_fk
+            es_admin = request.user.groups.filter(name='Administrators').exists()
+
+            # Obtener ingresos y salidas
+            parts_income = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Entrada')
+            parts_outcome = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Salida')
+
+            # Obtener la URL del PDF
+            pdf_url = f"{settings.MEDIA_URL}{selected_intervention.formato}" if selected_intervention.formato else ""
+
+            # Contexto para la intervención seleccionada
+            intervention_context = {
+                'intervention': selected_intervention,
+                'user_intervention': user_intervention,
+                'parts_income': parts_income,
+                'parts_outcome': parts_outcome,
+                'pdf_url': pdf_url,
+                'es_admin': es_admin
+            }
+
+    # Obtener las actualizaciones relacionadas con las intervenciones
+    num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
+    updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
+
+    # Paginación de actualizaciones
+    paginator = Paginator(updates, 1)
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
+    # Contexto general para renderizar la plantilla
     context = {
         'equipment': equipment,
         'reference': reference,
         'category_equipment': category,  # Pasamos la categoría al contexto
-        'interventions': paginator_interventions, 
-        'paginator': paginator,
-        'page_number': page_number,
-        'page_number_interventions': page_number_interventions
+        'interventions': paginator_interventions,  # Lista paginada de intervenciones
+        'selected_intervention': selected_intervention,  # Intervención seleccionada
+        'paginator': paginator,  # Lista paginada de actualizaciones
+        'page_number': page_number,  # Página actual de actualizaciones
+        'page_number_interventions': page_number_interventions,  # Página actual de intervenciones
+        **intervention_context  # Incluimos los detalles de la intervención seleccionada, si existe
     }
 
     return render(request, 'equipment_edit.html', context)
+

@@ -284,20 +284,18 @@ def new_intervention(request):
 
 
 @login_required
-def order_service(request, num_orden):
+def order_service(request, num_order):
 
     # Obtener la intervención por su número de orden
-    intervention = get_object_or_404(Intervenciones, num_orden_pk=num_orden)
+    intervention = get_object_or_404(Intervenciones, num_orden_pk=num_order)
     equipment_instance = intervention.cod_equipo_fk
     intervention_income = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Salida')
     intervention_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Entrada')
     intervention_user =  get_object_or_404(CustomUser, pk = intervention.usuario_fk_id) 
-    print(intervention_user)
 
     if intervention.estado == 'aprobada':
         return render(request = 'edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
     
-    print( "outcome: " ,intervention_outcome, "income: " ,intervention_income)
     
     context = {
         'equipment': equipment_instance,
@@ -308,6 +306,50 @@ def order_service(request, num_orden):
     }
 
     return render(request, 'orden_template.html', context)
+
+@login_required
+@require_POST
+@transaction.atomic
+def save_result_intervention(request, num_order):
+    try:
+        print(f"Procesando intervención para la orden: {num_order}")  # Mensaje de inicio
+
+        # Verifica si la intervención existe
+        intervention = get_object_or_404(Intervenciones, num_orden_pk=num_order)
+        print(f"Intervención encontrada: {intervention}")  # Intervención encontrada
+
+        result = request.POST.get('result')
+        uploaded_file = request.FILES.get('file', None)
+
+        print(f"Resultado recibido: {result}, Archivo recibido: {uploaded_file}")  # Resultado y archivo recibido
+
+        if result == 'passed':
+            
+           
+            if uploaded_file.content_type == 'application/pdf':
+                print(f"Guardando archivo en el campo formato: {uploaded_file}")  # Archivo que se está guardando
+                intervention.formato = uploaded_file
+            else:
+                return JsonResponse({'error': 'El archivo no es un PDF válido.'}, status=400)
+
+            intervention.estado = 'Aprobada'
+            intervention.save()
+            print("Intervención aprobada y guardada.")  # Confirmación de guardado
+            return JsonResponse({'message': 'La intervención ha sido aprobada correctamente.'})
+
+        elif result == 'denied':
+            intervention.estado = 'rechazado'
+            intervention.save()
+            print("Intervención rechazada y guardada.")  # Confirmación de rechazo
+            return JsonResponse({'message': 'La intervención ha sido rechazada correctamente.'})
+
+        else:
+            print("Resultado no válido.")  # Caso no válido
+            return JsonResponse({'error': 'Resultado no válido.'}, status=400)
+
+    except Exception as e:
+        print(f"Error procesando la intervención: {str(e)}")  # Error de ejecución
+        return JsonResponse({'error': f'Error interno del servidor: {str(e)}'}, status=500)
     
 
     

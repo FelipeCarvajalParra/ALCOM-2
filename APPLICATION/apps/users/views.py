@@ -83,7 +83,6 @@ def edit_user(request, id):
 
 
 
-
 def validate_user_data(data, is_update=False):
     required_fields = ['names', 'lastName', 'email', 'jobName', 'username', 'status', 'group']
 

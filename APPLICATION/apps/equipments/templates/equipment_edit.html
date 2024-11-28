@@ -6,7 +6,23 @@
 <span id="codeEquipment" style="display: none;">{{ equipment.cod_equipo_pk }}</span>
 <div class="layer-color"></div>
 <div class="page__user">
-
+    <div class="floating-button">
+        <input type="checkbox" id="floating-button__checkbox" class="floating-button__checkbox">
+        <div class="floating-button__links">
+            <a class="button--navegation floating-button__link" data-tooltip="Nueva intervencion" data-target="newIntervention">
+                <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 2L21 7V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918C3 2.44405 3.44495 2 3.9934 2H16ZM11 11H8V13H11V16H13V13H16V11H13V8H11V11Z"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="floating-button__toggle">
+            <label for="floating-button__checkbox" class="floating-button__label">
+                <svg class="floating-button__svg--close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                </svg>
+            </label>
+        </div>
+    </div>
     <div class="page__user-section-info">
         <div class="container--user container--equipment">
 
@@ -67,9 +83,9 @@
             </div>
         </div>
 
-        <div id="activityContainer" class="container--activity scroll" style="display: block;">
+        <div class="container--activity scroll">
             <div class="container__section-title">
-                <span>Actividad reciente</span>
+                <span>Intervenciones</span>
             </div>
             <ul class="container__list-activity">
                 {% include "partials/_interventions_table_body.html" %}
@@ -80,10 +96,9 @@
         </div>
     </div>
 
-
     <div class="page__user-section-nav">
         <div class="container--sub-navegation">
-            <div class="button button--active button--navegation" data-target="activityContainer,interventionDataContainer,orderService">
+            <div id="optionInterventions" class="button button--active button--navegation" data-target="interventionDataContainer,orderService">
                 <svg width="20px" height="20px" viewBox="0 0 512 512" fill="currentColor">
                     <path d="M104.426,139.813l83.563,83.781c14.344-13.766,26.781-25.703,36.109-34.672l-84.297-84.5l-10.313-45.719 L54.27,12.985L33.629,33.642L12.988,54.282l45.719,75.219L104.426,139.813z"></path> 
                     <path d="M358.363,276.298L481.926,399.47c22.781,22.766,22.781,59.688,0,82.469c-22.781,22.766-59.688,22.766-82.469,0 L275.895,358.767L358.363,276.298z"></path> 
@@ -139,14 +154,18 @@
     {% endfor %}
 {% endif %}
 
-<script src="{% static 'js/sub_navigation.js' %}" ></script>
+<script src="{% static 'js/sub_navigation.js' %} ?v=2" ></script>
 <script src="{% static 'js/delete_confirmations.js' %}"></script>
 <script src="{% static 'js/user_crud.js' %}"></script>
 <script src="{% static 'js/filter_selector.js'%} ?v=3"></script>
 <script src="{% static 'js/update_files.js' %}"></script>
-<script src="{% static 'js/search_intervention.js' %}"></script>
+<script src="{% static 'js/search_intervention.js' %} ?v=5"></script>
 <script src="{% static 'js/height_textarea.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<script src="{% static 'js/tooltip_tippy.js' %}"></script>
+<script src="{% static 'js/tooltip.js' %}"></script>
 
 
 
