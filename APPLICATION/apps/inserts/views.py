@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from apps.partsInventory.models import Inventario
 from django.db.models import Max
 from .models import Actualizaciones, Intervenciones
@@ -17,6 +17,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from xhtml2pdf import pisa
 from io import BytesIO
+from django.urls import reverse
 
 
 @login_required
@@ -293,8 +294,8 @@ def order_service(request, num_order):
     intervention_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Entrada')
     intervention_user =  get_object_or_404(CustomUser, pk = intervention.usuario_fk_id) 
 
-    if intervention.estado == 'aprobada':
-        return render(request = 'edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
+    if intervention.estado != 'Pendiente':
+        return redirect('edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
     
     
     context = {
@@ -312,36 +313,51 @@ def order_service(request, num_order):
 @transaction.atomic
 def save_result_intervention(request, num_order):
     try:
-        print(f"Procesando intervención para la orden: {num_order}")  # Mensaje de inicio
-
         # Verifica si la intervención existe
         intervention = get_object_or_404(Intervenciones, num_orden_pk=num_order)
-        print(f"Intervención encontrada: {intervention}")  # Intervención encontrada
 
         result = request.POST.get('result')
         uploaded_file = request.FILES.get('file', None)
 
-        print(f"Resultado recibido: {result}, Archivo recibido: {uploaded_file}")  # Resultado y archivo recibido
-
         if result == 'passed':
-            
-           
-            if uploaded_file.content_type == 'application/pdf':
-                print(f"Guardando archivo en el campo formato: {uploaded_file}")  # Archivo que se está guardando
-                intervention.formato = uploaded_file
+            if uploaded_file:
+                # Aquí estamos verificando que el archivo sea un PDF
+                if uploaded_file.content_type == 'application/pdf':
+                    intervention.formato = uploaded_file
+                else:
+                    return JsonResponse({'error': 'El archivo no es un PDF válido.'}, status=400)
             else:
-                return JsonResponse({'error': 'El archivo no es un PDF válido.'}, status=400)
+                return JsonResponse({'error': 'No se ha recibido ningún archivo PDF.'}, status=400)
 
             intervention.estado = 'Aprobada'
             intervention.save()
-            print("Intervención aprobada y guardada.")  # Confirmación de guardado
             return JsonResponse({'message': 'La intervención ha sido aprobada correctamente.'})
 
         elif result == 'denied':
-            intervention.estado = 'rechazado'
-            intervention.save()
-            print("Intervención rechazada y guardada.")  # Confirmación de rechazo
-            return JsonResponse({'message': 'La intervención ha sido rechazada correctamente.'})
+
+            parts_income = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Entrada')
+            parts_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Salida') 
+
+            if parts_income:
+                for part in parts_income:
+                    part_rerefence = get_object_or_404(Inventario, num_parte_pk=part.num_parte_fk)
+                    part_rerefence.total_unidades -= part.cantidad
+                    part_rerefence.save()
+                    part.delete()
+            
+            if parts_outcome:
+                for part in parts_outcome:
+                    part_rerefence = get_object_or_404(Inventario, num_parte_pk=part.num_parte_fk)
+                    part_rerefence.total_unidades += part.cantidad
+                    part_rerefence.save()
+                    part.delete()
+
+                
+            equipment_intervention = intervention.cod_equipo_fk.cod_equipo_pk
+            intervention.delete()
+            return JsonResponse({'redirect_url': reverse('edit_equipment', kwargs={'id_equipment': equipment_intervention})})
+
+            
 
         else:
             print("Resultado no válido.")  # Caso no válido

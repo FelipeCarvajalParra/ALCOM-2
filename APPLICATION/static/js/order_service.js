@@ -2,6 +2,8 @@
 const order = document.getElementById('orderService'); // Elemento donde se muestra la orden
 const numOrder = document.querySelector('.orden__date-table__number').textContent; // Número de la orden
 let selectedFile = null; // Variable para almacenar el archivo seleccionado
+const { jsPDF } = window.jspdf;  // Accede al espacio global de jsPDF
+
 
 // Listener para descargar PNG
 document.getElementById('downloadPNG').addEventListener('click', () => {
@@ -49,14 +51,13 @@ document.getElementById('uploadFile').addEventListener('change', (event) => {
         const fileURL = URL.createObjectURL(file); // Crea un enlace temporal al archivo
 
         // Reemplaza el contenido de la orden con un visor PDF
-        order.innerHTML = `
+        order.innerHTML = ` 
             <embed class="orden--embed" src="${fileURL}" type="application/pdf" width="100%" height="600px" />
         `;
 
         // Oculta o elimina los botones de descarga
         document.getElementById('downloadPNG').style.display = 'none'; // Oculta el botón PNG
         document.getElementById('downloadPDF').style.display = 'none'; // Oculta el botón PDF
-
     } else {
         alert('Por favor, selecciona un archivo PDF válido.');
     }
@@ -93,33 +94,101 @@ document.getElementById('orderPassed').addEventListener('click', () => {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            const file = selectedFile || generatePDF(); // Usar archivo cargado o generar el PDF
+            // Usar el archivo seleccionado o generar un PDF si no hay archivo
+            const file = selectedFile || generatePDF(); // Si no hay archivo, genera el PDF
             saveIntervention('passed', file);
         }
     });
 });
 
-// Generar PDF del contenido de la orden
-function generatePDF() {
-    const canvas = document.createElement('canvas');
-    html2canvas(order).then(canvas => {
-        canvas.toBlob(blob => {
-            const pdfFile = new File([blob], `${numOrder}.pdf`, { type: 'application/pdf' });
-            saveIntervention('passed', pdfFile);
-        });
-    });
-}
-
+// Función para obtener el token CSRF
 function getCSRFToken() {
-    // Busca el token CSRF desde las cookies
     const csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
     return csrfToken ? csrfToken.split('=')[1] : null;
 }
+
+function generatePDF() {
+    return new Promise((resolve, reject) => {
+        html2canvas(order).then(canvas => {
+            const pdf = new jsPDF({
+                orientation: 'portrait', // Establecer orientación vertical
+                unit: 'mm', // Unidades en milímetros
+                format: 'a4', // Tamaño de la página A4
+            });
+
+            // Obtiene las dimensiones del canvas
+            const imgWidth = 210; // A4 width en mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            // Si la imagen generada es más alta que la altura de la página A4 (297 mm), ajustamos el tamaño.
+            if (imgHeight > 297) {
+                const scaleFactor = 297 / imgHeight; // Escala proporcional
+                canvas = document.createElement('canvas');
+                canvas.width = canvas.width * scaleFactor;
+                canvas.height = canvas.height * scaleFactor;
+            }
+
+            // Convierte el canvas a imagen JPEG
+            const imgData = canvas.toDataURL('image/jpeg');
+
+            // Agrega la imagen al PDF
+            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+            // Guardar el PDF como Blob
+            const pdfBlob = pdf.output('blob');
+            const pdfFile = new File([pdfBlob], `${numOrder}.pdf`, { type: 'application/pdf' });
+
+            // Verificar que pdfFile se genera correctamente antes de enviarlo
+            if (pdfFile.size > 0) {
+                resolve(pdfFile);
+            } else {
+                reject('Error: El archivo PDF no se generó correctamente');
+            }
+        }).catch(err => reject(err));
+    });
+}
+
+document.getElementById('orderPassed').addEventListener('click', () => {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Una vez aprobada la intervención no podrá ser modificada.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, aprobar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Usar el archivo seleccionado o generar un PDF si no hay archivo
+            const file = selectedFile || generatePDF(); // Si no hay archivo, genera el PDF
+
+            // Verifica si `file` es una promesa
+            if (file instanceof Promise) {
+                file.then(pdfFile => {
+                    saveIntervention('passed', pdfFile); // Llama a la función con el archivo generado
+                }).catch(error => {
+                    console.error(error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo generar el PDF.',
+                        icon: 'error'
+                    });
+                });
+            } else {
+                // Si no es una promesa, pásalo directamente
+                saveIntervention('passed', file);
+            }
+        }
+    });
+});
 
 function saveIntervention(result, file) {
     const formData = new FormData();
     formData.append('result', result);
     formData.append('numOrder', numOrder);
+
+    console.log('Archivo enviado:', file);
 
     if (file) {
         formData.append('file', file); // Adjunta el archivo si existe
@@ -132,26 +201,27 @@ function saveIntervention(result, file) {
         },
         body: formData // Envía FormData para manejar datos y archivos
     })
-    .then(response => {
-        if (response.ok) {
-            // Si el servidor responde correctamente, recarga la página
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url; // Redirige al usuario
+        } else if (data.message) {
             Swal.fire({
                 title: 'Éxito',
-                text: 'La intervención se ha guardado correctamente.',
+                text: data.message,
                 icon: 'success'
             }).then(() => {
                 window.location.reload();
             });
-        } else {
+        } else if (data.error) {
             Swal.fire({
                 title: 'Error',
-                text: 'Hubo un problema al guardar la intervención.',
+                text: data.error,
                 icon: 'error'
             });
         }
     })
     .catch(error => {
-        // Manejar errores de red u otros problemas
         console.error('Error en la solicitud:', error);
         Swal.fire({
             title: 'Error',
