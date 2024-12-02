@@ -12,6 +12,7 @@ from apps.inserts.models import Intervenciones, Actualizaciones
 from django.core.paginator import Paginator
 import json
 from apps.activityLog.utils import log_activity
+from django.conf import settings
 
 
 @login_required
@@ -75,7 +76,6 @@ def new_equipment(request):
         else:
             return JsonResponse({'error': 'Referencia invalida.'}, status=400)
         
-
         new_reference = Equipos.objects.create(
             referencia_fk = reference,
             cod_equipo_pk=code,
@@ -83,21 +83,13 @@ def new_equipment(request):
             estado= state,
         )
 
-        log_activity(
-            user=request.user.id,                       
-            action='CREATE',                 
-            title='Registro de equipo',      
-            description=f'El usuario registró el equipo {code}',  
-            link=f'/view_categories/view_references/',      
-            category='CATEGORY'          
-        )
         messages.success(request, 'Existencia registrada correctamente')
         return JsonResponse({'success': True}, status=201)  # 201 Created
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    except Exception:
+        return JsonResponse({'error':'Error inesperado'}) 
     
 
 @login_required
@@ -109,13 +101,6 @@ def delete_equipment(request, id_equipment):
         equipment = get_object_or_404(Equipos, pk=id_equipment)
         equipment.delete()
 
-        log_activity(
-            user=request.user.id,                       
-            action='DELETE',                 
-            title='Elimino equipo',      
-            description=f'El usuario elimino el equipo {equipment.cod_equipo_pk}.',  
-            category='EQUIPMENT'          
-        )
         messages.success(request, 'Equipo eliminado correctamente.')
         return JsonResponse({'success': True}, status=200) 
     
@@ -123,13 +108,8 @@ def delete_equipment(request, id_equipment):
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
 
-
-
-
-
-from django.conf import settings
-
 @login_required
+@transaction.atomic
 def edit_equipment(request, id_equipment):
     # Obtener el equipo y sus datos asociados
     equipment = get_object_or_404(Equipos, pk=id_equipment)
@@ -139,7 +119,6 @@ def edit_equipment(request, id_equipment):
     # Obtener todas las intervenciones para el equipo
     interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment).order_by('-fecha_hora')
 
-    # Paginación de intervenciones
     paginator_interventions = Paginator(interventions, 7)
     page_number_interventions = request.GET.get('page_interventions')
     paginator_interventions = paginator_interventions.get_page(page_number_interventions)
@@ -147,24 +126,18 @@ def edit_equipment(request, id_equipment):
     # Obtener el parámetro de la intervención seleccionada (si existe)
     selected_intervention_id = request.GET.get('intervention_id')
     selected_intervention = None
-    intervention_context = {}  # Se asegura de que intervention_context siempre esté definido
+    intervention_context = {} 
 
     if selected_intervention_id:
         try:
             selected_intervention = Intervenciones.objects.get(num_orden_pk=selected_intervention_id)
 
-            # Obtener el usuario asociado a la intervención
             user_intervention = selected_intervention.usuario_fk
             es_admin = request.user.groups.filter(name='Administrators').exists()
-
-            # Obtener ingresos y salidas
             parts_income = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Entrada')
             parts_outcome = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Salida')
-
-            # Obtener la URL del PDF
             pdf_url = f"{settings.MEDIA_URL}{selected_intervention.formato}" if selected_intervention.formato else ""
 
-            # Contexto para la intervención seleccionada
             intervention_context = {
                 'intervention': selected_intervention,
                 'user_intervention': user_intervention,
@@ -175,25 +148,18 @@ def edit_equipment(request, id_equipment):
             }
         except Intervenciones.DoesNotExist:
             selected_intervention = None
-            # Si la intervención no existe, intervention_context ya está vacío
 
     # Si no se seleccionó ninguna intervención, se toma la más reciente
     if not selected_intervention:
         if interventions.exists():
             selected_intervention = interventions.first()
 
-            # Obtener el usuario asociado a la intervención
             user_intervention = selected_intervention.usuario_fk
             es_admin = request.user.groups.filter(name='Administrators').exists()
-
-            # Obtener ingresos y salidas
             parts_income = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Entrada')
             parts_outcome = Actualizaciones.objects.filter(num_orden_fk=selected_intervention.num_orden_pk, tipo_movimiento='Salida')
-
-            # Obtener la URL del PDF
             pdf_url = f"{settings.MEDIA_URL}{selected_intervention.formato}" if selected_intervention.formato else ""
 
-            # Contexto para la intervención seleccionada
             intervention_context = {
                 'intervention': selected_intervention,
                 'user_intervention': user_intervention,
@@ -203,7 +169,6 @@ def edit_equipment(request, id_equipment):
                 'es_admin': es_admin
             }
 
-    # Obtener las actualizaciones relacionadas con las intervenciones
     num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
     updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
 
@@ -216,13 +181,13 @@ def edit_equipment(request, id_equipment):
     context = {
         'equipment': equipment,
         'reference': reference,
-        'category_equipment': category,  # Pasamos la categoría al contexto
-        'interventions': paginator_interventions,  # Lista paginada de intervenciones
-        'selected_intervention': selected_intervention,  # Intervención seleccionada
-        'paginator': paginator,  # Lista paginada de actualizaciones
-        'page_number': page_number,  # Página actual de actualizaciones
-        'page_number_interventions': page_number_interventions,  # Página actual de intervenciones
-        **intervention_context  # Incluimos los detalles de la intervención seleccionada, si existe
+        'category_equipment': category, 
+        'interventions': paginator_interventions, 
+        'selected_intervention': selected_intervention,  
+        'paginator': paginator,  
+        'page_number': page_number,  
+        'page_number_interventions': page_number_interventions, 
+        **intervention_context 
     }
 
     return render(request, 'equipment_edit.html', context)

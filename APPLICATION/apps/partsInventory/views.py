@@ -47,37 +47,31 @@ def view_inventory_parts(request):
 @transaction.atomic
 def new_part(request):
     partNumber = request.POST.get('partNumber')
-    stock = request.POST.get('stock')
     namePart = request.POST.get('namePart')
     location = request.POST.get('location')
 
-    print(partNumber, stock, namePart, location)
-
-    if not partNumber or not stock or not namePart or not location:
+    if not partNumber or not namePart or not location:
         return JsonResponse({'error': 'Todos los campos son obligatorios.'})
 
     if Inventario.objects.filter(pk=partNumber).exists():
         return JsonResponse({'error': 'El número de parte ya existe.'})
-
-    if not stock.isdigit():
-        return JsonResponse({'error': 'El valor en unidades debe ser un número entero.'})
-    stock = int(stock)  # Convierte `stock` a entero después de la validación
 
     try:
         new_part = Inventario.objects.create(
             num_parte_pk=partNumber,
             nombre=namePart,
             ubicacion=location,
-            total_unidades=stock,
         )
 
-    except Exception as e:
-        return JsonResponse({'error':'Error inesperado'})
+    except Exception:
+        return JsonResponse({'error': 'Error inesperado'})
 
     messages.success(request, 'Pieza registrada correctamente')
     return JsonResponse({'success': True})
 
 
+@login_required
+@transaction.atomic
 def edit_part(request, part_id):
 
     search = request.GET.get('search', '').strip()
@@ -137,9 +131,9 @@ def consult_part(request, part_id):
             }
         })
     except Inventario.DoesNotExist:
-        return JsonResponse({'error': 'Part not found'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': 'Part not found'})
+    except Exception:
+        return JsonResponse({'error':'Error inesperado'}) 
     
     
 @login_required
@@ -152,12 +146,9 @@ def edit_part_action(request, part_id):
         location = request.POST.get('location')
         url = request.POST.get('url')
 
-        print( "nombre: ", namePart,  "locacion: ", location,  "url: ", url)
-
         part.nombre = namePart
         part.ubicacion = location
         part.link_consulta = url
-
         part.save()
   
         messages.success(request, 'Pieza actualizada correctamente.')
@@ -165,8 +156,8 @@ def edit_part_action(request, part_id):
 
     except Inventario.DoesNotExist:
         return JsonResponse({'error':'No se encontro el registro'})
-    except Exception as e:
-        return JsonResponse({'error':f'Error inesperado {e}'})
+    except Exception:
+        return JsonResponse({'error':'Error inesperado'})
 
 
 

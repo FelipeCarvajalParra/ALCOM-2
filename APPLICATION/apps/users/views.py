@@ -156,19 +156,10 @@ def register_user(request):
         new_user.save()
         new_user.groups.add(group)
         
-
-        log_activity(
-            user=request.user.id,                       
-            action='CREATE',                 
-            title='Registro de Usuario',      
-            description=f'El usuario registro a {data["names"].title()} en el sistema.',  
-            link=f'/edit_user/{new_user.id}',      
-            category='USER_PROFILE'          
-        )
         messages.success(request, 'Usuario registrado exitosamente.')
         return JsonResponse({'success': True})
-    except Exception as e:
-        messages.error(request, f'Error al registrar el usuario: {str(e)}')
+    except Exception:
+        messages.error(request, f'Error al registrar el usuario')
         return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
 
    
@@ -214,14 +205,6 @@ def update_personal_data(request, user_id):
 
         try:
             user.save()
-            log_activity(
-                user=request.user.id,                       
-                action='EDIT',                 
-                title='Edito usuario',      
-                description=f'El usuario edito la  informacion personal de {user.first_name}.',  
-                link=f'/edit_user/{user.id}',      
-                category='USER_PROFILE'          
-            )
             messages.success(request, 'Datos personales actualizados correctamente.')
             return JsonResponse({'success': True})
         except Exception as e:
@@ -305,14 +288,6 @@ def update_login_data(request, user_id):
             return JsonResponse({'success': False, 'error': 'Las contraseñas no coinciden.'})
 
     user.save()
-    log_activity(
-        user=request.user.id,                       
-        action='EDIT',                 
-        title='Edito usuario',      
-        description=f'El usuario edito la  informacion de  inicio de {user.first_name}.',  
-        link=f'/edit_user/{user.id}',      
-        category='USER_PROFILE'          
-    )
     messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
     return JsonResponse({'success': True})
 

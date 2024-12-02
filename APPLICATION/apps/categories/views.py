@@ -26,8 +26,6 @@ def view_categories(request):
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
-    print(paginator)
-    # Contexto de la vista
     context = {
         'paginator': paginator,
         'components': components,
@@ -52,8 +50,6 @@ def new_category(request):
         # Verificar si la categoría ya existe
         if Categorias.objects.filter(nombre=name_category).exists():
             return JsonResponse({'error': 'La categoría ya existe.'}, status=400)
-
-        # Crear la categoría y componentes en una transacción
        
         categoria = Categorias.objects.create(nombre=name_category)
 
@@ -63,15 +59,6 @@ def new_category(request):
             campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
             CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
 
-        # Registrar la actividad
-        log_activity(
-            user=request.user.id,                       
-            action='CREATE',                 
-            title='Registro de categoria',      
-            description=f'El usuario registró la categoría {categoria.nombre} en el sistema.',  
-            link=f'/view_categories/view_references/{categoria.categoria_pk}',      
-            category='CATEGORY'          
-        )
         messages.success(request, 'Categoría y campos asociados correctamente.')
         return JsonResponse({'success': True}, status=201)  # 201 Created
 
@@ -147,22 +134,14 @@ def update_category(request, category_id):
                     if not CategoriasCampo.objects.filter(categoria_fk=referencia.categoria, campo_fk=campo).exists():
                         Valor.objects.filter(campo_fk=campo, referencia_fk=referencia).delete()
 
-        log_activity(
-            user=request.user.id,
-            action='UPDATE',
-            title='Actualizacion de categoria',
-            description=f'El usuario actualizo la categoria {categoria.nombre} en el sistema.',
-            link=f'/view_categories/view_references/{categoria.categoria_pk}',
-            category='CATEGORY'
-        )
         messages.success(request, 'Categoría y campos actualizados correctamente.')
         return JsonResponse({'success': True}, status=200)
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
     except Exception as e:
-        messages.error(request, 'Error: ' + str(e))
-        return JsonResponse({'error': 'Ocurrió un error: ' + str(e)}, status=500)
+        messages.error(request,'Error inesperado')
+        return JsonResponse({'error':'Error inesperado'}) 
 
 @login_required
 @require_POST

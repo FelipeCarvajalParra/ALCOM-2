@@ -31,7 +31,6 @@ def home(request):
     else:
         greeting = "¡Hola!"
 
-
     context = {
         'greeting': greeting
     }

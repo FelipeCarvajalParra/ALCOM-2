@@ -10,9 +10,11 @@ if(referenceForm){
     referenceForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Evitar el envío del formulario
         messageError.textContent = '‎'; // Limpiar mensajes de error
+
+        console.log(document.getElementById('newReference').value.trim())
     
         const formData = {
-            reference: document.getElementById('reference').value.trim(),
+            reference: document.getElementById('newReference').value.trim(),
             brand: document.getElementById('brand').value.trim(),
             url: document.getElementById('url').value.trim(),
             accessories: document.getElementById('accessories').value.trim(),
@@ -25,7 +27,6 @@ if(referenceForm){
             const campoId = textarea.id.replace('campo_', ''); // Extraer el ID del campo
             const value = textarea.value.trim();
             if (campoId !== 'accessories' && campoId !== 'observations') {
-                console.log(campoId);
                 components.push({ campoId: campoId, valor: value });
             }
         });
@@ -39,7 +40,7 @@ if(referenceForm){
                 'Content-Type': 'application/json',
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(formData) 
         })
         .then(response => response.json()) // Procesar la respuesta como JSON
         .then(data => {

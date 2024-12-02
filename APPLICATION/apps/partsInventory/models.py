@@ -6,7 +6,7 @@ class Inventario(models.Model):
     ubicacion = models.CharField(max_length=250, blank=True, null=True)
     link_consulta = models.CharField(max_length=1000, blank=True)
     manual = models.FileField(max_length=400, blank=True, upload_to='technical_sheets/', null=True)
-    total_unidades = models.IntegerField()
+    total_unidades = models.IntegerField(default=0)
     imagen_1 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
     imagen_2 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
     imagen_3 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)

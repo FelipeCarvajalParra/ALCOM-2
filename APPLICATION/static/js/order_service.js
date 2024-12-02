@@ -176,7 +176,6 @@ document.getElementById('orderPassed').addEventListener('click', () => {
                     });
                 });
             } else {
-                // Si no es una promesa, pásalo directamente
                 saveIntervention('passed', file);
             }
         }

@@ -16,11 +16,6 @@ def group_required(group_names, redirect_url='login'):
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
-    
-def expired_session(request): #Funcion que caduca la sesion por navegacion en url no permitida 
-    logout(request)
-    messages.error(request, 'Sesion caducada por navegacion sospechosa, evite ingresar a sitios no permitidos')
-    return redirect('/accounts/login/')
 
 @require_POST
 def login_validate(request):
@@ -48,15 +43,6 @@ def login_validate(request):
         if user.login_attempts >= 3:
             user.status = 'blocked'
             user.save()
-            print(user.id)
-            log_activity(
-                user= user.id,                       
-                action='LOCKOUT',                 
-                title='Cuenta bloqueada.',      
-                description=f'La cuenta del del usuario ha sido bloqueada por actividad sospechosa.',  
-                link = f'/edit_user/{user.id}',
-                category='USER_PROFILE'          
-            )
             return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'})
 
         return JsonResponse({'error': 'Credenciales incorrectas'})

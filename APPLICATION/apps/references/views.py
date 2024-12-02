@@ -136,6 +136,8 @@ def new_reference(request, category_id):
         # Verificar si la referencia ya existe
         if Referencias.objects.filter(referencia_pk=reference_pk).exists():
             return JsonResponse({'error': 'La referencia ya existe.'}, status=400)
+        
+        
 
         # Crear la referencia y valores dentro de una transacción
         category = get_object_or_404(Categorias, pk=category_id)

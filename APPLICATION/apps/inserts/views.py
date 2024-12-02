@@ -79,11 +79,11 @@ def add_parts(request, part_id):
 
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
-    except Exception as e:
-        print(e)
-        return JsonResponse({'error': f'Error inesperado'})
+    except Exception:
+        return JsonResponse({'error': 'Error inesperado'})
 
 
+@login_required
 def consult_movements(request, movement_id):
     try:
         part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
@@ -112,6 +112,9 @@ def consult_movements(request, movement_id):
 
 from django.conf import settings
 
+@login_required
+@require_POST
+@transaction.atomic
 def consult_interventions(request, intervention_id):
     try:
         # Obtener la instancia de la intervención
@@ -150,6 +153,7 @@ def consult_interventions(request, intervention_id):
         return JsonResponse({'error': str(e)})
 
 
+@login_required
 def view_interventions(request):
     
     # Obtener todas las intervenciones
@@ -164,7 +168,6 @@ def view_interventions(request):
 
 
 def num_orden(procedure):
-    # Prefijos para cada procedimiento
     prefixes = {
         'Intervencion': 'INT',
         'Cambio de parte': 'CAM',
@@ -279,8 +282,8 @@ def new_intervention(request):
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Error al procesar los datos JSON.'})
-    except Exception as e:
-        return JsonResponse({'error': f'Error inesperado: {str(e)}'})
+    except Exception:
+        return JsonResponse({'error': 'Error inesperado.'})
 
 
 
@@ -357,15 +360,11 @@ def save_result_intervention(request, num_order):
             intervention.delete()
             return JsonResponse({'redirect_url': reverse('edit_equipment', kwargs={'id_equipment': equipment_intervention})})
 
-            
-
         else:
-            print("Resultado no válido.")  # Caso no válido
             return JsonResponse({'error': 'Resultado no válido.'}, status=400)
 
-    except Exception as e:
-        print(f"Error procesando la intervención: {str(e)}")  # Error de ejecución
-        return JsonResponse({'error': f'Error interno del servidor: {str(e)}'}, status=500)
+    except Exception:
+        return JsonResponse({'error':'Error inesperado'}) 
     
 
     

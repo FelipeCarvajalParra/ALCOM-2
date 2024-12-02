@@ -14,6 +14,7 @@ import io
 from django.db import transaction
 from django.utils import timezone
 from openpyxl import Workbook
+from django.contrib.auth.decorators import login_required
 
 def compress_and_convert_to_webp(image_file):
 
@@ -28,6 +29,7 @@ def compress_and_convert_to_webp(image_file):
     img_content = ContentFile(img_io.getvalue(), name=f"{image_file.name.split('.')[0]}.webp")
     return img_content
 
+@login_required
 @require_POST
 @transaction.atomic
 def update_file(request):
@@ -102,6 +104,9 @@ def update_file(request):
         return HttpResponse(status=500)
 
 
+@login_required
+@require_POST
+@transaction.atomic
 def delete_file(request):
     app_name = request.POST.get('app_name')
     table = request.POST.get('table')
@@ -154,7 +159,9 @@ def delete_file(request):
         return HttpResponse(status=500)
 
 
+@login_required
 @require_POST
+@transaction.atomic
 def download_file(request):
     app_name = request.POST.get('app_name')
     table = request.POST.get('table')
@@ -210,9 +217,7 @@ def download_file(request):
         messages.error(request, f'Ha ocurrido un error: {str(e)}')
         return HttpResponse(status=500)
 
-
-
-
+@login_required
 @require_POST
 def print_pdf(request):
     app_name = request.POST.get('app_name')
@@ -241,6 +246,7 @@ def print_pdf(request):
     return render(request, 'print.html', context)
     
 
+@login_required
 @require_POST
 def print_excel(request):
     app_name = request.POST.get('app_name')

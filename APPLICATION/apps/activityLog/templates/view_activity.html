@@ -46,6 +46,15 @@
     </table>
 </div>
 
+<style>
+    .list-activity__icon--image {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+</style>
+
 <div id="activityContainer" class="container--activity scroll" style="display: block;">
     <div class="container__section-title">
         <span>Actividad reciente</span>
@@ -54,14 +63,8 @@
         {% for log in activity %}
             <li class="list-activity__item">
                 <div class="list-activity__header">
-                    <span class="list-activity__icon
-                    {% if log.action == 'CREATE' %}list-activity__icon--create
-                    {% elif log.action == 'EDIT' %}list-activity__icon--edit
-                    {% elif log.action == 'DELETE' %}list-activity__icon--delete
-                    {% elif log.action == 'LOGIN' %}list-activity__icon--login
-                    {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
-                    {% else %}list-activity__icon{% endif %}"></span>
-                    <span class="list-activity__title">{{log.title}}</span>
+                    <img class="list-activity__icon list-activity__icon--image" src="https://i.ytimg.com/vi/QMC_7kTae-g/maxresdefault.jpg" alt="">
+                    <span class="list-activity__title">Felipe Carvajal Parra</span>
                     <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
 
                 </div>
