@@ -5,16 +5,16 @@
 <div class="container--large container--padding-bottom">
     <table class="table">
         <div class="table__info table__info--options table__info--border-none" style="border-bottom: none;">
-            
             <div class="select select--filter">
                 <div class="select__selected" id="filterCategory">{% if category %}{{ category }}{% else %}Categoria{% endif %}</div>
                 <div class="select__options scroll">
                     <div class="select__option">TODAS</div>
-                    {% if categories|length > 0 %}
-                        {% for category in categories %}
-                            <div class="select__option">{{category.nombre}}</div>
-                        {% endfor %}
-                    {% endif %}
+                    <div class="select__option">Categorias</div>
+                    <div class="select__option">Referencias</div>
+                    <div class="select__option">Equipos</div>
+                    <div class="select__option">Intervenciones</div>
+                    <div class="select__option">Usuarios</div>
+                    <div class="select__option">Ingreso</div>
                 </div>
                 <div class="select__icon">
                     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
@@ -22,73 +22,32 @@
                     </svg>
                 </div>
             </div>
-            <div class="select select--filter">
-                <div class="select__selected" id="filterBrand">{% if brand %}{{ brand }}{% else %}Marca{% endif %}</div>
-                <div class="select__options scroll">
-                    <div class="select__option">TODAS</div>
-                    {% if brands|length > 0 %}
-                        {% for brand in brands %}
-                            <div class="select__option">{{brand.marca}}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="select__icon">
-                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
-                    </svg>
-                </div>
-            </div>
-
-            <input class="select select--search select--right" type="text" id="inputSearchReferences" placeholder="Buscar por referencia" value="{{search_query}}" />
-
-
+            <input class="select select--search select--date-range select--right" type="text" id="filterDateRange" name="daterange" placeholder="DD/MM/AAAA - DD/MM/AAAA" value="{% if date_range %}{{ date_range }}{% endif %}" />
         </div>
     </table>
 </div>
 
-<style>
-    .list-activity__icon--image {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-</style>
-
-<div id="activityContainer" class="container--activity scroll" style="display: block;">
+<div id="activityContainer" class="container--large container--activity scroll" style="display: block;">
     <div class="container__section-title">
         <span>Actividad reciente</span>
     </div>
-    <ul class="container__list-activity">
-        {% for log in activity %}
-            <li class="list-activity__item">
-                <div class="list-activity__header">
-                    <img class="list-activity__icon list-activity__icon--image" src="https://i.ytimg.com/vi/QMC_7kTae-g/maxresdefault.jpg" alt="">
-                    <span class="list-activity__title">Felipe Carvajal Parra</span>
-                    <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
-
-                </div>
-                <div class="list-activity__body">
-                    <p class="list-activity__description">{{log.description}}</p>
-                    {% if request.user.groups.first.name == 'administrators' %}
-                        {% if log.link %}
-                        <a href="{{log.link}}">
-                            <svg class="svg-option svg-option--notification" width="20px" height="20px">
-                                <use href="#icon-view"></use>
-                            </svg>
-                        </a>
-                        {% endif %}
-                        <a class="deleteActivityLog" data-idLog="{{ log.id }}">
-                            <svg class="svg-option svg-option--delete svg-option--notification" width="20px" height="20px">
-                                <use href="#icon-delete"></use>
-                            </svg>
-                        </a>
-                    {% endif %}
-                </div>
-            </li>
-        {% endfor %}
+    <ul class="container__list-activity table__body">
+        {% include 'partials/_view_activity_table_body.html' %}
     </ul>
+    <div class="table__footer">
+        {% include 'partials/_view_activity_table_footer.html' %}
+    </div>
 </div>
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/searchs_tables.js' %}"></script>
+<script src="{% static 'js/filter_selector_date.js' %}"></script>
+
 
 
 

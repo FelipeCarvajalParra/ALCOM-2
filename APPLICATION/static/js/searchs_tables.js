@@ -1,5 +1,6 @@
 function searchTable(module, page = 1, url) {
     let search; // Variable para almacenar la búsqueda
+    let brand; // Variable para almacenar la marca
 
     switch(module) {
         case(1): // Caso para buscar referencias
@@ -99,20 +100,40 @@ function searchTable(module, page = 1, url) {
                     console.log('error');
                 });
             break;
+        
+        case (8):
+
+            const filterCategoryActivityElement = document.getElementById('filterCategory');
+            const filterCategoryActivityValue = filterCategoryActivityElement ? filterCategoryActivityElement.textContent.trim() : null;
+
+       
+
+            petition(url, search, page, brand, filterCategoryActivityValue, window.selectedDateRange)
+                .then(() => {
+                })
+                .catch(() => {
+                    console.log('error');
+                });
+
+            console.log(filterCategoryActivityValue);
+            console.log(window.selectedDateRange);
+            break;
 
         default:
             search = ''; 
+        
     }
 }
 
-function petition(url, search, page, brand, category) {
+function petition(url, search, page, brand, category, dateRange) {
     // Crear el objeto de datos a enviar
 
     let data = {
         'search': search,
         'page': page,
         'brand': brand,
-        'category': category
+        'category': category,
+        'dateRange': dateRange
     };
 
     // Enviar la petición AJAX
@@ -242,10 +263,38 @@ if (paginatorMovements) {
 
     options.forEach(option => {
         option.addEventListener("click", function () {
-            filterValue = this.textContent.trim(); // Actualiza filterValue con el contenido seleccionado
-
+            filterValue = this.textContent.trim(); 
             searchTable(7, 1, `/edit_part/${idPart}`); // Realiza la búsqueda
         });
     });
+}
+
+
+const paginatorViewActivity = document.getElementById("paginatorViewActivity");
+if (paginatorViewActivity) { 
+
+    
+
+    const filterCategory = document.getElementById('filterCategory');
+    if (filterCategory) {
+        const observer = new MutationObserver(function(mutationsList) {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                    searchTable(8, 1, `/view_activity/`); 
+                }
+            }
+        });
+    
+        observer.observe(filterCategory, { childList: true, subtree: true });
+    }
+
+    const filterDateRange = document.getElementById('filterDateRange');
+    $(filterDateRange).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        const rangeDate = $(this).val();
+        window.selectedDateRange = rangeDate;  
+        searchTable(8, 1, `/view_activity/`);
+    });
+    
 }
 

@@ -104,51 +104,11 @@
                 <span>Actividad reciente</span>
             </div>
             <ul class="container__list-activity">
-                {% for log in activity %}
-                    <li class="list-activity__item">
-                        <div class="list-activity__header">
-                            <span class="list-activity__icon
-                            {% if log.action == 'CREATE' %}list-activity__icon--create
-                            {% elif log.action == 'EDIT' %}list-activity__icon--edit
-                            {% elif log.action == 'DELETE' %}list-activity__icon--delete
-                            {% elif log.action == 'LOGIN' %}list-activity__icon--login
-                            {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
-                            {% else %}list-activity__icon{% endif %}"></span>
-                            <span class="list-activity__title">{{log.title}}</span>
-                            <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
-
-                        </div>
-                        <div class="list-activity__body">
-                            <p class="list-activity__description">{{log.description}}</p>
-                            {% if request.user.groups.first.name == 'administrators' %}
-                                {% if log.link %}
-                                <a href="{{log.link}}">
-                                    <svg class="svg-option svg-option--notification" width="20px" height="20px">
-                                        <use href="#icon-view"></use>
-                                    </svg>
-                                </a>
-                                {% endif %}
-                                <a class="deleteActivityLog" data-idLog="{{ log.id }}">
-                                    <svg class="svg-option svg-option--delete svg-option--notification" width="20px" height="20px">
-                                        <use href="#icon-delete"></use>
-                                    </svg>
-                                </a>
-                            {% endif %}
-                        </div>
-                    </li>
-                {% endfor %}
-                <li class="list-activity__item">
-                    <div class="list-activity__header">
-                        <span class="list-activity__icon"></span>
-                        <span class="list-activity__title">Registro</span>
-                        <span class="list-activity__timestamp">{{ user.date_joined|date:"d/m/Y - g:iA" }}</span>
-
-                    </div>
-                    <div class="list-activity__body">
-                        <p class="list-activity__description">El usuario se agrego al sistema</p>
-                    </div>
-                </li>
+                {% include "partials/_user_activity_table_body.html" %}
             </ul>
+            <div class="table__footer">
+                {% include 'partials/_user_activity_table_footer.html' %}
+            </div>
         </div>
 
         <div id="personalDataContainer" class="container--activity scroll" style="display: none;" >

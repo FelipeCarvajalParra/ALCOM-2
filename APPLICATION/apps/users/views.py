@@ -61,27 +61,28 @@ def view_users(request):
 
 @login_required
 def edit_user(request, id):
-   
     if int(request.user.id) != int(id):
         if not request.user.groups.filter(name='administrators').exists():
             return HttpResponseForbidden("No tienes permiso para acceder a este perfil.")
 
     user = get_object_or_404(CustomUser, pk=id)
     activity = ActivityLog.objects.filter(user_id=id).order_by('-timestamp')
+
+    paginator = Paginator(activity, 15)  # Este es el objeto Paginator completo
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)  # Este es el objeto Page para la página actual
+
+    # Accedemos al número total de páginas desde el objeto Paginator
+    is_last_page = page_obj.number == paginator.num_pages
+
     context = {
         'user_account': user,
-        'activity': activity
+        'paginator': page_obj,  # Usamos Page aquí
+        'page_number': page_number,
+        'is_last_page': is_last_page,  # Usamos el Paginator para determinar esta variable
     }
 
     return render(request, 'user_edit.html', context)
-
-
-
-
-
-
-
-
 
 def validate_user_data(data, is_update=False):
     required_fields = ['names', 'lastName', 'email', 'jobName', 'username', 'status', 'group']
@@ -119,19 +120,9 @@ def validate_user_data(data, is_update=False):
 
     return {'success': True}
 
-
-
-
-
-
-
-
-
-
-
-
 @login_required
 @require_POST
+@transaction.atomic
 def register_user(request):
     data = json.loads(request.body)
 
@@ -155,6 +146,14 @@ def register_user(request):
         new_user.set_password(data['password'])
         new_user.save()
         new_user.groups.add(group)
+
+        log_activity(
+            user=request.user.id,                       
+            action='CREATE',                 
+            description=f'El usuario registro a {data["names"].title()} en el sistema.',  
+            link=f'/edit_user/{new_user.id}',      
+            category='USERS'          
+        )
         
         messages.success(request, 'Usuario registrado exitosamente.')
         return JsonResponse({'success': True})
@@ -162,24 +161,9 @@ def register_user(request):
         messages.error(request, f'Error al registrar el usuario')
         return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
 
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @login_required
 @require_POST
+@transaction.atomic
 def update_personal_data(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     data = json.loads(request.body)
@@ -211,21 +195,10 @@ def update_personal_data(request, user_id):
             return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
     else:
         return JsonResponse({'success': False, 'error': 'Todos los campos son requeridos.'}, status=500)
-    
-
-
-
-
-
-
-
-
-
-
-
 
 @login_required
 @require_POST
+@transaction.atomic
 def update_login_data(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
 
@@ -247,8 +220,7 @@ def update_login_data(request, user_id):
                 if user.status == 'blocked':
                     log_activity(
                         user=user.id,                       
-                        action='LOGIN',                 
-                        title='Cuenta desbloqueada',      
+                        action='LOGIN',                     
                         description=f'La cuenta del usuario ha pasado a estado activo.',  
                         link=f'/edit_user/{user.id}',      
                         category='USER_PROFILE'          
@@ -291,21 +263,13 @@ def update_login_data(request, user_id):
     messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
     return JsonResponse({'success': True})
 
-
-
-
-
-
-
-
-
-
-
 @require_POST
 @transaction.atomic 
 def delete_user(request, user_id):
     try:
         user_instance = get_object_or_404(CustomUser, id=user_id)
+
+        print(user_instance.id)
 
         # Verificar si la imagen no es la por defecto
         if user_instance.profile_picture and user_instance.profile_picture.url != settings.MEDIA_URL + 'default/default_user.jpg':
@@ -314,17 +278,15 @@ def delete_user(request, user_id):
             # Eliminar la imagen del sistema de archivos
             if os.path.exists(image_path):
                 os.remove(image_path)
-
-        # Eliminar el usuario
         user_instance.delete()
-        messages.success(request, 'Usuario eliminado correctamente.')
+
         log_activity(
             user=request.user.id,                       
             action='DELETE',                 
-            title='Elimino usuario',      
             description=f'El usuario elimino el perfil de {user_instance.first_name}.',  
             category='USER_PROFILE'          
         )
+        messages.success(request, 'Usuario eliminado correctamente.')
         return HttpResponse(status=200)  # Respuesta exitosa
     except Exception as e:
         messages.error(request, str(e))

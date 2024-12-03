@@ -1,0 +1,27 @@
+{% if paginator|length > 0 %}
+    {% for log in paginator %}
+        <li class="list-activity__item">
+            <a {% if request.user.groups.first.name == 'administrators' and log.link %} href="{{ log.link }}" {% endif %} >
+                <div class="list-activity__header">
+                    <img class="list-activity__icon {% if log.action == 'CREATE' %}list-activity__icon--create
+                    {% elif log.action == 'UPDATE' %}list-activity__icon--edit
+                    {% elif log.action == 'DELETE' %}list-activity__icon--delete
+                    {% elif log.action == 'LOGIN' %}list-activity__icon--login
+                    {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
+                    {% else %}list-activity__icon{% endif %} list-activity__icon--image" src="{{ log.user.profile_picture.url }}" alt="">
+                    <span class="list-activity__title">Felipe Carvajal Parra</span>
+                    <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
+                </div>
+                <div class="list-activity__body list-activity__body--activity">
+                    <p class="list-activity__description list-activity__description--activity">{{log.description}}</p>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
+{% else %}
+    <li class="list-activity__item">
+        <div class="list-activity__body list-activity__body--activity">
+            <p class="list-activity__description list-activity__description--activity">No hay actividad reciente</p>
+        </div>
+    </li>
+{% endif %}

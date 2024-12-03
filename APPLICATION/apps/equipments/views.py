@@ -173,7 +173,7 @@ def edit_equipment(request, id_equipment):
     updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
 
     # Paginación de actualizaciones
-    paginator = Paginator(updates, 1)
+    paginator = Paginator(updates, 15)
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 

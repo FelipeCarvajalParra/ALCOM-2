@@ -39,10 +39,18 @@ def login_validate(request):
     if authenticated_user is None:
         user.login_attempts += 1
         user.save()
+        
 
         if user.login_attempts >= 3:
             user.status = 'blocked'
             user.save()
+            log_activity(
+                user= user.id,                       
+                action='LOCKOUT',                     
+                description=f'La cuenta ha sido bloqueada por exceder el número de intentos de inicio de sesión.',  
+                link = f'/edit_user/{user.id}',
+                category='USER_PROFILE'          
+            )
             return JsonResponse({'error': 'Tu cuenta está bloqueada. Contacta al administrador.'})
 
         return JsonResponse({'error': 'Credenciales incorrectas'})
@@ -50,8 +58,7 @@ def login_validate(request):
     login(request, authenticated_user)
     log_activity(
         user=request.user.id,                       
-        action='LOGIN',                 
-        title='Inicio de sesion',      
+        action='LOGIN',                   
         description=f'El usuario ingreso al sistema.',  
         category='USER_PROFILE'          
     )

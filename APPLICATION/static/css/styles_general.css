@@ -204,7 +204,7 @@ a{
 
 .container--activity {
     margin-top: 15px;
-    max-height: 950px;
+    height: auto;
     border: 10px solid #ffff;
     padding-bottom: 10px;
 }
@@ -254,6 +254,7 @@ a{
     border-radius: 10px;
     width: 120px;
     height: 120px;
+    object-fit: cover;
 }
 
 .container__image--equipment{
@@ -390,22 +391,22 @@ a{
 
 .list-activity__icon--create {
     background-color: #72e128;
-    box-shadow: 0 0 0 3px rgba(114, 225, 40, 0.2);
+    box-shadow: 0 0 0 2px rgba(114, 225, 40, 0.5);
 }
 
 .list-activity__icon--edit {
     background-color: #26c6f9;
-    box-shadow: 0 0 0 3px rgba(38, 198, 249, 0.2);
+    box-shadow: 0 0 0 2px rgba(38, 198, 249, 0.5);
 }
 
 .list-activity__icon--delete {
-    background-color: #f7902f;
-    box-shadow: 0 0 0 3px rgba(247, 144, 47, 0.2);
+    background-color: #bd3909;
+    box-shadow: 0 0 0 2px rgba(189, 57, 9, 0.5);
 }
 
 .list-activity__icon--login {
-    background-color: #666cff;
-    box-shadow: 0 0 0 3px rgba(102, 108, 255, 0.2);
+    background-color: #484b6b;
+    box-shadow: 0 0 0 2px #484b6b;
 }
 
 .list-activity__icon--intervention-earring{
@@ -420,7 +421,7 @@ a{
 
 .list-activity__icon--lockout {
     background-color: #d10505;
-    box-shadow: 0 0 0 3px rgba(209, 5, 5, 0.2);
+    box-shadow: 0 0 0 3px rgba(209, 5, 5, 0.5);
 }
 
 
@@ -462,6 +463,23 @@ a{
 .list-activity__item:hover{
     background-color: aliceblue;
     border-radius: 10px;
+}
+
+.list-activity__icon--image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+
+}
+
+.list-activity__body--activity{
+    margin-left: 15px;
+}
+
+.list-activity__description--activity{
+    margin-left: 11px;
 }
 
 /*============= Bloque aside ================*/
@@ -627,6 +645,7 @@ a{
     height: 40px;
     border-radius: 50%;
     margin-left: 12px;
+    object-fit: cover;
 }
 
 .aside__close-btn { /* Estilos para el botón de cierre (X) */
@@ -787,6 +806,11 @@ a{
     display: flex;
     align-items: center;
     padding-left: 0px;
+}
+
+.select--date-range{
+    width: 170px;
+    color: #a8aab4;
 }
 
 .select__option:hover {
