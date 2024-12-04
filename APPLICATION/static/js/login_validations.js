@@ -35,7 +35,6 @@ form.addEventListener('submit', function(event) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         messageError.textContent = 'Error en la validacion';
     });
 });

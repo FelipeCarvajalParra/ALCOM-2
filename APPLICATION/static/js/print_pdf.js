@@ -40,9 +40,6 @@ function printPdf(app_name, table, fields_table, fields_pdf) {
             };
         };
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
 }
 
 function getCookie(name) {

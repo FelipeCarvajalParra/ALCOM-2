@@ -16,7 +16,13 @@ if(newPartForm){
             },
             body: formData // Enviar los datos del formulario
         })
-        .then(response => response.json()) // Procesar la respuesta como JSON
+        .then(response => {
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/';  
+                return; 
+            }
+            return response.json();
+        }) 
         .then(data => {
             if (data.error) {
                 messageNewPartError.textContent = data.error;
@@ -25,7 +31,6 @@ if(newPartForm){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageNewPartError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });
@@ -60,7 +65,6 @@ if(partEditForm){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageEditError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });

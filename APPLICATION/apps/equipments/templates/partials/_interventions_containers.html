@@ -339,7 +339,13 @@
                     },
                     body: JSON.stringify(dataToSave) // Convertir el objeto a JSON
                 })
-                .then(response => response.json()) // Procesar la respuesta como JSON
+                .then(response => {
+                    if (response.status === 403) {
+                        window.location.href = '/forbidden_access/';  
+                        return; 
+                    }
+                    return response.json();
+                }) 
                 .then(data => {
                     if (data.error) {
                         messageNewInterventionError.textContent = data.error;

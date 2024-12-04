@@ -10,8 +10,6 @@ if(referenceForm){
     referenceForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Evitar el envío del formulario
         messageError.textContent = '‎'; // Limpiar mensajes de error
-
-        console.log(document.getElementById('newReference').value.trim())
     
         const formData = {
             reference: document.getElementById('newReference').value.trim(),
@@ -42,7 +40,14 @@ if(referenceForm){
             },
             body: JSON.stringify(formData) 
         })
-        .then(response => response.json()) // Procesar la respuesta como JSON
+        .then(response => {
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/'; 
+                return; 
+            }
+    
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 messageError.textContent = data.error; // Mostrar error
@@ -52,7 +57,6 @@ if(referenceForm){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });    
@@ -81,7 +85,14 @@ if(referenceEditForm){
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
         })
-        .then(response => response.json()) // Asegúrate de procesar la respuesta como JSON
+        .then(response => {
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/'; 
+                return; 
+            }
+    
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 messageEditError.textContent = data.error; // Mostrar error
@@ -90,7 +101,6 @@ if(referenceEditForm){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageEditError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });
@@ -114,7 +124,14 @@ if(referenceEditComponentsForm){
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
         })
-        .then(response => response.json()) // Asegúrate de procesar la respuesta como JSON
+        .then(response => {
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/'; 
+                return; 
+            }
+    
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 messageEditComponentsError.textContent = data.error; // Mostrar error
@@ -123,10 +140,11 @@ if(referenceEditComponentsForm){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageEditComponentsError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });
+
+    
 }
 
 

@@ -41,7 +41,6 @@ if (userFileImageInput) {
         userFileImageInput.click();
     });
     userFileImageInput.addEventListener('change', function() {
-        console.log('hola')
         const app_name = this.getAttribute('data-app');
         const table = this.getAttribute('data-table');
         const field = this.getAttribute('data-field');

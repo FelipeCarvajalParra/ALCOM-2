@@ -1,5 +1,4 @@
 function modal_category(){
-    console.log('carga')
     const modals = [
         {
             taskInput: document.getElementById('taskInput'),
@@ -15,7 +14,6 @@ function modal_category(){
                     hideOptions(this.autocompleteList); // Ocultar las opciones después de añadir
                     this.errorMessage.textContent = '';
                 } else {
-                    console.log('aqui')
                     this.errorMessage.textContent = 'El campo ya está asociado.';
                 }
             }
@@ -34,7 +32,6 @@ function modal_category(){
                     hideOptions(this.autocompleteList); // Ocultar las opciones después de añadir
                     this.errorMessage.textContent = '';
                 } else {
-                    console.log('aqui')
                     this.errorMessage.textContent = 'El campo ya está asociado.';
                 }
             }

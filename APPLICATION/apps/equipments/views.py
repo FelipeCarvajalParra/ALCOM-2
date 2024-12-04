@@ -13,9 +13,12 @@ from django.core.paginator import Paginator
 import json
 from apps.activityLog.utils import log_activity
 from django.conf import settings
+from apps.logIn.views import group_required
 
 
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_equipments(request):
     equipment_list = Equipos.objects.select_related('referencia_fk').all()
     categories_list = Categorias.objects.values_list('nombre', flat=True)
@@ -31,7 +34,7 @@ def view_equipments(request):
     if filter_brand and filter_brand not in ['Marca', 'TODAS', '']:
         equipment_list = equipment_list.filter(referencia_fk__marca__icontains=filter_brand)
     
-    if filter_category and filter_category not in ['Categoría', 'TODAS', '']:
+    if filter_category and filter_category not in ['Categoria', 'TODAS', '']:
         equipment_list = equipment_list.filter(referencia_fk__categoria__nombre__icontains=filter_category)
 
     paginator = Paginator(equipment_list, 15)
@@ -57,6 +60,7 @@ def view_equipments(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_equipment(request):
     try:
         reference = request.POST.get('reference')
@@ -83,6 +87,13 @@ def new_equipment(request):
             estado= state,
         )
 
+        log_activity(
+            user=request.user.id,
+            action='CREATE',
+            description=f'El usuario registró el equipo {new_reference.cod_equipo_pk}.',
+            link=f'/edit_equipment/{new_reference.cod_equipo_pk}', 
+            category='EQUIPMENTS'
+        )
         messages.success(request, 'Existencia registrada correctamente')
         return JsonResponse({'success': True}, status=201)  # 201 Created
 
@@ -95,21 +106,31 @@ def new_equipment(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_equipment(request, id_equipment):
     try:
         # Obtener y eliminar la categoría
         equipment = get_object_or_404(Equipos, pk=id_equipment)
+        equipmentCode = equipment.cod_equipo_pk
         equipment.delete()
 
+        log_activity(
+            user=request.user.id,
+            action='DELETE',
+            description=f'El usuario elimino el equipo {equipmentCode}.',
+            category='EQUIPMENTS'
+        )
         messages.success(request, 'Equipo eliminado correctamente.')
         return JsonResponse({'success': True}, status=200) 
     
     except Exception as e:
+        print(e)
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
 
 @login_required
 @transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def edit_equipment(request, id_equipment):
     # Obtener el equipo y sus datos asociados
     equipment = get_object_or_404(Equipos, pk=id_equipment)
@@ -117,7 +138,10 @@ def edit_equipment(request, id_equipment):
     category = reference.categoria
 
     # Obtener todas las intervenciones para el equipo
-    interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment).order_by('-fecha_hora')
+    if request.user.groups.filter(name='Administrators').exists():
+        interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment).order_by('-fecha_hora')
+    else:
+        interventions = Intervenciones.objects.filter(cod_equipo_fk=equipment, usuario_fk=request.user).order_by('-fecha_hora')
 
     paginator_interventions = Paginator(interventions, 7)
     page_number_interventions = request.GET.get('page_interventions')

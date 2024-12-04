@@ -15,6 +15,7 @@ from django.db import transaction
 from django.utils import timezone
 from openpyxl import Workbook
 from django.contrib.auth.decorators import login_required
+from apps.logIn.views import group_required
 
 def compress_and_convert_to_webp(image_file):
 
@@ -32,6 +33,7 @@ def compress_and_convert_to_webp(image_file):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def update_file(request):
     app_name = request.POST.get('app_name')
     table = request.POST.get('table')
@@ -107,6 +109,7 @@ def update_file(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_file(request):
     app_name = request.POST.get('app_name')
     table = request.POST.get('table')
@@ -162,6 +165,7 @@ def delete_file(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def download_file(request):
     app_name = request.POST.get('app_name')
     table = request.POST.get('table')
@@ -219,6 +223,8 @@ def download_file(request):
 
 @login_required
 @require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def print_pdf(request):
     app_name = request.POST.get('app_name')
     table_name = request.POST.get('table')
@@ -248,6 +254,8 @@ def print_pdf(request):
 
 @login_required
 @require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def print_excel(request):
     app_name = request.POST.get('app_name')
     table_name = request.POST.get('table')

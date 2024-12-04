@@ -122,21 +122,23 @@
                 </svg>
                 <span>Ficha tecnica</span>
             </div>
-            <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
-                <svg width="20px" height="20px" fill="currentColor" viewBox="0 0 48 48"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g id="Layer_2" data-name="Layer 2">
-                        <g id="invisible_box" data-name="invisible box">
-                            <rect width="48" height="48" fill="none" />
+            {% if user.groups.first.name == 'administrators' %} 
+                <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
+                    <svg width="20px" height="20px" fill="currentColor" viewBox="0 0 48 48"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g id="Layer_2" data-name="Layer 2">
+                            <g id="invisible_box" data-name="invisible box">
+                                <rect width="48" height="48" fill="none" />
+                            </g>
+                            <g id="icons_Q2">
+                                <path
+                                    d="M44,4H4A2,2,0,0,0,2,6V34a2,2,0,0,0,2,2H18v4H12a2,2,0,0,0,0,4H36a2,2,0,0,0,0-4H30V36H44a2,2,0,0,0,2-2V6A2,2,0,0,0,44,4ZM42,8V24H6V8ZM26,40H22V36h4ZM6,32V28H42v4Z" />
+                            </g>
                         </g>
-                        <g id="icons_Q2">
-                            <path
-                                d="M44,4H4A2,2,0,0,0,2,6V34a2,2,0,0,0,2,2H18v4H12a2,2,0,0,0,0,4H36a2,2,0,0,0,0-4H30V36H44a2,2,0,0,0,2-2V6A2,2,0,0,0,44,4ZM42,8V24H6V8ZM26,40H22V36h4ZM6,32V28H42v4Z" />
-                        </g>
-                    </g>
-                </svg>
-                <span>Existencias</span>
-            </div>
+                    </svg>
+                    <span>Existencias</span>
+                </div>
+            {% endif %}
         </div>
 
         <div id="generalData" class="container--activity scroll" style="display: block;">
@@ -226,7 +228,7 @@
                                         data-id="{{ component.valor_id }}" 
                                         maxlength="400"
                                         {% if user.groups.first.name == 'consultants' %}readonly{%endif%}
-                                    >{{ component.valor }} </textarea>
+                                    >{{ component.valor }}</textarea>
                                     <label class="input-container__label textarea__label" for="{{ component.campo_fk.nombre_campo }}">{{ component.campo_fk.nombre_campo }}</label>
                                 </div>
                             </div>
@@ -272,123 +274,125 @@
             </div>
         </div>
 
-        <div id="stock" class="container--activity scroll" style="display: none;">
-            <div class="container__section-title">
-                <span>Lista de existencias</span>
-            </div>
-            <div class="container__table">
-                <div class="container--large container--sub-table">
-                    <table class="table">
-                        <div class="table__info table__info--options">
+        {% if user.groups.first.name != 'consultants' %}
+            <div id="stock" class="container--activity scroll" style="display: none;">
+                <div class="container__section-title">
+                    <span>Lista de existencias</span>
+                </div>
+                <div class="container__table">
+                    <div class="container--large container--sub-table">
+                        <table class="table">
+                            <div class="table__info table__info--options">
 
-                            <input class="select select--search" type="text" id="searchEquipment" placeholder="Buscar por codigo" value="{{search_query}}" />
+                                <input class="select select--search" type="text" id="searchEquipment" placeholder="Buscar por codigo" value="{{search_query}}" />
 
-                            <div class="select select--filter select--right">
-                                <div class="select__selected">
-                                    <svg width="21px" height="17px" viewBox="0 0 21 21" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9.625 14H11.375V6.125H14L10.5 1.75L7 6.125H9.625V14Z" />
-                                        <path
-                                            d="M4.375 19.25H16.625C17.5901 19.25 18.375 18.4651 18.375 17.5V9.625C18.375 8.65987 17.5901 7.875 16.625 7.875H13.125V9.625H16.625V17.5H4.375V9.625H7.875V7.875H4.375C3.40987 7.875 2.625 8.65987 2.625 9.625V17.5C2.625 18.4651 3.40987 19.25 4.375 19.25Z" />
-                                    </svg>
-                                    <span> Exportar </span>
-                                </div>
-                                <div class="select__options">
-                                    <div class="select__option select__option--export">
-                                        <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
-                                            data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                                <div class="select select--filter select--right">
+                                    <div class="select__selected">
+                                        <svg width="21px" height="17px" viewBox="0 0 21 21" fill="currentColor"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9.625 14H11.375V6.125H14L10.5 1.75L7 6.125H9.625V14Z" />
                                             <path
-                                                d="M46.92,0H18.74A3.44,3.44,0,0,0,15.3,3.43V52.57A3.44,3.44,0,0,0,18.74,56H53.26a3.44,3.44,0,0,0,3.44-3.43V10.62Zm.81,5.14L52,9.79H47.73Zm6.08,47.43a.55.55,0,0,1-.55.55H18.74a.55.55,0,0,1-.55-.55V3.43a.54.54,0,0,1,.55-.54H44.85v8.35a1.45,1.45,0,0,0,1.44,1.44h7.52Z" />
-                                            <path
-                                                d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
+                                                d="M4.375 19.25H16.625C17.5901 19.25 18.375 18.4651 18.375 17.5V9.625C18.375 8.65987 17.5901 7.875 16.625 7.875H13.125V9.625H16.625V17.5H4.375V9.625H7.875V7.875H4.375C3.40987 7.875 2.625 8.65987 2.625 9.625V17.5C2.625 18.4651 3.40987 19.25 4.375 19.25Z" />
                                         </svg>
-                                        <span>Excel</span>
+                                        <span> Exportar </span>
                                     </div>
-                                    <div class="select__option select__option--export">
-                                        <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
-                                            xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
-                                            <path
-                                                d="M30 161c-16.5 0-30 13.5-30 30v827.8c0 16.5 13.5 30 30 30h591.7c16.5 0 30-13.5 30-30V343.7L469 161H30zm389.6 60v134.8c0 19.9 16.3 36.2 36.2 36.2h135.9v596.8H60V221h359.6z" />
-                                            <path
-                                                d="M123.8 768.6h394.8v50H123.8zm0-124.6h394.8v50H123.8zm0-124.5h394.8v50H123.8z" />
-                                            <circle cx="194" cy="382.3" r="60" />
-                                        </svg>
-                                        <span> PDF </span>
-                                    </div>
-                                </div>
-                                <div class="select__icon">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            {% if user.groups.first.name == 'administrators' %}
-                                <div class="button" data-modal-id="modalNewEquipment">
-                                    <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
-                                    </svg>
-                                    <span>Agregar</span>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <thead class="table__headed">
-                            <th class="table__headed-title">Serial</th>
-                            <th class="table__headed-title">Codigo de equipo</th>
-                            
-                            <th class="table__headed-title">Estado</th>
-                            <th class="table__headed-title table__headed-actions">
-                                Acciones
-                            </th>
-                        </thead>
-                        <tbody class="table__body">
-
-                            {% for equipment in paginator %}
-                                <tr class="table__row">
-                                    <td class="table__cell table__cell--auto table__cell--flex">
-                                        <div class="table__container-text">
-                                            <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}" class="table__container-link">{{equipment.serial}}</a>
-                                        </div>
-                                    </td>
-                                    <td class="table__cell table__cell--medium table__cell--overflow"
-                                        data-text="{{equipment.cod_equipo_pk}}">
-                                        {{equipment.cod_equipo_pk}}
-                                    </td>
-                                    <td class="table__cell table__cell--small table__cell--overflow"
-                                        data-text="{{equipment.estado}}">
-                                        {{equipment.estado}}
-                                    </td>
-                                    <td class="table__cell table__cell--actions">
-                                        {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
-                                            <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}">
-                                                <svg class="svg-option" width="20px" height="20px">
-                                                    <use href="#icon-view"></use>
-                                                </svg>
-                                            </a>
-                                        {%endif%}
-                                        {% if user.groups.first.name == 'administrators' %}
-                                            <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
-                                                <use href="#icon-delete"></use>
+                                    <div class="select__options">
+                                        <div class="select__option select__option--export">
+                                            <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
+                                                data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M46.92,0H18.74A3.44,3.44,0,0,0,15.3,3.43V52.57A3.44,3.44,0,0,0,18.74,56H53.26a3.44,3.44,0,0,0,3.44-3.43V10.62Zm.81,5.14L52,9.79H47.73Zm6.08,47.43a.55.55,0,0,1-.55.55H18.74a.55.55,0,0,1-.55-.55V3.43a.54.54,0,0,1,.55-.54H44.85v8.35a1.45,1.45,0,0,0,1.44,1.44h7.52Z" />
+                                                <path
+                                                    d="M25,48.69V45.27h3l4.91-6.94-4.91-6.44H25.15V28.48H35.73v3.41H33.79l2.84,3.56,2.57-3.56H37.37V28.48h9.11v3.41H43.67l-4.79,6.64,5.29,6.74h2.9v3.42H36.21V45.27h2l-3-4-2.89,4h2.07v3.42Z" />
                                             </svg>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                            <span>Excel</span>
+                                        </div>
+                                        <div class="select__option select__option--export">
+                                            <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
+                                                xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
+                                                <path
+                                                    d="M30 161c-16.5 0-30 13.5-30 30v827.8c0 16.5 13.5 30 30 30h591.7c16.5 0 30-13.5 30-30V343.7L469 161H30zm389.6 60v134.8c0 19.9 16.3 36.2 36.2 36.2h135.9v596.8H60V221h359.6z" />
+                                                <path
+                                                    d="M123.8 768.6h394.8v50H123.8zm0-124.6h394.8v50H123.8zm0-124.5h394.8v50H123.8z" />
+                                                <circle cx="194" cy="382.3" r="60" />
+                                            </svg>
+                                            <span> PDF </span>
+                                        </div>
+                                    </div>
+                                    <div class="select__icon">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                {% if user.groups.first.name == 'administrators' %}
+                                    <div class="button" data-modal-id="modalNewEquipment">
+                                        <svg width="15px" height="15px" fill="currentColor"  viewBox="0 0 1920 1920"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z" />
+                                        </svg>
+                                        <span>Agregar</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <thead class="table__headed">
+                                <th class="table__headed-title">Serial</th>
+                                <th class="table__headed-title">Codigo de equipo</th>
+                                
+                                <th class="table__headed-title">Estado</th>
+                                <th class="table__headed-title table__headed-actions">
+                                    Acciones
+                                </th>
+                            </thead>
+                            <tbody class="table__body">
 
-                        </tbody>
-                    </table>
+                                {% for equipment in paginator %}
+                                    <tr class="table__row">
+                                        <td class="table__cell table__cell--auto table__cell--flex">
+                                            <div class="table__container-text">
+                                                <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}" class="table__container-link">{{equipment.serial}}</a>
+                                            </div>
+                                        </td>
+                                        <td class="table__cell table__cell--medium table__cell--overflow"
+                                            data-text="{{equipment.cod_equipo_pk}}">
+                                            {{equipment.cod_equipo_pk}}
+                                        </td>
+                                        <td class="table__cell table__cell--small table__cell--overflow"
+                                            data-text="{{equipment.estado}}">
+                                            {{equipment.estado}}
+                                        </td>
+                                        <td class="table__cell table__cell--actions">
+                                            {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
+                                                <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}">
+                                                    <svg class="svg-option" width="20px" height="20px">
+                                                        <use href="#icon-view"></use>
+                                                    </svg>
+                                                </a>
+                                            {%endif%}
+                                            {% if user.groups.first.name == 'administrators' %}
+                                                <svg class="svg-option svg-option--delete deleteEquipment" data-id="{{equipment.cod_equipo_pk}}" width="20px" height="20px">
+                                                    <use href="#icon-delete"></use>
+                                                </svg>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
 
-                    <div class="table__footer">
+                            </tbody>
+                        </table>
+
                         <div class="table__footer">
-                            {% include 'partials/_equipment_table_footer.html' %} 
+                            <div class="table__footer">
+                                {% include 'partials/_equipment_table_footer.html' %} 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 

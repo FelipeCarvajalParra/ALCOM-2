@@ -23,7 +23,14 @@ addPartForm.addEventListener('submit', function(event) {
         },
         body: formData // Enviar los datos del formulario
     })
-    .then(response => response.json()) // Procesar la respuesta como JSON
+    .then(response => {
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';  
+            return; // Salir de la promesa
+        }
+
+        return response.json();
+    }) 
     .then(data => {
         if (data.error) {
             messageAddError.textContent = data.error;
@@ -32,7 +39,6 @@ addPartForm.addEventListener('submit', function(event) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         messageAddError.textContent = 'Ha ocurrido un error en la validación.';
     });
 });

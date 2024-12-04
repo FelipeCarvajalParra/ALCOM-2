@@ -72,7 +72,7 @@
             </div>
             <div class="container__section-actions">
                 {% if user.groups.first.name == 'administrators' %}
-                    <div id="deleteUser" class="button button--delete" data-user="{{ user.id }}">
+                    <div id="deleteUser" class="button button--delete" data-user="{{ user_account.id }}">
                         <span>Eliminar</span>
                     </div>
                 {% endif %}
@@ -116,7 +116,7 @@
                 <span>Datos personales</span>
             </div>
 
-            <form class="container__form"  data-id="{{ user.id }}">
+            <form class="container__form"  data-id="{{ user_account.id }}">
                 {% csrf_token %}
                 <div class="form__largue">
                     <div class="input-container">

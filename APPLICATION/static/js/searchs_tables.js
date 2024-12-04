@@ -14,9 +14,6 @@ function searchTable(module, page = 1, url) {
                     delete_confirmations();
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
 
         case(2): // Caso para buscar categorías
@@ -29,9 +26,6 @@ function searchTable(module, page = 1, url) {
                     modal();
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
         
         case(3): // Caso para buscar categorías
@@ -42,9 +36,6 @@ function searchTable(module, page = 1, url) {
                     delete_confirmations();
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
         case(4):
             search = $('#searchEquipment').val();
@@ -61,9 +52,6 @@ function searchTable(module, page = 1, url) {
                     delete_confirmations();
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
         case(5): // Caso para buscar categorías
             search = $('#searchUser').val();
@@ -72,9 +60,6 @@ function searchTable(module, page = 1, url) {
                 .then(() => {
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
 
         case (6):
@@ -84,9 +69,6 @@ function searchTable(module, page = 1, url) {
                 .then(() => {
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
 
         case (7): //En este caso se busca los movimientos de un part, y se pasa como filtro de busqueda el tipo de movimiento (Entrada o Salida)
@@ -96,9 +78,6 @@ function searchTable(module, page = 1, url) {
                 .then(() => {
                     tooltip()
                 })
-                .catch(() => {
-                    console.log('error');
-                });
             break;
         
         case (8):
@@ -112,11 +91,7 @@ function searchTable(module, page = 1, url) {
                 .then(() => {
                 })
                 .catch(() => {
-                    console.log('error');
                 });
-
-            console.log(filterCategoryActivityValue);
-            console.log(window.selectedDateRange);
             break;
 
         default:

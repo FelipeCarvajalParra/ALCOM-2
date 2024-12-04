@@ -7,15 +7,31 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from apps.users.models import CustomUser
 from apps.activityLog.utils import log_activity
+from django.core.exceptions import PermissionDenied
 
 #Funcion para limitar la navegacion por rol 
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+
 def group_required(group_names, redirect_url='login'):
     def decorator(view_func):
-        @user_passes_test(lambda u: u.groups.filter(Q(name__in=group_names)).exists(), login_url=redirect_url)
         def _wrapped_view(request, *args, **kwargs):
-            return view_func(request, *args, **kwargs)
+            # Verificar si el usuario está autenticado y pertenece al grupo
+            if request.user.is_authenticated:
+                if request.user.groups.filter(name__in=group_names).exists():
+                    return view_func(request, *args, **kwargs)
+            # Si el usuario no cumple las condiciones, se redirige
+            if redirect_url:
+                # Verifica si la URL está bien formateada o si se requiere una vista específica
+                if redirect_url == 'login':
+                    return redirect('login')  # Si tienes una vista llamada 'login' en tus urls.py
+                else:
+                    return redirect(redirect_url)  # Redirige a la URL especificada en el parámetro
+            else:
+                raise PermissionDenied  # Si no se especifica redirección, devolver error 403
         return _wrapped_view
     return decorator
+
 
 @require_POST
 def login_validate(request):

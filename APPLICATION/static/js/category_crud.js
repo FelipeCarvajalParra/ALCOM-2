@@ -6,7 +6,7 @@ const messageError = document.getElementById('messageError');
 
 form.addEventListener('submit', function(event) {
     event.preventDefault(); // Evitar el envío del formulario
-    messageError.textContent = '‎';
+    messageError.textContent = '‎'; // Limpiar cualquier mensaje de error previo
 
     // Recoger los componentes seleccionados
     const components = [];
@@ -30,19 +30,28 @@ form.addEventListener('submit', function(event) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json()) // Procesar la respuesta como JSON
-    .then(data => {
-        if (data.error) {
-            messageError.textContent = data.error;
-        } else if (data.success) {
-            // Recargar la página si la categoría fue creada con éxito
-            location.reload();
+    .then(response => {
+        // Si el estado es 403, redirigir manualmente
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';  // Redirige a la página de acceso denegado
+            return; // Salir de la promesa
+        }
 
+        // Si la respuesta no es 403, procesamos la respuesta JSON
+        return response.json();
+    })
+    .then(data => {
+        if (data) {  // Verifica si hay datos válidos
+            if (data.error) {
+                messageError.textContent = data.error;  // Muestra el error
+            } else if (data.success) {
+                // Recargar la página si la categoría fue creada con éxito
+                location.reload();
+            }
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        messageError.textContent = 'Ha ocurrido un error en la validación.';
+        messageError.textContent = 'Ha ocurrido un error en la validación.';  // Muestra un mensaje de error
     });
 });
 
@@ -54,7 +63,7 @@ const editMessageError = document.getElementById('editMessageError');
 
 editForm.addEventListener('submit', function(event) {
     event.preventDefault(); // Evitar el envío del formulario
-    editMessageError.textContent = '‎';
+    editMessageError.textContent = '‎'; // Limpiar cualquier mensaje de error previo
 
     // Recoger los componentes seleccionados
     const components = [];
@@ -81,18 +90,28 @@ editForm.addEventListener('submit', function(event) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json())
+    .then(response => {
+        // Si el estado es 403, redirigir manualmente
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';  // Redirige a la página de acceso denegado
+            return; // Salir de la promesa
+        }
+
+        // Si la respuesta no es 403, procesamos la respuesta JSON
+        return response.json();
+    })
     .then(data => {
-        if (data.error) {
-            editMessageError.textContent = data.error;
-        } else if (data.success) {
-            // Recargar la página o cerrar el modal si la categoría fue actualizada con éxito
-            location.reload();
+        if (data) {  // Verifica si hay datos válidos
+            if (data.error) {
+                editMessageError.textContent = data.error;  // Muestra el error
+            } else if (data.success) {
+                // Recargar la página o cerrar el modal si la categoría fue actualizada con éxito
+                location.reload();
+            }
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        editMessageError.textContent = 'Ha ocurrido un error en la validación.';
+        editMessageError.textContent = 'Ha ocurrido un error en la validación.';  // Muestra un mensaje de error
     });
 });
 

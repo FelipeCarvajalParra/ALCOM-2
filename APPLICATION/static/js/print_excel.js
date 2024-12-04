@@ -41,7 +41,4 @@ function downloadExcel(app_name, table, fields_table, fields_pdf) {
         a.remove();
         window.URL.revokeObjectURL(url);
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
 }

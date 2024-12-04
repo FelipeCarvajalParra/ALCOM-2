@@ -168,7 +168,6 @@ document.getElementById('orderPassed').addEventListener('click', () => {
                 file.then(pdfFile => {
                     saveIntervention('passed', pdfFile); // Llama a la función con el archivo generado
                 }).catch(error => {
-                    console.error(error);
                     Swal.fire({
                         title: 'Error',
                         text: 'No se pudo generar el PDF.',
@@ -186,8 +185,6 @@ function saveIntervention(result, file) {
     const formData = new FormData();
     formData.append('result', result);
     formData.append('numOrder', numOrder);
-
-    console.log('Archivo enviado:', file);
 
     if (file) {
         formData.append('file', file); // Adjunta el archivo si existe
@@ -221,7 +218,6 @@ function saveIntervention(result, file) {
         }
     })
     .catch(error => {
-        console.error('Error en la solicitud:', error);
         Swal.fire({
             title: 'Error',
             text: 'No se pudo conectar con el servidor.',

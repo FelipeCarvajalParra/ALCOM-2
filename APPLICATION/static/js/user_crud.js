@@ -52,7 +52,6 @@ if(createUser){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });
@@ -104,7 +103,6 @@ if(updateUser){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });
@@ -154,7 +152,6 @@ if(updateLoginUser){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             messageError.textContent = 'Ha ocurrido un error en la validación.';
         });
     });

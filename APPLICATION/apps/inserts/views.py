@@ -14,10 +14,8 @@ import json
 from django.shortcuts import get_object_or_404
 from apps.equipments.models import Equipos
 from django.shortcuts import render
-from django.http import HttpResponse
-from xhtml2pdf import pisa
-from io import BytesIO
 from django.urls import reverse
+from apps.activityLog.utils import log_activity
 
 
 @login_required
@@ -253,6 +251,14 @@ def new_intervention(request):
             estado = 'Pendiente'
         )
 
+        log_activity(
+            user=request.user.id,                       
+            action='CREATE',                 
+            description=f'El usuario registro la intervencion {intervention.num_orden_pk}.',
+            link=f'/edit_equipment/{equipment_instance.cod_equipo_pk}?intervention_id={intervention.num_orden_pk}',     
+            category='INTERVENTIONS'          
+        )
+
         # Procesar intervenciones específicas
         for update in interventions:
             part_instance = Inventario.objects.get(num_parte_pk=update.get('part').strip())  # Consulta segura porque ya se validó
@@ -334,6 +340,13 @@ def save_result_intervention(request, num_order):
 
             intervention.estado = 'Aprobada'
             intervention.save()
+            log_activity(
+                user=request.user.id,                       
+                action='CREATE',                 
+                description=f'El usuario aprobo la intervencion {intervention.num_orden_pk}.',
+                link=f'/edit_equipment/{intervention.cod_equipo_fk.cod_equipo_pk}?intervention_id={intervention.num_orden_pk}',     
+                category='INTERVENTIONS'          
+            )
             return JsonResponse({'message': 'La intervención ha sido aprobada correctamente.'})
 
         elif result == 'denied':

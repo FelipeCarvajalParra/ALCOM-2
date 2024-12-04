@@ -19,6 +19,8 @@ from django.core.exceptions import ObjectDoesNotExist
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_references(request, id_category):
 
     search_query = request.GET.get('search', '').strip()
@@ -61,7 +63,9 @@ def view_references(request, id_category):
 
     return render(request, 'view_references.html', context)
 
-
+@login_required
+@transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def view_all_references(request):
 
     references_list = Referencias.objects.all()
@@ -122,6 +126,7 @@ def view_all_references(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_reference(request, category_id):
     try:
         data = json.loads(request.body)
@@ -172,10 +177,9 @@ def new_reference(request, category_id):
         log_activity(
             user=request.user.id,
             action='CREATE',
-            title='Registro de referencia',
             description=f'El usuario registró la referencia {reference_pk}.',
-            link=f'/view_categories/view_references/{new_reference.referencia_pk}',
-            category='USER_PROFILE'
+            link=f'/edit_reference/{reference_pk}', 
+            category='REFERENCES'
         )
 
         messages.success(request, 'Referencia registrada correctamente')
@@ -190,11 +194,10 @@ def new_reference(request, category_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
-
 @login_required
 @require_POST
-@transaction.atomic  # Asegura que todas las operaciones se realicen como una sola transacción
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_reference(request, reference_id):
     try:
         reference_instance = get_object_or_404(Referencias, pk=reference_id)
@@ -222,25 +225,29 @@ def delete_reference(request, reference_id):
 
         except Archivos.DoesNotExist:
             pass
-        
+
+
+        reference_id_delete = reference_instance.referencia_pk
+        reference_instance.delete() #Primero la actividad luego la accion por el atomic
+      
+
         log_activity(  
             user=request.user.id,                       
-            action='DELETE',                 
-            title='Elimino referencia',      
-            description=f'El usuario elimino la referencia {reference_instance.referencia_pk}.',  
+            action='DELETE',                    
+            description=f'El usuario elimino la referencia {reference_id_delete}.',  
             category='REFERENCE'          
         )
 
-        reference_instance.delete() #Primero la actividad luego la accion por el atomic
         messages.success(request, 'Referencia eliminada correctamente.')
+        
         return HttpResponse(status=200)  # Respuesta exitosa
     except Exception as e:
         messages.error(request, str(e))
         return HttpResponse(status=500)  # Error interno en el servidor
-    
-
 
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def edit_reference(request, reference_id):
   
     reference = get_object_or_404(Referencias, pk=reference_id)
@@ -249,7 +256,7 @@ def edit_reference(request, reference_id):
     brands = Referencias.objects.values('marca').distinct()
     search_query = request.GET.get('search', '')
 
-    list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
+    list_equipments = Equipos.objects.filter(referencia_fk = reference_id).order_by('cod_equipo_pk')
     list_equipments = list_equipments.filter(cod_equipo_pk__icontains=search_query)
     paginator = Paginator(list_equipments,11)  # Número de elementos por página
     page_number = request.GET.get('page')
@@ -297,14 +304,13 @@ def edit_reference(request, reference_id):
         html_footer = render_to_string('partials/_equipment_table_footer.html', context, request=request)
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
-
     # Renderiza la plantilla
     return render(request, 'edit_reference.html', context)
-
 
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def edit_reference_data_general(request, reference_id):
     try:
         # Buscar la referencia existente por su ID (sin permitir cambio de PK)
@@ -323,37 +329,53 @@ def edit_reference_data_general(request, reference_id):
             if value is not None:
                 setattr(reference, field, value)
         
-        # Guardar los cambios
         reference.save()
-
+        log_activity(
+            user=request.user.id,                       
+            action='UPDATE',                 
+            description=f'El usuario edito la informacion general de la referencia {reference.referencia_pk}.',  
+            link=f'/edit_reference/{reference.referencia_pk}',      
+            category='REFERENCES'          
+        )
         messages.success(request, 'Datos generales actualizados correctamente.')
+
+
         return JsonResponse({'success': True})
-    except Exception as e:
+    except Exception:
         return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
-
-
 
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def edit_reference_components(request, reference_id):
     
-    reference = get_object_or_404(Referencias, pk=reference_id)
+    try:
+        reference = get_object_or_404(Referencias, pk=reference_id)
 
-    # Recorre los datos POST para encontrar los valores
-    for key, value in request.POST.items():
-        if key.startswith('valor_'):  # Identifica los campos que coincidan con el prefijo
-            try:
-                valor_id = key.split('_')[1]  # Extrae el ID del valor del nombre del campo
-                valor_obj = Valor.objects.get(pk=valor_id, referencia_fk=reference_id)
-                valor_obj.valor = value  # Actualiza el valor con el nuevo texto
-                valor_obj.save()  # Guarda el cambio
-            except Valor.DoesNotExist:
-                return JsonResponse({'error': f'El valor con ID {valor_id} no existe.'}, status=400)
-            except Exception as e:
-                return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
+        # Recorre los datos POST para encontrar los valores
+        for key, value in request.POST.items():
+            if key.startswith('valor_'):  # Identifica los campos que coincidan con el prefijo
+                try:
+                    valor_id = key.split('_')[1]  # Extrae el ID del valor del nombre del campo
+                    valor_obj = Valor.objects.get(pk=valor_id, referencia_fk=reference_id)
+                    valor_obj.valor = value  # Actualiza el valor con el nuevo texto
+                    valor_obj.save()  # Guarda el cambio
+                except Valor.DoesNotExist:
+                    return JsonResponse({'error': f'El valor con ID {valor_id} no existe.'}, status=400)
+                except Exception:
+                    return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
 
-    messages.success(request, 'Datos generales actualizados correctamente.')
-    return JsonResponse({'success': True})
+        log_activity(
+            user=request.user.id,                       
+            action='UPDATE',                 
+            description=f'El usuario edito los componentes de la referencia {reference.referencia_pk}.',  
+            link=f'/edit_reference/{reference.referencia_pk}',      
+            category='REFERENCES'          
+        )
+        messages.success(request, 'Datos generales actualizados correctamente.')
+        return JsonResponse({'success': True})
     
+    except Exception:
+        return JsonResponse({'error': 'Ha ocurrido un error inesperado.'}, status=500)
   

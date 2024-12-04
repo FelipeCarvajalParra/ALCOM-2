@@ -29,9 +29,6 @@ document.querySelectorAll('.part').forEach(movement => {
         .then(response => response.json())
         .then(data => {
 
-
-            console.log(data);
-
             partModalName.textContent = data.part.name;
             partModalNumber.textContent = data.part.number;
             partModalLocation.textContent = data.part.location;
@@ -52,7 +49,6 @@ document.querySelectorAll('.part').forEach(movement => {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('Hubo un error al consultar la parte. Por favor, inténtalo de nuevo.');
         });
     });

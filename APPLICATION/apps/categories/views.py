@@ -14,6 +14,7 @@ from apps.activityLog.utils import log_activity
 from apps.references.models import Valor, Referencias
 
 @login_required
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_categories(request):
     categories_list = Categorias.objects.annotate(num_equipos=Count('referencias')).all().order_by('-categoria_pk')
     search_query = request.GET.get('search', '')
@@ -42,6 +43,7 @@ def view_categories(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_category(request):
     try:
         data = json.loads(request.body)
@@ -59,6 +61,13 @@ def new_category(request):
             campo, created = Campo.objects.get_or_create(nombre_campo=component_name)
             CategoriasCampo.objects.create(categoria_fk=categoria, campo_fk=campo)
 
+        log_activity(
+            user=request.user.id,                       
+            action='CREATE',                    
+            description=f'El usuario registro la categoria {categoria.nombre}.',  
+            link=f'/view_categories/view_references/{categoria.categoria_pk}',
+            category='CATEGORY'          
+        )
         messages.success(request, 'Categoría y campos asociados correctamente.')
         return JsonResponse({'success': True}, status=201)  # 201 Created
 
@@ -66,8 +75,10 @@ def new_category(request):
         return JsonResponse({'error': 'Error al procesar los datos.'}, status=400)
     except Exception:
         return JsonResponse({'error': 'Ocurrió un error inesperado.'}, status=500)
-    
+
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def get_category(request, category_id):
     try:
         category = Categorias.objects.get(pk=category_id)
@@ -87,6 +98,7 @@ def get_category(request, category_id):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def update_category(request, category_id):
     try:
         data = json.loads(request.body)
@@ -134,6 +146,13 @@ def update_category(request, category_id):
                     if not CategoriasCampo.objects.filter(categoria_fk=referencia.categoria, campo_fk=campo).exists():
                         Valor.objects.filter(campo_fk=campo, referencia_fk=referencia).delete()
 
+        log_activity(
+            user=request.user.id,                       
+            action='UPDATE',                    
+            description=f'El usuario edito la categoria {categoria.nombre}.',  
+            link=f'/view_categories/view_references/{categoria.categoria_pk}',
+            category='CATEGORY'          
+        )
         messages.success(request, 'Categoría y campos actualizados correctamente.')
         return JsonResponse({'success': True}, status=200)
 
@@ -146,6 +165,7 @@ def update_category(request, category_id):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_category(request, category_id):
     try:
         # Obtener y eliminar la categoría
@@ -154,8 +174,7 @@ def delete_category(request, category_id):
 
         log_activity(
             user=request.user.id,                       
-            action='DELETE',                 
-            title='Elimino categoria',      
+            action='DELETE',                    
             description=f'El usuario elimino la categoria {categoria.nombre}.',  
             category='CATEGORY'          
         )

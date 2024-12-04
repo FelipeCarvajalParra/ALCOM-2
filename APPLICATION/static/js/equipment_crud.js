@@ -19,7 +19,13 @@ newEquipmentForm.addEventListener('submit', function(event) {
         },
         body: formData // Enviar los datos del formulario
     })
-    .then(response => response.json()) // Procesar la respuesta como JSON
+    .then(response => {
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';  
+            return; 
+        }
+        return response.json();
+    }) 
     .then(data => {
         if (data.error) {
             messageNewEquipmentError.textContent = data.error;
@@ -28,7 +34,6 @@ newEquipmentForm.addEventListener('submit', function(event) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         messageNewEquipmentError.textContent = 'Ha ocurrido un error en la validación.';
     });
 });

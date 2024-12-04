@@ -37,8 +37,5 @@ document.querySelectorAll('.movement').forEach(movement => {
             movementObservations.textContent = data.movement[0].observations;
             movementSource.textContent = data.movement[0].source;
         })
-        .catch(error => {
-            console.error('Error:', error);
-        });
     });
 });

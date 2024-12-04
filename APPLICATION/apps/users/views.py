@@ -25,8 +25,8 @@ group_name = {
 }
 
 status_mapping = {
-        'Activo': 'active',
-        'Bloqueado': 'blocked',
+    'Activo': 'active',
+    'Bloqueado': 'blocked',
 }
 
 def get_group_by_name(group_name):
@@ -60,6 +60,7 @@ def view_users(request):
     return render(request, 'view_users.html', context)
 
 @login_required
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def edit_user(request, id):
     if int(request.user.id) != int(id):
         if not request.user.groups.filter(name='administrators').exists():
@@ -123,6 +124,7 @@ def validate_user_data(data, is_update=False):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def register_user(request):
     data = json.loads(request.body)
 
@@ -164,107 +166,139 @@ def register_user(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def update_personal_data(request, user_id):
-    user = get_object_or_404(CustomUser, id=user_id)
+    userAccount = get_object_or_404(CustomUser, id=user_id)
+    print('usuario', userAccount)
     data = json.loads(request.body)
-    errors = {}
+    print('data', data)
 
-    if data['names'] and data['lastName'] and data['email'] and data['email']:
+    if not all([data.get('names', '').strip(), data.get('lastName', '').strip(), data.get('email', '').strip()]):
+        return JsonResponse({'success': False, 'error': 'Todos los campos son requeridos.'}, status=400)
 
-        if 'names' in data and data['names'].strip():
-            user.first_name = data['names'].strip().title()
+    if 'names' in data and data['names'].strip():
+        userAccount.first_name = data['names'].strip().title()
 
-        if 'lastName' in data and data['lastName'].strip():
-            user.last_name = data['lastName'].strip().title()
+    if 'lastName' in data and data['lastName'].strip():
+        userAccount.last_name = data['lastName'].strip().title()
 
-        if 'email' in data and data['email'].strip():
-            new_email = data['email'].strip().lower()
-            if CustomUser.objects.filter(email=new_email).exclude(id=user.id).exists():
+    if 'email' in data and data['email'].strip():
+        new_email = data['email'].strip().lower()
+        if new_email != userAccount.email:
+            if CustomUser.objects.filter(email=new_email).exists():
                 return JsonResponse({'success': False, 'error': {'email': 'El correo ya está registrado por otro usuario.'}})
+            userAccount.email = new_email
 
-            user.email = new_email
+    if 'jobName' in data and data['jobName'].strip():
+        userAccount.position = data['jobName'].strip()
 
-        if 'jobName' in data and data['jobName'].strip():
-            user.position = data['jobName'].strip()
+    log_action = (
+        f'El usuario editó su informacion personal.' if userAccount.id == request.user.id
+        else f'El usuario editó la informacion personal de {userAccount.username}.'
+    )
+    log_activity(
+        user=request.user.id,
+        action='UPDATE',
+        description=log_action,
+        link=f'/edit_user/{userAccount.id}' if userAccount.id != request.user.id else None,
+        category='USER_PROFILE'
+    )
 
-        try:
-            user.save()
-            messages.success(request, 'Datos personales actualizados correctamente.')
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
-    else:
-        return JsonResponse({'success': False, 'error': 'Todos los campos son requeridos.'}, status=500)
+    try:
+        userAccount.save()
+        messages.success(request, 'Datos personales actualizados correctamente.')
+        return JsonResponse({'success': True})
+    except Exception:
+        return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
+
 
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def update_login_data(request, user_id):
-    user = get_object_or_404(CustomUser, id=user_id)
-
+    user_to_update = get_object_or_404(CustomUser, id=user_id)  # Usuario que será actualizado
     data = json.loads(request.body)
 
+    # Variables de control
+    role_changed = False
+    changes = []
+
+    # Validación y actualización de username
     if 'username' in data and data['username']:
         new_username = data['username'].strip()
-        if CustomUser.objects.filter(username=new_username).exclude(id=user.id).exists():
+        if CustomUser.objects.filter(username=new_username).exclude(id=user_to_update.id).exists():
             return JsonResponse({'success': False, 'error': 'El usuario ya existe.'})
-
-        user.username = new_username
+        if user_to_update.username != new_username:
+            user_to_update.username = new_username
+            changes.append("username")
     else:
         return JsonResponse({'success': False, 'error': 'El usuario es obligatorio.'})
 
-    if 'status' in data:
-        
-        if data['status'] != 'Estado':  # Si no es 'Estado', significa que hubo un cambio
-            if data['status'] == 'Activo':
-                if user.status == 'blocked':
-                    log_activity(
-                        user=user.id,                       
-                        action='LOGIN',                     
-                        description=f'La cuenta del usuario ha pasado a estado activo.',  
-                        link=f'/edit_user/{user.id}',      
-                        category='USER_PROFILE'          
-                    )
-                user.status = 'active'
-                user.login_attempts = 0
-            elif data['status'] == 'Bloqueado':
-                log_activity(
-                    user=user.id,                       
-                    action='LOCKOUT',                 
-                    title='Cuenta bloqueada',      
-                    description=f'La cuenta del del usuario ha sido bloqueada por administrador.',  
-                    link=f'/edit_user/{user.id}',      
-                    category='USER_PROFILE'          
-                )
-                user.status = 'blocked'
-            else:
-                return JsonResponse({'success': False, 'error': 'Error en el estado'})  # Error si no es ni 'Activo' ni 'Bloquedo'
-        else:
-            # Si data['status'] es 'Estado', simplemente no se hace ningún cambio
-            pass
-
+    # Validación y actualización de role
     if 'role' in data:
         group_name = {'Consultor': 'consultants', 'Administrador': 'administrators', 'Tecnico': 'technicians'}.get(data['role'])
         if group_name:
-            user.groups.clear()
+            user_to_update.groups.clear()
             group = get_group_by_name(group_name)
             if group:
-                user.groups.add(group)
+                user_to_update.groups.add(group)
+                role_changed = True
             else:
                 return JsonResponse({'success': False, 'error': f'El grupo "{group_name}" no existe.'})
 
+    # Validación y actualización de password
     if 'password' in data and data['password'].strip():
         if data['password'] == data.get('password_validation', ''):
-            user.set_password(data['password'])
+            user_to_update.set_password(data['password'])
+            changes.append("password")
         else:
             return JsonResponse({'success': False, 'error': 'Las contraseñas no coinciden.'})
 
-    user.save()
-    messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
-    return JsonResponse({'success': True})
+    try:
+        user_to_update.save()
 
+        # Registro de actividad
+        is_self_update = request.user.id == user_to_update.id
+
+        # Actividad general
+        log_activity(
+            user=request.user.id,
+            action='LOGIN',
+            description=(
+                'El usuario editó sus datos de inicio de sesión.'
+                if is_self_update else
+                f'El usuario actualizó los datos de inicio de sesión de {user_to_update.username}.'
+            ),
+            link=f'/edit_user/{user_to_update.id}' if not is_self_update else None,
+            category='USER_PROFILE'
+        )
+
+        # Actividad específica si cambió el rol
+        if role_changed:
+            log_activity(
+                user=request.user.id,
+                action='LOGIN',
+                description=(
+                    f'El usuario cambió su rol a "{data["role"]}".'
+                    if is_self_update else
+                    f'El usuario cambió el rol de {user_to_update.username} a "{data["role"]}".'
+                ),
+                link=f'/edit_user/{user_to_update.id}' if not is_self_update else None,
+                category='USER_PROFILE'
+            )
+
+        messages.success(request, 'Datos de inicio de sesión actualizados correctamente.')
+        return JsonResponse({'success': True})
+
+    except Exception:
+        return JsonResponse({'success': False, 'error': 'Error interno del servidor.'}, status=500)
+
+@login_required
 @require_POST
-@transaction.atomic 
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_user(request, user_id):
     try:
         user_instance = get_object_or_404(CustomUser, id=user_id)
@@ -289,5 +323,5 @@ def delete_user(request, user_id):
         messages.success(request, 'Usuario eliminado correctamente.')
         return HttpResponse(status=200)  # Respuesta exitosa
     except Exception as e:
-        messages.error(request, str(e))
+        messages.error(request, 'Ha ocurrido un error al eliminar el usuario.')
         return HttpResponse(status=500)  # Error interno en el servidor

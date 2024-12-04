@@ -11,10 +11,14 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 from apps.inserts.models import Actualizaciones
 from django.db.models import Sum
+from apps.logIn.views import group_required
+from apps.activityLog.utils import log_activity
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_inventory_parts(request):
 
     part_list = Inventario.objects.all()
@@ -45,6 +49,7 @@ def view_inventory_parts(request):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_part(request):
     partNumber = request.POST.get('partNumber')
     namePart = request.POST.get('namePart')
@@ -63,6 +68,14 @@ def new_part(request):
             ubicacion=location,
         )
 
+        log_activity(
+            user=request.user.id,                       
+            action='CREATE',                 
+            description=f'El usuario registro la parte: {new_part.nombre}.',  
+            link=f'/edit_part/{new_part.num_parte_pk}',      
+            category='PARTS'          
+        )
+
     except Exception:
         return JsonResponse({'error': 'Error inesperado'})
 
@@ -72,6 +85,7 @@ def new_part(request):
 
 @login_required
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def edit_part(request, part_id):
 
     search = request.GET.get('search', '').strip()
@@ -113,6 +127,8 @@ def edit_part(request, part_id):
 
 
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def consult_part(request, part_id):
     try:
         part = Inventario.objects.get(num_parte_pk=part_id)
@@ -139,6 +155,7 @@ def consult_part(request, part_id):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def edit_part_action(request, part_id):
     try:
         part = Inventario.objects.get(num_parte_pk=part_id)
@@ -150,6 +167,14 @@ def edit_part_action(request, part_id):
         part.ubicacion = location
         part.link_consulta = url
         part.save()
+
+        log_activity(
+            user=request.user.id,                       
+            action='UPDATE',                 
+            description=f'El usuario edito la parte: {part.nombre}.',  
+            link=f'/edit_part/{part.num_parte_pk}',      
+            category='PARTS'          
+        )
   
         messages.success(request, 'Pieza actualizada correctamente.')
         return JsonResponse({'succes': True})

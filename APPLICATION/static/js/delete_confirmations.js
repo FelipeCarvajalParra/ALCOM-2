@@ -166,8 +166,6 @@ function delete_confirmations(){
                             const equipmentId = arguments[4];  // recibir el ID aquí
                             const referenceId = arguments[6];
 
-                            console.log(equipmentId, referenceId)
-
                             deleteRequest('delete_equipment', equipmentId, `edit_reference/${referenceId}`, true);
                             break
     
@@ -193,11 +191,10 @@ function delete_confirmations(){
                 }else{
                     location.reload(true)
                 }
+            }else if (response.status === 403) {
+                window.location.href = '/forbidden_access/';
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-        });
     }
         
     function deleteFile(app_name, table, field, record_id) {
@@ -206,7 +203,7 @@ function delete_confirmations(){
         formData.append('table', table);
         formData.append('field', field);
         formData.append('record_id', record_id);
-
+    
         fetch('/delete_file/', {
             method: 'POST',
             body: formData, 
@@ -214,17 +211,19 @@ function delete_confirmations(){
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
             },
         })
-        .then(() => {
+        .then(response => {
+            // Verificamos si la respuesta es 403
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/';
+                return; 
+            }
+            // Si la respuesta es exitosa, recargamos la página
             location.reload(); 
         })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-
-        // Reiniciar el input de archivo para permitir la selección de la misma imagen
-        this.value = ''; // Esto permite seleccionar la misma imagen de nuevo
+    
+    
+        this.value = ''; 
     }
-        
         
     // Función para obtener el token CSRF
     function getCookie(name) {
