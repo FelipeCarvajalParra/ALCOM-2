@@ -177,12 +177,16 @@ def view_interventions(request):
         except (ValueError, IndexError):
             pass
 
-    search_query = request.GET.get('search', '').strip()
+    search_query = request.GET.get('search')
     if search_query:
-        interventions = interventions.filter(
-            Q(usuario_fk__first_name__icontains=search_query) |
-            Q(usuario_fk__last_name__icontains=search_query)
-        )
+        search_terms = search_query.split()
+
+        query = Q()
+        for term in search_terms:
+            query &= (Q(usuario_fk__first_name__icontains=term) | Q(usuario_fk__last_name__icontains=term))
+        
+        # Aplicar el filtro
+        interventions = interventions.filter(query)
 
     paginator = Paginator(interventions, 15)
     page_number = request.GET.get('page')
