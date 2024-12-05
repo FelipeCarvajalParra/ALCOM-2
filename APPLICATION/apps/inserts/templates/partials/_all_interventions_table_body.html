@@ -1,0 +1,54 @@
+{% if paginator|length > 0 %}
+    {% for intervention in paginator %}
+            <tr class="table__row">
+                <td class="table__cell table__cell--auto table__cell--flex">
+                    <img class="table__image table__image--circular" src="{{intervention.usuario_fk.profile_picture.url}}"
+                        alt="img" />
+                    <div class="table__container-text">
+                        <a href="" class="table__container-link">{{ intervention.usuario_fk.first_name }} {{ intervention.usuario_fk.last_name}}</a>
+                        <span class="table__container-email">{{ intervention.num_orden_pk }}</span>
+                    </div>
+                </td>
+                
+                <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
+                    {{ intervention.fecha_hora|date:"d/m/Y" }}
+                </td>
+
+                <td class="table__cell table__cell--small table__cell--overflow"
+                    data-text="{% if intervention.estado == 'Aprobada' %}Aprobada{% elif intervention.estado == 'Pendiente' %}Pendiente{% else %}None{% endif %}">
+                    {% if intervention.estado == 'Aprobada' %}
+                        <div class="status status--active">
+                            <span>
+                                Aprobada
+                            </span>
+                        </div>
+                    {% elif intervention.estado == 'Pendiente' %}
+                        <div class="status status--blocked">
+                            <span>
+                                Pendiente
+                            </span>
+                        </div>
+                    {% else %}
+                        <span>
+                            None
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="table__cell table__cell--actions">
+                    <a href="/edit_equipment/{{intervention.cod_equipo_fk.cod_equipo_pk}}?intervention_id={{intervention.num_orden_pk}}" >
+                        <svg class="svg-option" width="20px" height="20px">
+                            <use href="#icon-view"></use>
+                        </svg>
+                    </a>
+                </td> 
+            </tr>
+    {% endfor %}
+{% else %}
+    <tr class="table__row table__row--not-results">
+        <td class="table__cell table__cell--not-results" colspan="4">
+            <span class="table__text--not-result">
+                No se encontraron resultados
+            </span>
+        </td>
+    </tr>
+{% endif %}

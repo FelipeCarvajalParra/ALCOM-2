@@ -1,6 +1,7 @@
 function searchTable(module, page = 1, url) {
     let search; // Variable para almacenar la búsqueda
     let brand; // Variable para almacenar la marca
+    let category; // Variable para almacenar la categoría
 
     switch(module) {
         case(1): // Caso para buscar referencias
@@ -87,6 +88,16 @@ function searchTable(module, page = 1, url) {
             const filterCategoryActivityValue = filterCategoryActivityElement ? filterCategoryActivityElement.textContent.trim() : null;
 
             petition(url, search, page, brand, filterCategoryActivityValue, window.selectedDateRange)
+                .then(() => {
+                })
+                .catch(() => {
+                });
+            break;
+        case (9):
+
+            search = $('#searchInterventions').val();
+
+            petition(url, search, page, brand, category, window.selectedDateRange)
                 .then(() => {
                 })
                 .catch(() => {
@@ -243,7 +254,6 @@ if (paginatorMovements) {
     });
 }
 
-
 const paginatorViewActivity = document.getElementById("paginatorViewActivity");
 if (paginatorViewActivity) { 
 
@@ -276,4 +286,27 @@ if (paginatorViewActivity) {
     });
     
 }
+
+const paginatorViewInterventions = document.getElementById("paginatorViewInterventions");
+if (paginatorViewInterventions) { 
+
+
+    const filterDateRange = document.getElementById('filterDateRange');
+    $(filterDateRange).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        const rangeDate = $(this).val();
+        window.selectedDateRange = rangeDate;  
+        searchTable(9, 1, `/view_interventions/`);
+    });
+
+    $(document).on('input', '#searchInterventions', function() {// Sección búsqueda categorías
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            searchTable(9, 1, `/view_interventions/`); 
+        }, 350); 
+    });
+    
+}
+
+
 

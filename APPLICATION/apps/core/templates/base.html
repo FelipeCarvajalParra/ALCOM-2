@@ -229,11 +229,11 @@
                             </svg>
                         </div>
                         <ul class="aside__nav-option-sublist">
-                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
+                            <li class="aside__nav-option-subitem {% if is_view_interventions  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
-                                <a href="{% url 'home/construction' %}" class="aside__nav-item-link" >Intervenciones registradas</a>
+                                <a href="{% url 'view_interventions' %}" class="aside__nav-item-link " >Intervenciones registradas</a>
                             </li>
                             <li class="aside__nav-option-subitem {% if is_inventory_parts or is_edit_part  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">

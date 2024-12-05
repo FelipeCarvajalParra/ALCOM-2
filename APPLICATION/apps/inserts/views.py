@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from apps.partsInventory.models import Inventario
-from django.db.models import Max
+from django.db.models import Max, Q
 from .models import Actualizaciones, Intervenciones
 from apps.users.models import CustomUser
 from django.contrib.auth.decorators import login_required
@@ -18,6 +18,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
+from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 
 
 @login_required
@@ -156,13 +158,47 @@ def consult_interventions(request, intervention_id):
 @login_required
 def view_interventions(request):
     
-    # Obtener todas las intervenciones
-    interventions = Intervenciones.objects.all()
+    interventions = Intervenciones.objects.all().order_by('-fecha_hora')
 
-    # Preparar el contexto
+    date_range = request.GET.get('dateRange')
+    print(date_range)
+    if date_range:
+        try:
+            start_date_str, end_date_str = date_range.split(' - ')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) - timedelta(seconds=1)
+            
+            # Añade la zona horaria
+            start_date = timezone.make_aware(start_date, timezone.get_current_timezone())
+            end_date = timezone.make_aware(end_date, timezone.get_current_timezone())
+            
+            # Filtrar por rango de fechas
+            interventions = interventions.filter(fecha_hora__range=(start_date, end_date))
+        except (ValueError, IndexError):
+            pass
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        interventions = interventions.filter(
+            Q(usuario_fk__first_name__icontains=search_query) |
+            Q(usuario_fk__last_name__icontains=search_query)
+        )
+
+    paginator = Paginator(interventions, 15)
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
     context = {
-        'interventions': interventions
+        'paginator': paginator,
+        'page_number': page_number,
+        'date_range': date_range,
+        'search_query': search_query,
     }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_all_interventions_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_all_interventions_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_interventions.html', context)
 
