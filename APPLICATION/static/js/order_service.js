@@ -197,7 +197,14 @@ function saveIntervention(result, file) {
         },
         body: formData // Envía FormData para manejar datos y archivos
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';  
+            return;
+        }
+
+        return response.json();
+    })
     .then(data => {
         if (data.redirect_url) {
             window.location.href = data.redirect_url; // Redirige al usuario

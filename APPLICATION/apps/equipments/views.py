@@ -195,7 +195,11 @@ def edit_equipment(request, id_equipment):
             }
 
     num_orden_pks = interventions.values_list('num_orden_pk', flat=True)
-    updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
+
+    if request.user.groups.filter(name='Administrators').exists():
+        updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks).order_by('-fecha_hora')
+    else:
+        updates = Actualizaciones.objects.filter(num_orden_fk__in=num_orden_pks, num_orden_fk__usuario_fk=request.user).order_by('-fecha_hora')
 
     # Paginación de actualizaciones
     paginator = Paginator(updates, 15)

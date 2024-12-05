@@ -56,7 +56,16 @@ if(partEditForm){
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
         })
-        .then(response => response.json()) // Asegúrate de procesar la respuesta como JSON
+        .then(response => {
+            // Si el estado es 403, redirigir manualmente
+            if (response.status === 403) {
+                window.location.href = '/forbidden_access/';  
+                return; // Salir de la promesa
+            }
+    
+            // Si la respuesta no es 403, procesamos la respuesta JSON
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 messageEditError.textContent = data.error; // Mostrar error

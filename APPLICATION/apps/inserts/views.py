@@ -1,3 +1,4 @@
+import traceback
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from apps.partsInventory.models import Inventario
@@ -20,11 +21,13 @@ from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
+from django.conf import settings
 
 
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def add_parts(request, part_id):
     try:
         # Obtener la pieza en el inventario por su ID
@@ -86,6 +89,9 @@ def add_parts(request, part_id):
 
 
 @login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators', 'consultants'], redirect_url='/forbidden_access/')
 def consult_movements(request, movement_id):
     try:
         part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
@@ -111,12 +117,10 @@ def consult_movements(request, movement_id):
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
     
-
-from django.conf import settings
-
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def consult_interventions(request, intervention_id):
     try:
         # Obtener la instancia de la intervención
@@ -154,11 +158,15 @@ def consult_interventions(request, intervention_id):
     except Exception as e:
         return JsonResponse({'error': str(e)})
 
-
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_interventions(request):
     
-    interventions = Intervenciones.objects.all().order_by('-fecha_hora')
+    if request.user.groups.filter(name='Administrators').exists():
+        interventions = Intervenciones.objects.all().order_by('-fecha_hora')
+    else:
+        interventions = Intervenciones.objects.filter(usuario_fk=request.user).order_by('-fecha_hora')
 
     date_range = request.GET.get('dateRange')
     print(date_range)
@@ -236,6 +244,7 @@ def num_orden(procedure):
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def new_intervention(request):
     try:
         # Parsear los datos JSON
@@ -350,7 +359,6 @@ def order_service(request, num_order):
     if intervention.estado != 'Pendiente':
         return redirect('edit_equipment', id_equipment=equipment_instance.cod_equipo_pk)
     
-    
     context = {
         'equipment': equipment_instance,
         'intervention': intervention,
@@ -361,11 +369,10 @@ def order_service(request, num_order):
 
     return render(request, 'orden_template.html', context)
 
-import traceback
-
 @login_required
 @require_POST
 @transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def save_result_intervention(request, num_order):
     try:
         # Verifica si la intervención existe
@@ -424,8 +431,6 @@ def save_result_intervention(request, num_order):
         else:
             return JsonResponse({'error': 'Resultado no válido.'}, status=400)
 
-    
-    
     except Exception as e:
         print('Error:', e)
         traceback.print_exc()  # Esto imprimirá el traceback completo del error
