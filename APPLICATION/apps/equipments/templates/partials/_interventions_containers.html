@@ -160,7 +160,7 @@
                             </svg>
                         </div>
                     </div>
-                    <span class="container__intervention-date" >12 de septiembre</span>
+                    <span class="container__intervention-date" >{{ now|date:"j" }} de {{ now|date:"F" }}</span>
                 </div>
             </div>
 
@@ -209,7 +209,6 @@
                 <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                     <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
                 </svg>
-                <span>Agregar</span>
             </div>
             <div class="input-container">
                 <div class="form__largue form__largue--margin-top">
@@ -221,7 +220,7 @@
                     </div>
                 </div>
             </div>
-            <button id="saveButton">Guardar</button>
+            <button class="button" id="saveButton">Guardar intervencion</button>
             <span id="messageNewInterventionError" class="login__error-message"></span>
         </div>
         

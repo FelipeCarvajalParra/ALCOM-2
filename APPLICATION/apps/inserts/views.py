@@ -13,9 +13,11 @@ from django.template.loader import render_to_string
 import json
 from django.shortcuts import get_object_or_404
 from apps.equipments.models import Equipos
+from apps.activityLog.models import ActivityLog
 from django.shortcuts import render
 from django.urls import reverse
 from apps.activityLog.utils import log_activity
+from apps.logIn.views import group_required
 
 
 @login_required
@@ -294,6 +296,8 @@ def new_intervention(request):
 
 
 @login_required
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def order_service(request, num_order):
 
     # Obtener la intervención por su número de orden
@@ -316,6 +320,8 @@ def order_service(request, num_order):
     }
 
     return render(request, 'orden_template.html', context)
+
+import traceback
 
 @login_required
 @require_POST
@@ -351,6 +357,7 @@ def save_result_intervention(request, num_order):
 
         elif result == 'denied':
 
+            registerLog = ActivityLog.objects.filter(link=f'/edit_equipment/{intervention.cod_equipo_fk.cod_equipo_pk}?intervention_id={intervention.num_orden_pk}')
             parts_income = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Entrada')
             parts_outcome = Actualizaciones.objects.filter(num_orden_fk=intervention, tipo_movimiento='Salida') 
 
@@ -368,16 +375,21 @@ def save_result_intervention(request, num_order):
                     part_rerefence.save()
                     part.delete()
 
-                
             equipment_intervention = intervention.cod_equipo_fk.cod_equipo_pk
             intervention.delete()
+            registerLog.delete()
+            
             return JsonResponse({'redirect_url': reverse('edit_equipment', kwargs={'id_equipment': equipment_intervention})})
 
         else:
             return JsonResponse({'error': 'Resultado no válido.'}, status=400)
 
-    except Exception:
-        return JsonResponse({'error':'Error inesperado'}) 
+    
+    
+    except Exception as e:
+        print('Error:', e)
+        traceback.print_exc()  # Esto imprimirá el traceback completo del error
+        return JsonResponse({'error': 'Error inesperado'})
     
 
     

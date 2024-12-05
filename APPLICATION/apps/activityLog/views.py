@@ -8,8 +8,12 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.db import transaction
+from apps.logIn.views import group_required
 
 @login_required
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def view_activity(request):
 
     activity = ActivityLog.objects.all().order_by('-timestamp')
@@ -43,6 +47,9 @@ def view_activity(request):
         except (ValueError, IndexError):
             pass
 
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        activity = activity.filter(description__icontains=search_query)
 
     paginator = Paginator(activity, 15)
     page_number = request.GET.get('page')
@@ -53,6 +60,7 @@ def view_activity(request):
         'page_number': page_number,
         'category': category,
         'date_range': date_range,
+        'search_query': search_query,
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -62,8 +70,10 @@ def view_activity(request):
 
     return render(request, 'view_activity.html', context)
 
-@require_POST
 @login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def delete_activity_log(request, id_log):
     try:
         log = get_object_or_404(ActivityLog, pk=id_log)

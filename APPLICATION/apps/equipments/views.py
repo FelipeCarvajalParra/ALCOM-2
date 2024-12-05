@@ -14,6 +14,7 @@ import json
 from apps.activityLog.utils import log_activity
 from django.conf import settings
 from apps.logIn.views import group_required
+from django.utils import timezone
 
 
 @login_required
@@ -168,7 +169,7 @@ def edit_equipment(request, id_equipment):
                 'parts_income': parts_income,
                 'parts_outcome': parts_outcome,
                 'pdf_url': pdf_url,
-                'es_admin': es_admin
+                'es_admin': es_admin,
             }
         except Intervenciones.DoesNotExist:
             selected_intervention = None
@@ -211,7 +212,8 @@ def edit_equipment(request, id_equipment):
         'paginator': paginator,  
         'page_number': page_number,  
         'page_number_interventions': page_number_interventions, 
-        **intervention_context 
+        **intervention_context,
+        'now': timezone.now()
     }
 
     return render(request, 'equipment_edit.html', context)

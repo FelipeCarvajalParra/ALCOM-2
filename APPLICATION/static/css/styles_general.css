@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:  sans-serif;
+    font-family: sans-serif;
 }
 
 .decoration-none{
@@ -2174,6 +2174,7 @@ input:-webkit-autofill {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    pointer-events: none;
 }
 
 .floating-button__svg{
@@ -2195,6 +2196,7 @@ input:-webkit-autofill {
 
 .floating-button__checkbox:not(:checked) ~ .floating-button__links .floating-button__link {
     animation: fadeOut 500ms forwards; /* Animación de salida */
+    pointer-events: none;
 }
 
 .floating-button__label {
@@ -2206,4 +2208,9 @@ input:-webkit-autofill {
 .floating-button__checkbox:checked ~ .floating-button__toggle .floating-button__label {
     transform: rotate(135deg);
     font-size: 25px;
+}
+
+/* Durante el tiempo que los botones están visibles, habilitar la interacción */
+.floating-button__link.visible {
+    pointer-events: auto; /* Habilitar interacción cuando los botones son completamente visibles */
 }

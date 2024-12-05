@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('administrativo@alcomsas/', admin.site.urls),
     path('', include('apps.logIn.urls')),
     path('', include('apps.core.urls')),
     path('', include('apps.userProfile.urls')),

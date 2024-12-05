@@ -76,6 +76,7 @@ def login_validate(request):
         user=request.user.id,                       
         action='LOGIN',                   
         description=f'El usuario ingreso al sistema.',  
+        link=f'/edit_user/{user.id}',
         category='USER_PROFILE'          
     )
     user.login_attempts = 0

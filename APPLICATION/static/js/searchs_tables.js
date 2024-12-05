@@ -82,10 +82,9 @@ function searchTable(module, page = 1, url) {
         
         case (8):
 
+            search = $('#inputSearchActivity').val();
             const filterCategoryActivityElement = document.getElementById('filterCategory');
             const filterCategoryActivityValue = filterCategoryActivityElement ? filterCategoryActivityElement.textContent.trim() : null;
-
-       
 
             petition(url, search, page, brand, filterCategoryActivityValue, window.selectedDateRange)
                 .then(() => {
@@ -248,8 +247,6 @@ if (paginatorMovements) {
 const paginatorViewActivity = document.getElementById("paginatorViewActivity");
 if (paginatorViewActivity) { 
 
-    
-
     const filterCategory = document.getElementById('filterCategory');
     if (filterCategory) {
         const observer = new MutationObserver(function(mutationsList) {
@@ -269,6 +266,13 @@ if (paginatorViewActivity) {
         const rangeDate = $(this).val();
         window.selectedDateRange = rangeDate;  
         searchTable(8, 1, `/view_activity/`);
+    });
+
+    $(document).on('input', '#inputSearchActivity', function() {// Sección búsqueda categorías
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            searchTable(8, 1, `/view_activity/`); 
+        }, 350); 
     });
     
 }

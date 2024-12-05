@@ -16,10 +16,16 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
+from django.db import transaction
+
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
+
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'])
 def home(request):
     now = datetime.now()
     current_hour = now.hour
@@ -37,19 +43,20 @@ def home(request):
 
     return render(request, 'home.html', context)
 
-
-
 @login_required
+@transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def site_construction(request):
     return render(request, 'construction.html')
-
-
 
 def error_export(request):
     messages.error(request, 'Usted no tiene permiso para generar reportes.')
     return redirect('view_categories')
 
-
+@login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def search_general(request):
     search_query = request.GET.get('search', '')
 

@@ -12,6 +12,6 @@ class ActivityLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} - {self.action} - {self.title} - {self.timestamp}"
+        return f"{self.id} - {self.user} - {self.action} - {self.timestamp}"
     
 

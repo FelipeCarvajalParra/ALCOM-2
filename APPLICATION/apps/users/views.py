@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -64,7 +64,7 @@ def view_users(request):
 def edit_user(request, id):
     if int(request.user.id) != int(id):
         if not request.user.groups.filter(name='administrators').exists():
-            return HttpResponseForbidden("No tienes permiso para acceder a este perfil.")
+            return redirect('/forbidden_access/')
 
     user = get_object_or_404(CustomUser, pk=id)
     activity = ActivityLog.objects.filter(user_id=id).order_by('-timestamp')

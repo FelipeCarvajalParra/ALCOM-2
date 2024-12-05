@@ -22,7 +22,9 @@
                     </svg>
                 </div>
             </div>
-            <input class="select select--search select--date-range select--right" type="text" id="filterDateRange" name="daterange" placeholder="DD/MM/AAAA - DD/MM/AAAA" value="{% if date_range %}{{ date_range }}{% endif %}" />
+            
+            <input class="select select--search select--right" type="text" id="inputSearchActivity" placeholder="Buscar" value="{% if search_query %}{{ search_query }}{% endif %}">
+            <input class="select select--search select--date-range" type="text" id="filterDateRange" name="daterange" placeholder="DD/MM/AAAA - DD/MM/AAAA" value="{% if date_range %}{{ date_range }}{% endif %}" />
         </div>
     </table>
 </div>
@@ -45,7 +47,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="{% static 'js/filter_selector.js' %}"></script>
-<script src="{% static 'js/searchs_tables.js' %}"></script>
+<script src="{% static 'js/searchs_tables.js' %} ?v=2"></script>
 <script src="{% static 'js/filter_selector_date.js' %}"></script>
 
 
