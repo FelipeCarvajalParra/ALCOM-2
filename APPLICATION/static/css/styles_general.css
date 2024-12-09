@@ -358,6 +358,10 @@ a{
     height: 60px;
 }
 
+.container__section-sub-title{
+    font-size: 17px;
+}
+
 .container__section-title--button{
     justify-content: end;
 }
@@ -368,7 +372,6 @@ a{
     color: #3b4056;
     list-style: none;
 }
-
 
 
 /*------------------------- lista de notificaciones -------------------------*/
@@ -2213,4 +2216,20 @@ input:-webkit-autofill {
 /* Durante el tiempo que los botones están visibles, habilitar la interacción */
 .floating-button__link.visible {
     pointer-events: auto; /* Habilitar interacción cuando los botones son completamente visibles */
+}
+
+/*============= Bloque heatmap ================*/
+
+.container__heatmap{
+    width: auto;
+    height: 190px;
+    overflow: hidden;
+    color: #3b4056;
+    margin-top: 10px;
+}
+
+.container__heatmap-items{
+    float: right; 
+    font-size: 12px;
+    margin-top: 15px;
 }

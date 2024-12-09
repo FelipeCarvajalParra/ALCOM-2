@@ -3,15 +3,13 @@
 {% load static %}
 
 <div class="layer-color"></div>
-<div class="page__user">
+<div class="page__user" id="idUserAccount" data-user="{{ user_account.id }}">
 
     <div class="page__user-section-info">
         <div class="container--user">
             <div class="container__section-image">
                 <img id="imageProfile" class="container__image--profile" src="{{ user_account.profile_picture.url }}" alt="Profile Image">
-                
                 <input type="file" id="userFileImageInput" data-app="users" data-table="CustomUser" data-field="profile_picture" data-record="{{user_account.id}}" data-type="image">
-    
                 <span>{% if user_account.first_name or user_account.last_name %}{{ user_account.first_name }} {{ user_account.last_name }}{% else %}No name{% endif %}</span>
             </div>
 
@@ -79,7 +77,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="page__user-section-nav">
         <div class="container--sub-navegation">
@@ -231,88 +228,29 @@
             </form>
         </div>
 
-        <style>
-            
-
-            .ch-subdomain-bg.ch-subdomain-bg {
-                fill: #ededed;
-            }
-
-            .container__heatmap{
-                width: auto;
-                height: 190px;
-            }
-            
-
-            
-        </style>
-
-
-
-
-
-        <div id="UserStatistics" class="container--activity scroll" style="display: none;">
-            <div class="container__section-title">
-                <span>Datos de ingreso</span>
-            </div>
-
-            <div class="container__heatmap" id="container__heatmap" style="overflow: hidden;">
-                <div id="ex-ghDay" class="margin-bottom--md"></div>
-                <div style="float: right; font-size: 12px;">
-                    <span style="color: #768390;">Less</span>
-                    <div id="ex-ghDay-legend" style="display: inline-block; margin: 0 4px;"></div>
-                    <span style="color: #768390; font-size: 12px;">More</span>
-                </div>
-            </div>
+        <div id="UserStatistics" class="container__healt-map container--activity scroll" style="display: none;">
+            {% include "partials/_healt_map_container.html" %}
         </div>
-
-
-
-
-
-
-
-
-
-
+        
     </div>
 </div>
+
+<!-- heatmap dependencias -->
 <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
-
-<!-- Dependencia de D3.js -->
 <script src="https://d3js.org/d3.v6.min.js"></script>
-
-<!-- Dependencia de CalHeatmap -->
 <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
-
-<!-- Dependencia de Day.js -->
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-
-<!-- Importar el plugin de localización -->
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
-
-<!-- Dependencias para Tooltip, LegendLite y CalendarLabel -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/LegendLite.min.js"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/CalendarLabel.min.js"></script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script> <!-- Importar plugin UTC -->
-
 <script>
-  dayjs.extend(window.dayjs_plugin_localeData);
-  dayjs.extend(window.dayjs_plugin_utc); // Extender el plugin UTC
+    var interventionsData = JSON.parse('{{ interventions_json|escapejs }}');
 </script>
 
-{% if messages %}
-    {% for message in messages %}
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
-        <script src="{% static 'js/pop-up_window.js' %}" ></script>
-    {% endfor %}
-{% endif %}
 
 <script src="{% static 'js/sub_navigation.js' %}" ></script>
 <script src="{% static 'js/delete_confirmations.js' %}"></script>
@@ -320,150 +258,6 @@
 <script src="{% static 'js/filter_selector.js'%}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/update_files.js' %}"></script>
-
-
-<script>
-    window.onload = function() {
-      // Obtener el contenedor principal
-      const container = document.getElementById('container__heatmap');
-      
-      // Verificar si el contenedor tiene un tamaño definido
-      const containerWidth = container.clientWidth;
-      if (containerWidth === 0) {
-        console.error("El contenedor no tiene un ancho válido.");
-        return;
-      }
-  
-      // Calcular el ancho de cada celda, tomando en cuenta que son 7 días a la semana
-      const cellWidth = containerWidth / 60; // 100% dividido entre 7 días
-      console.log('Container width:', containerWidth);
-      console.log('Cell width:', cellWidth);
-  
-      // Referencia del contenedor de la tabla
-      const calendarContainer = document.getElementById('ex-ghDay');
-      calendarContainer.style.width = '100%';
-  
-      dayjs.extend(window.dayjs_plugin_localeData);
-      
-      // Generar datos aleatorios para el año 2024 con intervenciones
-      function generateRandomData() {
-        const data = [];
-        const startDate = new Date('2024-01-01');
-        const endDate = new Date('2024-12-31');
-        
-        for (let currentDate = new Date(startDate); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
-          const date = new Date(currentDate);
-          const interventions = Math.floor(Math.random() * (10 - 1 + 1)) ; // Número aleatorio de intervenciones entre 1 y 10
-          data.push({
-            date: date.toISOString().split('T')[0], // Formato YYYY-MM-DD
-            interventions: interventions,
-          });
-        }
-        return data;
-      }
-      
-      // Obtener los datos aleatorios
-      const randomData = generateRandomData();
-      
-      // Contenedor para etiquetas de los meses
-      const monthLabelsContainer = document.createElement('div');
-      monthLabelsContainer.style.display = 'grid';
-      monthLabelsContainer.style.gridTemplateColumns = 'repeat(12, 1fr)';
-      monthLabelsContainer.style.width = '100%';
-      monthLabelsContainer.style.marginBottom = '8px';
-      
-      // Añadir los nombres de los meses
-      const months = dayjs.monthsShort();
-      months.forEach((month) => {
-        const monthLabel = document.createElement('div');
-        monthLabel.textContent = month;
-        monthLabel.style.textAlign = 'center';
-        monthLabelsContainer.appendChild(monthLabel);
-      });
-      
-      // Añadir los contenedores al DOM
-      calendarContainer.parentElement.insertBefore(monthLabelsContainer, calendarContainer);
-  
-      // Inicializar CalHeatmap
-      const cal = new CalHeatmap();
-      cal.paint(
-        {
-          data: {
-            source: randomData,  // Usar solo los datos aleatorios
-            type: 'json',
-            x: 'date',
-            y: d => +d['interventions'], // Usar intervenciones en lugar de temperatura
-            groupY: 'max',
-          },
-          date: { start: new Date('2024-01-01') }, // Aseguramos que el calendario empiece el 1 de enero
-          range: 1, // Mostrar un solo año
-          scale: { 
-            color: {
-              type: 'threshold',
-              range: ['#e0f2ff', '#b3d9f7', '#80b8f1', '#5097d3', '#1a7bbf'],  // Colores ajustados a los rangos
-              domain: [1, 3, 5, 7, 10], // Ajustamos el rango de intervenciones
-            },
-          },
-          domain: {
-            type: 'year',  // Mostrar todo el año
-            label: { text: null }, // Eliminamos las etiquetas automáticas
-            width: '100%' // Aseguramos que ocupe todo el ancho disponible
-          },
-          subDomain: {
-            type: 'day',
-            radius: 2,
-            width: cellWidth, // Ajusta las celdas para que se distribuyan equitativamente
-            height: cellWidth, // Esto se puede ajustar según el diseño
-          },
-          itemSelector: '#ex-ghDay',
-        },
-        [
-          [
-            Tooltip,
-            {
-              text: function (date, value, dayjsDate) {
-                return (
-                  (value ? value + ' intervenciones' : 'No data') + ' el ' + dayjsDate.format('LL')
-                );
-              },
-            },
-          ],
-          [
-            LegendLite,
-            {
-              includeBlank: true,
-              itemSelector: '#ex-ghDay-legend',
-              radius: 2,
-              width: 11,
-              height: 11,
-              gutter: 4,
-            },
-          ],
-        ]
-      );
-  
-      // Mostrar información cuando se haga clic en una casilla
-      calendarContainer.addEventListener('click', function (event) {
-        const clickedElement = event.target.closest('rect'); // Buscar el rectángulo (casilla del día)
-        if (clickedElement && clickedElement.__data__) {
-          // Obtener el timestamp de la fecha como local directamente
-          const clickedDateTimestamp = clickedElement.__data__.t;
-      
-          // Interpretar el timestamp correctamente y sumar un día para corregir el desajuste
-          const clickedDate = dayjs(clickedDateTimestamp).add(1, 'day');
-      
-          const formattedDate = clickedDate.format('DD MMM YYYY'); // Formato de fecha legible
-          const interventions = randomData.find(
-            (d) => d.date === clickedDate.format('YYYY-MM-DD')
-          )?.interventions;
-      
-          alert(`Fecha: ${formattedDate} | Intervenciones: ${interventions || 'No data'}`);
-        }
-      });
-    };
-  </script>
-  
-
-
+<script src="{% static 'js/heatmap_user.js' %} ?v=2"></script>
 
 {% endblock %}

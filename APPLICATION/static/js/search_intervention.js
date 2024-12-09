@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const optionInterventions = document.getElementById('optionInterventions')
     const interventions = document.querySelectorAll('.list-activity__intervention');
-
-
     
     // Función para manejar el cambio de intervención
     function updateIntervention(interventionId) {

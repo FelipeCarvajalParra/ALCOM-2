@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALCOM SAS</title>
-    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=35" />
+    <link rel="stylesheet" href="{% static 'css/styles_general.css' %} ?v=37" />
     <!--Fuentes-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -189,6 +189,17 @@
                     </li>
                     {% endif %}
 
+                    {% if role == 'admin' or role == 'technician' %}
+                    <li class="aside__nav-option">
+                        <a href="" class="aside__nav-item">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m 13,11.940296 c 0,0.58262 -0.47654,1.05916 -1.05916,1.05916 l -9.8805925,0 c -0.5826193,0 -1.0591595,-0.47654 -1.0591595,-1.05916 l 0,-9.880592 c 0,-0.58262 0.4765402,-1.05916 1.0591595,-1.05916 l 9.8805925,0 c 0.58262,0 1.05916,0.47654 1.05916,1.05916 l 0,9.880592 z M 13,4.770434 11.916361,4.040392 c 0.02176,-0.09357 0.03482,-0.190943 0.03482,-0.291582 0,-0.70393 -0.570651,-1.275126 -1.275125,-1.275126 -0.704475,0 -1.275126,0.570652 -1.275126,1.275126 0,0.276894 0.08921,0.532572 0.239358,0.74201 L 7.297299,8.073575 c -0.0952,-0.02285 -0.194751,-0.03645 -0.297022,-0.03645 -0.313885,0 -0.600571,0.113695 -0.823065,0.301917 L 4.6088671,7.436557 c 0.00816,-0.05766 0.0136,-0.115872 0.0136,-0.175711 0,-0.70393 -0.5706514,-1.275126 -1.2751258,-1.275126 -0.7044743,0 -1.2751258,0.570652 -1.2751258,1.275126 0,0.174623 0.03536,0.341085 0.099007,0.49286 L 1,8.840065 1,9.996056 2.7396981,8.382021 c 0.1806065,0.09792 0.3873249,0.153407 0.6070991,0.153407 0.3372773,0 0.6430029,-0.131647 0.8709371,-0.345982 L 5.747994,9.070175 C 5.732762,9.148515 5.724602,9.229022 5.724602,9.31171 c 0,0.70393 0.570652,1.274581 1.275126,1.274581 0.704474,0 1.275126,-0.570651 1.275126,-1.274581 0,-0.293214 -0.100095,-0.562492 -0.266558,-0.777914 l 2.326669,-3.557732 c 0.108799,0.02992 0.222495,0.04733 0.340542,0.04733 0.295389,0 0.566299,-0.101183 0.782809,-0.269822 l 1.54114,1.038488 0,-1.021624 z"></path>
+                            </svg>
+                            <span  class="aside__nav-item-link" id="deployment_options">Reportes</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
                     {% if role == 'admin' or role == 'consultant' %}
                     <li class="aside__nav-option">
                         <a href="{% url 'view_all_references' %}" class="aside__nav-item {% if is_view_references %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
@@ -217,35 +228,52 @@
 
                     {% if role == 'admin' or role == 'technician' %}
                     <li class="aside__nav-option">
+                        <a href="{% url 'view_interventions' %}" class="aside__nav-item {% if is_view_interventions %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                            
+
+
+                            <svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                                <path fill="none" stroke="currentColor" stroke-width="2" d="M14,23 L20,17 M21,14 C19.8954305,14 19,14.8954305 19,16 C19,17.1045695 19.8954305,18 21,18 C22.1045695,18 23,17.1045695 23,16 M17,4 L18,4 L18,5 L17,5 L17,4 Z M10,23 L3,23 L3,1 L3,1 L21,1 L21,11 M3,13 L17,13 M3,18 L13,18 M3,8 L21,8"></path>
+                            </svg>
+
+                            <span href="{% url 'view_interventions' %}" class="aside__nav-item-link " >Intervenciones</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                
+
+                    {% if role == 'admin' or role == 'technician' %}
+                    <li class="aside__nav-option">
                         <div class="aside__nav-item aside__nav-item--no-current">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M10 0C4.486 0 0 4.486 0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0ZM17.931 9H14.899C14.7012 8.04031 14.2264 7.15964 13.5335 6.46686C12.8405 5.77408 11.9597 5.29957 11 5.102V2.069C12.7598 2.29335 14.3953 3.09574 15.6498 4.3502C16.9043 5.60466 17.7066 7.24017 17.931 9ZM10 7C11.654 7 13 8.346 13 10C13 11.654 11.654 13 10 13C8.346 13 7 11.654 7 10C7 8.346 8.346 7 10 7ZM10 18C5.589 18 2 14.411 2 10C2 5.928 5.061 2.564 9 2.069V5.101C7.87158 5.33306 6.85764 5.947 6.12903 6.83936C5.40042 7.73173 5.00168 8.84797 5 10C5 12.757 7.243 15 10 15C11.152 14.9985 12.2682 14.5998 13.1604 13.8711C14.0526 13.1424 14.6663 12.1284 14.898 11H17.93C17.436 14.939 14.072 18 10 18Z" />
                             </svg>
-                            <a class="aside__nav-item-link" href="#">Intervenciones</a>
+                            <a class="aside__nav-item-link" href="#">Piezas</a>
                             <svg class="aside__nav-item-chevron" width="7" height="10">
                                 <use href="#chevron-right"></use>
                             </svg>
                         </div>
                         <ul class="aside__nav-option-sublist">
-                            <li class="aside__nav-option-subitem {% if is_view_interventions  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
-                                <svg class="" width="7" height="10">
-                                    <use href="#circle"></use>
-                                </svg>
-                                <a href="{% url 'view_interventions' %}" class="aside__nav-item-link " >Intervenciones registradas</a>
-                            </li>
                             <li class="aside__nav-option-subitem {% if is_inventory_parts or is_edit_part  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
-                                <a href="{% url 'view_inventory_parts' %}" class="aside__nav-item-link" >Inventario de piezas</a>
+                                <a href="{% url 'view_inventory_parts' %}" class="aside__nav-item-link" >Inventario</a>
                             </li>
                             <li class="aside__nav-option-subitem aside__nav-item--no-current">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
                                 <a  href="{% url 'home/construction' %}" class="aside__nav-item-link" >Compras</a>
+                            </li>
+                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
+                                <svg class="" width="7" height="10">
+                                    <use href="#circle"></use>
+                                </svg>
+                                <a  href="{% url 'home/construction' %}" class="aside__nav-item-link" >Movimientos</a>
                             </li>
                         </ul>
                     </li>
