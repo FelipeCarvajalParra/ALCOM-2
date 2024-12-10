@@ -3,6 +3,7 @@ const partModalName = document.getElementById('partModalName');
 const partModalNumber = document.getElementById('partModalNumber');
 const partModalLocation = document.getElementById('partModalLocation');
 const partModalStock = document.getElementById('partModalStock');
+const partModalDescription = document.getElementById('partModalDescription');
 const partModalLink = document.getElementById('partModalLink');
 const partModalManual = document.getElementById('partModalManual');
 
@@ -33,6 +34,7 @@ document.querySelectorAll('.part').forEach(movement => {
             partModalNumber.textContent = data.part.number;
             partModalLocation.textContent = data.part.location;
             partModalStock.textContent = data.part.stock;
+            partModalDescription.textContent = data.part.description_part;
 
             if (data.part.url) {
                 partModalLink.href = data.part.url;

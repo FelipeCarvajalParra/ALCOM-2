@@ -45,7 +45,6 @@ def view_inventory_parts(request):
 
     return render(request, 'view_parts.html', context)
 
-
 @login_required
 @require_POST
 @transaction.atomic
@@ -81,7 +80,6 @@ def new_part(request):
 
     messages.success(request, 'Pieza registrada correctamente')
     return JsonResponse({'success': True})
-
 
 @login_required
 @transaction.atomic
@@ -125,7 +123,6 @@ def edit_part(request, part_id):
 
     return render(request, 'edit_part.html', context)
 
-
 @login_required
 @transaction.atomic
 @group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
@@ -135,6 +132,7 @@ def consult_part(request, part_id):
 
         # Extraer la URL del archivo si existe
         manual_url = part.manual.url if part.manual else None
+        description_part = (f"{part.nombre}>{part.num_parte_pk} ")
 
         return JsonResponse({
             'part': {
@@ -144,13 +142,13 @@ def consult_part(request, part_id):
                 'stock': part.total_unidades,
                 'url': part.link_consulta,
                 'manual': manual_url,  # Enviar la URL del archivo o None si no existe
+                'description_part': description_part
             }
         })
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'Part not found'})
     except Exception:
         return JsonResponse({'error':'Error inesperado'}) 
-    
     
 @login_required
 @require_POST
@@ -184,6 +182,8 @@ def edit_part_action(request, part_id):
     except Exception:
         return JsonResponse({'error':'Error inesperado'})
 
+def view_movements(request):
+    return render(request, 'view_movements.html')
 
 
     
