@@ -1,0 +1,25 @@
+{% if interventions %}
+    <div class="container__section-title container__section-sub-title">
+        <span>Intervenciones del {{ selected_date|date:"j \d\e F \d\e Y" }}</span>
+    </div>
+    <ul class="container__list-activity">
+        {% for intervention in interventions %}
+            <a href="/edit_equipment/{{ intervention.cod_equipo_fk.cod_equipo_pk }}?intervention_id={{ intervention.num_orden_pk }}">
+                <li class="list-activity__item list-activity__intervention" data-id="{{ intervention.id }}">
+                    <div class="list-activity__header">
+                        {% if intervention.estado == 'Pendiente' %}
+                            <span class="list-activity__icon list-activity__icon--intervention-earring"></span>
+                        {% elif intervention.estado == 'Aprobada' %}
+                            <span class="list-activity__icon list-activity__icon--intervention"></span>
+                        {% endif %}
+                        <span class="list-activity__title">{{ intervention.num_orden_pk }}</span>
+                        <span class="list-activity__timestamp">{{ intervention.fecha_hora }}</span>
+                    </div>
+                    <div class="list-activity__body">
+                        <p class="list-activity__description">Codigo de equipo: {{ intervention.cod_equipo_fk.cod_equipo_pk }}</p>  
+                    </div>
+                </li>
+            </a>
+        {% endfor %}
+    </ul>
+{% endif %}

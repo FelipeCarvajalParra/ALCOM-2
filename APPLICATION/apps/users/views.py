@@ -79,72 +79,57 @@ def view_users(request):
 
 
 
-
-
-
-
-
-
-
-
-from datetime import datetime,timedelta, date
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.utils.timezone import make_aware, get_current_timezone
+from datetime import datetime
 from collections import defaultdict
 import json
-from django.utils.timezone import make_aware, get_current_timezone
 
 
 @login_required
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def edit_user(request, id):
-    interventionsCant = Intervenciones.objects.filter(usuario_fk_id=id)
-    print('InterventionsCant inicial:', interventionsCant)
 
     if int(request.user.id) != int(id):
         if not request.user.groups.filter(name='administrators').exists():
             return redirect('/forbidden_access/')
+        
+    user = get_object_or_404(CustomUser, pk=id)
+    activity = ActivityLog.objects.filter(user_id=id).order_by('-timestamp')
 
-    year = request.GET.get('year')
+    paginator = Paginator(activity, 15)  # Este es el objeto Paginator completo
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)  # Este es el objeto Page para la página actual
+
+    # Accedemos al número total de páginas desde el objeto Paginator
+    is_last_page = page_obj.number == paginator.num_pages
+
+
+    # Filtramos las intervenciones
+    interventionsCant = Intervenciones.objects.filter(usuario_fk_id=id)
+
+    years = set()
+    for yearInterventions in interventionsCant:
+        years.add(yearInterventions.fecha_hora.year)
+
+    # Comprobación de permisos
+    if int(request.user.id) != int(id):
+        if not request.user.groups.filter(name='administrators').exists():
+            return redirect('/forbidden_access/')
+
     selected_date = request.GET.get('date')  # Formato: 'dd/mm/yyyy'
-
-    # Filtrar intervenciones por año
-    if year:
-        print('Year recibido:', year)
-        try:
-            # Crear rangos con zona horaria
-            tz = get_current_timezone()
-            year_start = make_aware(datetime(int(year), 1, 1, 0, 0, 0), timezone=tz)
-            year_end = make_aware(datetime(int(year), 12, 31, 23, 59, 59), timezone=tz)
-            print('Rango de fechas:', year_start, '-', year_end)
-
-            # Filtrar por rango de fechas
-            interventionsCant = interventionsCant.filter(fecha_hora__range=(year_start, year_end))
-            print('InterventionsCant después del filtro:', interventionsCant.count())
-
-            if not interventionsCant.exists():
-                print('No se encontraron registros en el rango proporcionado.')
-            else:
-                for intervencion in interventionsCant:
-                    print('Fecha intervención:', intervencion.fecha_hora)
-
-        except ValueError:
-            print("Error en el formato del año recibido.")
-            interventionsCant = []
 
     # Filtrar intervenciones por fecha específica
     if selected_date:
         try:
-            # Convertir la fecha seleccionada a un objeto `date`
             selected_date_obj = datetime.strptime(selected_date, '%d/%m/%Y').date()
-            print('Fecha seleccionada:', selected_date_obj)
-
-            # Asegurarnos de filtrar con el soporte de zona horaria
             tz = get_current_timezone()
             start_of_day = make_aware(datetime.combine(selected_date_obj, datetime.min.time()), timezone=tz)
             end_of_day = make_aware(datetime.combine(selected_date_obj, datetime.max.time()), timezone=tz)
 
-            # Filtrar intervenciones para el día completo
             selected_date_interventions = interventionsCant.filter(fecha_hora__range=(start_of_day, end_of_day))
-            print('Intervenciones en la fecha seleccionada:', selected_date_interventions.count())
 
         except ValueError:
             return JsonResponse({'error': 'Invalid date format'}, status=400)
@@ -162,18 +147,26 @@ def edit_user(request, id):
         for date, count in interventions_data.items()
     ]
 
+    if selected_date:
+        print('dato: ', type(selected_date_obj))
 
+    
     # Crear contexto
     user = get_object_or_404(CustomUser, pk=id)
     context = {
+        'paginator': page_obj,  # Usamos Page aquí
+        'page_number': page_number,
+        'is_last_page': is_last_page,
         'user_account': user,
         'interventions_json': json.dumps(interventions_json),
-        'interventions': selected_date_interventions
+        'interventions': selected_date_interventions,
+        'years': years,
+        'selected_date': selected_date_obj if selected_date else None,
     }
 
     # Respuesta parcial para AJAX
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html_body = render_to_string('partials/_healt_map_container.html', context, request=request)
+        html_body = render_to_string('partials/_healt_map_interventions_list.html', context, request=request)
         return JsonResponse({'body': html_body})
 
     return render(request, 'user_edit.html', context)

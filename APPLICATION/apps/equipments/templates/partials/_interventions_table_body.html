@@ -7,7 +7,6 @@
                 {% elif intervention.estado == 'Aprobada' %}
                     <span class="list-activity__icon list-activity__icon--intervention"></span>
                 {% endif %}
-                
                 <span class="list-activity__title">{{intervention.num_orden_pk}}</span>
                 <span class="list-activity__timestamp">{{ intervention.fecha_hora|date:"d/m/Y" }}</span>
             </div>

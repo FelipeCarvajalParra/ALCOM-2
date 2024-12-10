@@ -230,22 +230,37 @@
 
         <div id="UserStatistics" class="container__healt-map container--activity scroll" style="display: none;">
             {% include "partials/_healt_map_container.html" %}
+
+            <div class="container__interventions-list">
+                {% include "partials/_healt_map_interventions_list.html" %}
+            </div>
         </div>
         
     </div>
 </div>
 
+
 <!-- heatmap dependencias -->
 <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+
+<!-- D3.js (dependencia de CalHeatmap) -->
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+
+<!-- Day.js y sus extensiones -->
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
+
+<!-- CalHeatmap -->
+<script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+
+<!-- Plugins de CalHeatmap -->
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/LegendLite.min.js"></script>
 <script src="https://unpkg.com/cal-heatmap/dist/plugins/CalendarLabel.min.js"></script>
+
 
 <script>
     var interventionsData = JSON.parse('{{ interventions_json|escapejs }}');
@@ -258,6 +273,6 @@
 <script src="{% static 'js/filter_selector.js'%}"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/update_files.js' %}"></script>
-<script src="{% static 'js/heatmap_user.js' %} ?v=2"></script>
+<script src="{% static 'js/heatmap_user.js' %} ?v=6"></script>
 
 {% endblock %}

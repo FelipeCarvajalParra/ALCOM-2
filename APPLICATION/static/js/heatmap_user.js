@@ -1,34 +1,32 @@
 // Extensiones de Day.js para soporte de formato y manipulación
 dayjs.extend(window.dayjs_plugin_localeData);
 dayjs.extend(window.dayjs_plugin_utc);
+dayjs.locale('es');
 
-const searchYearInterventions = document.getElementById('searchYearInterventions');
 const calendarContainer = document.getElementById('ex-ghDay');
 const legendContainer = document.getElementById('ex-ghDay-legend');
 const container = document.getElementById('container__heatmap');
-let selectedYear = searchYearInterventions.value || new Date().getFullYear(); // Año inicial
 const user_id = document.getElementById('idUserAccount').getAttribute('data-user');
 
 // Mantener una referencia única para el listener de clic
 let dayClickListener = null;
 
-function sendRequest(year, date = null) {
-    let data = { year: year, date: date };
+function sendRequest(date) {
+    let data = { date: date };
 
     return $.ajax({
-        url: `/edit_user/${user_id}`,
+        url: `/edit_user/${user_id}`, // Ruta que devuelve solo las intervenciones
         data: data,
         method: 'GET',
     })
     .then(response => {
         console.log("Request sent:", response);
 
-        // Actualizar el contenedor con la respuesta
-        $('.container__healt-map').html(response.body);
-
-        // Reinicializar el mapa de calor
-        updateHeatmap(selectedYear);
-        console.log("Heatmap updated");
+        // Verifica si la respuesta contiene la clave 'body' y si es válida
+        if (response.body) {
+            // Actualizar solo la lista de intervenciones
+            $('.container__interventions-list').html(response.body);
+        }
     })
     .catch(error => {
         console.error("Request error:", error);
@@ -37,7 +35,6 @@ function sendRequest(year, date = null) {
 
 // Función para inicializar o actualizar el mapa de calor
 function updateHeatmap(year) {
-    console.log('Updating heatmap for year:', year);
     calendarContainer.innerHTML = ''; // Limpiar el contenedor del mapa
     legendContainer.innerHTML = ''; // Limpiar la leyenda
 
@@ -46,12 +43,14 @@ function updateHeatmap(year) {
     const cellWidth = containerWidth / 60;
 
     const cal = new CalHeatmap();
-    
-    // Asegurarse de destruir cualquier instancia anterior del mapa
-    cal.destroy();
+    window.miVariableGlobal = cal; // Mantener referencia global para futuras actualizaciones
 
     // Crear el nuevo mapa de calor
     cal.paint({
+        date: { 
+            start: new Date(`${year}-01-01`),
+            locale: 'es'
+         },
         data: {
             source: filteredData,
             type: 'json',
@@ -59,13 +58,12 @@ function updateHeatmap(year) {
             y: (d) => +d['interventions'],
             groupY: 'max',
         },
-        date: { start: new Date(`${year}-01-01`) },
         range: 1,
         scale: {
             color: {
                 type: 'threshold',
-                range: ['#e0f2ff', '#b3d9f7', '#80b8f1', '#5097d3', '#1a7bbf'],
-                domain: [1, 3, 5, 7, 10],
+                range: ['#e0f2ff', '#b3d9f7', '#80b8f1', '#5097d3', '#1a7bbf'], 
+                domain: [2, 4, 6, 8], 
             },
         },
         domain: {
@@ -83,15 +81,15 @@ function updateHeatmap(year) {
     }, [
         [
             Tooltip,
-            {
-                text: function (date, value, dayjsDate) {
-                    return (
-                        (value ? value + ' Intervenciones' : '0 Intervenciones') +
-                        ' el ' +
-                        dayjsDate.format('LL')
-                    );
+                {
+                    text: function (date, value, dayjsDate) {
+                        const dateText = dayjsDate.locale('es').format('LL'); // Asegúrate de que 'es' esté configurado aquí
+                        const interventionText = value
+                            ? `${value} Intervención${value > 1 ? 'es' : ''}`
+                            : '0 Intervenciones';
+                        return `${interventionText} el ${dateText}`;
+                    },
                 },
-            },
         ],
         [
             LegendLite,
@@ -125,7 +123,7 @@ function updateHeatmap(year) {
             )?.interventions;
 
             if (interventions) {
-                sendRequest(selectedYear, formattedDate);
+                sendRequest(formattedDate);
             }
         }
     };
@@ -141,10 +139,12 @@ function generateMonthLabels() {
     monthLabels.style.width = '100%';
     monthLabels.style.marginBottom = '8px';
 
-    const months = dayjs.monthsShort(); // Abreviaturas de los meses
+    const months = dayjs.monthsShort();
     months.forEach((month) => {
         const monthLabel = document.createElement('div');
-        monthLabel.textContent = month;
+        
+        monthLabel.textContent = month.charAt(0).toUpperCase() + month.slice(1);
+        
         monthLabel.style.textAlign = 'center';
         monthLabels.appendChild(monthLabel);
     });
@@ -152,20 +152,17 @@ function generateMonthLabels() {
     calendarContainer.parentElement.insertBefore(monthLabels, calendarContainer);
 }
 
-// Evento para actualizar el mapa cuando cambia el año
-searchYearInterventions.addEventListener('change', function () {
-    const year = parseInt(searchYearInterventions.value, 10);
-    if (!isNaN(year)) {
-        selectedYear = year;
-        updateHeatmap(selectedYear);
-
-        // Enviar el año seleccionado
-        sendRequest(selectedYear);
-    }
-});
 
 // Inicialización al cargar la página
 window.onload = function () {
+    const currentYear = new Date().getFullYear();
     generateMonthLabels(); // Generar etiquetas de los meses
-    updateHeatmap(selectedYear); // Mostrar el mapa inicial con el año por defecto
+    updateHeatmap(currentYear); // Mostrar el mapa inicial con el año actual
+
+    // Listener para cambiar el año seleccionado
+    const yearSelect = document.getElementById('yearSelect');
+    yearSelect.addEventListener('change', function () {
+        const selectedYear = yearSelect.value;
+        updateHeatmap(selectedYear); // Actualizar el mapa de calor con el nuevo año
+    });
 };

@@ -1,10 +1,10 @@
 <div class="container__section-title">
     <span>{{ interventions_cant }} Intervenciones registradas</span>
-    <select class="select select--search select--right" id="searchYearInterventions">
+    <select class="select select--search select--right" id="yearSelect">
         <option value="" disabled selected>Buscar por año</option>
-        <option value="2024">2024</option>
-        <option value="2025">2025</option>
-        <option value="2026">2026</option>
+        {% for year in years %}
+            <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
     </select>
 </div>
 
@@ -14,27 +14,3 @@
         <div id="ex-ghDay-legend" style="display: inline-block; margin: 0 4px;"></div>
     </div>
 </div>
-
-{% if interventions %}
-    <div class="container__section-title container__section-sub-title">
-        <span>Intervenciones del {{ filtered_interventions.0.timestamp }}</span>
-    </div>
-    <ul class="container__list-activity">
-        {% for intervention in interventions %}
-        <li class="list-activity__item list-activity__intervention" data-id="{{ intervention.id }}">
-            <div class="list-activity__header">
-                <span class="list-activity__icon list-activity__icon--intervention"></span>
-                <span class="list-activity__title">{{ intervention.num_orden_pk }}</span>
-                <span class="list-activity__timestamp">{{ intervention.fecha_hora }}</span>
-            </div>
-            <div class="list-activity__body">
-                <p class="list-activity__description">Codigo de equipo: {{ intervention.cod_equipo_fk.cod_equipo_pk }}</p>  
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <div class="container__section-title container__section-sub-title">
-        <span>No hay intervenciones registradas para esta fecha</span>
-    </div>
-{% endif %}

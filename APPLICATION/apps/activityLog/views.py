@@ -51,7 +51,7 @@ def view_activity(request):
     if search_query:
         activity = activity.filter(description__icontains=search_query)
 
-    paginator = Paginator(activity, 1)
+    paginator = Paginator(activity, 15)
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
