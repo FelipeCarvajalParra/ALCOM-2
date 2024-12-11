@@ -1,13 +1,21 @@
 {% if paginator|length > 0 %}
     {% for movemen in paginator %}
     <tr class="table__row">
+        <td class="table__cell table__cell--auto table__cell--flex">
+            <div class="table__container-text">
+                <a href="{% if movemen.num_orden_fk %} /edit_equipment/{{ movemen.num_orden_fk.cod_equipo_fk.cod_equipo_pk }}?intervention_id={{ movemen.num_orden_fk.num_orden_pk }} {% endif %}" target="_blank" class="table__container-link">{{movemen.fuente}}</a>
+                {% if movemen.num_orden_fk %}
+                    <span class="table__container-email">{{ movemen.num_orden_fk }}</span>
+                {% endif %}
+            </div>
+        </td>
         <td class="table__cell table__cell--medium table__cell--overflow"
             data-text="{{movemen.tipo_movimiento}}">
-            {{movemen.tipo_movimiento}}
-        </td>
-        <td class="table__cell table__cell--small table__cell--overflow"
-            data-text="{{movemen.fuente}}">
-            {{movemen.fuente}}
+            <div class="{% if movemen.tipo_movimiento  == 'Salida' %} status status--blocked {% elif movemen.tipo_movimiento  == 'Entrada' %} status status--active {% endif %} " >
+                <span>
+                    {% if movemen.tipo_movimiento  == 'Salida' %} Egreso {% elif movemen.tipo_movimiento  == 'Entrada' %} Ingreso {% endif %} 
+                </span>
+            </div>
         </td>
         <td class="table__cell table__cell--small table__cell--overflow"
             data-text="{{movemen.cantidad}}">

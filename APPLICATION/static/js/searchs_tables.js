@@ -78,6 +78,8 @@ function searchTable(module, page = 1, url) {
             petition(url, search, page)
                 .then(() => {
                     tooltip()
+                    modal();
+                    modalMovements();
                 })
             break;
         

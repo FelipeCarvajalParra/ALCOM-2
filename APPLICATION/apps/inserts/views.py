@@ -89,18 +89,18 @@ def add_parts(request, part_id):
 
 
 @login_required
-@require_POST
 @transaction.atomic
 @group_required(['administrators', 'consultants'], redirect_url='/forbidden_access/')
 def consult_movements(request, movement_id):
+    from django.utils.timezone import localtime
+
     try:
         part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
 
-        if part.fecha_hora:
-            part.fecha_hora = timezone.localtime(part.fecha_hora)
-            part.fecha_hora = part.fecha_hora.strftime('%d/%m/%y - %I:%M %p')
-        else:
-            part.fecha_hora = None
+        date = part.fecha_hora if part.fecha_hora else part.num_orden_fk.fecha_hora
+
+        # Convertir la fecha a formato local y darle el formato deseado
+        formatted_date = localtime(date).strftime('%d/%m/%Y - %I:%M%p') if date else None
 
         return JsonResponse({
             'movement': [
@@ -109,11 +109,11 @@ def consult_movements(request, movement_id):
                     'source': part.fuente,
                     'amount': part.cantidad,
                     'observations': part.observaciones if part.observaciones else 'Sin observaciones',
-                    'date': part.fecha_hora
+                    'date': formatted_date
                 }
             ]
         })
-    
+
     except Inventario.DoesNotExist:
         return JsonResponse({'error': 'No se encontró el registro en Inventario'})
     
