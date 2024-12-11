@@ -6,7 +6,6 @@
 <input type="text" id="idPart" value="{{part.num_parte_pk}}" hidden>
 
 <div class="page__equipment">
-
     <div class="page__equipment-section-info">
         <div class="container--equipment">
             <div class="container__section-image">
@@ -226,7 +225,7 @@
                     <table class="table">
                         <div class="table__info table__info--options table__info--gap">
                             <div class="select select--filter select--active">
-                                <div class="select__selected" id="filterMovements">Filtrar por</div>
+                                <div class="select__selected" id="filterMovements">{% if search_query %}{{ search_query }}{% else %}Filtrar por{% endif %}</div>
                                 <div class="select__options scroll">
                                     <div class="select__option select__option--filter">Entradas</div>
                                     <div class="select__option select__option--filter">Salidas</div>
@@ -237,7 +236,6 @@
                                     </svg>
                                 </div>
                             </div>
-
                             {% if user.groups.first.name == 'administrators' %}
                                 <div class="button button--right button--part" data-modal-id="modalAdd">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
@@ -258,7 +256,7 @@
                         </tbody>
                     </table>
                     <div class="table__footer">
-                        {% include 'partials/_movements_table_footer.html' %}
+                        {% include 'partials/_movements_table_footer.html' %} 
                     </div>
                 </div>
             </div>

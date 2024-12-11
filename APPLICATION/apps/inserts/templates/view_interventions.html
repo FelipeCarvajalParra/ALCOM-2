@@ -9,7 +9,7 @@
             <svg width="22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM7 6V10H11V6H7ZM7 12V14H17V12H7ZM7 16V18H17V16H7ZM13 7V9H17V7H13Z"></path>
             </svg>
-            <span class="table__info-text">Intervensiones</span>
+            <span class="table__info-text">intervenciones</span>
         </div>
         <div class="table__info table__info--options">
             <input class="select select--search" type="text" id="searchInterventions" placeholder="Buscar por nombre" value="{% if search_query %}{{search_query}}{% endif %}" />
@@ -31,14 +31,6 @@
     </div>
 </div>
 
-{% if messages %}
-{% for message in messages %}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
-    <script src="{% static 'js/pop-up_window.js' %}" ></script>
-{% endfor %}
-{% endif %}
-
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -46,11 +38,5 @@
 <script src="{% static 'js/filter_selector_date.js' %}"></script>
 <script src="{% static 'js/searchs_tables.js' %} ?v=4" ></script>
 <script src="{% static 'js/tooltip.js'%}"></script>
-
-
-
-
-
-
 
 {% endblock %}

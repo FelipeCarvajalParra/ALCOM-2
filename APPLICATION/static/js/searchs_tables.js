@@ -77,9 +77,10 @@ function searchTable(module, page = 1, url) {
 
             petition(url, search, page)
                 .then(() => {
-                    tooltip()
+
                     modal();
                     modalMovements();
+                    tooltip()
                 })
             break;
         
@@ -245,13 +246,21 @@ let filterValue = null;
 const paginatorMovements = document.getElementById("paginatorMovements");
 if (paginatorMovements) {
 
-    const idPart = document.getElementById('idPart').value;
+    var idPart = document.getElementById('idPart')
+    idPart = idPart ? idPart.value : null;
+
     const options = document.querySelectorAll(".select__option--filter");
 
     options.forEach(option => {
         option.addEventListener("click", function () {
-            filterValue = this.textContent.trim(); 
-            searchTable(7, 1, `/edit_part/${idPart}`); // Realiza la búsqueda
+            filterValue = this.textContent.trim();
+            
+            if(idPart){
+                searchTable(7, 1, `/edit_part/${idPart}`); // Realiza la búsqueda
+            }else{
+                searchTable(7, 1, `/view_movements/`); // Realiza la búsqueda
+            }
+            
         });
     });
 }
@@ -291,7 +300,6 @@ if (paginatorViewActivity) {
 
 const paginatorViewInterventions = document.getElementById("paginatorViewInterventions");
 if (paginatorViewInterventions) { 
-
 
     const filterDateRange = document.getElementById('filterDateRange');
     $(filterDateRange).on('apply.daterangepicker', function (ev, picker) {

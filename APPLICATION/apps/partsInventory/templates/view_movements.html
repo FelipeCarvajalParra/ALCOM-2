@@ -1,5 +1,97 @@
 {% extends "base.html" %}
 {% block contend %}
 {% load static %}
+{% csrf_token %}
+
+<div class="container--large">
+    <div class="table__info">
+        <svg width="20px" viewBox="0 -0.5 17 17" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor">
+            <path
+                d="M1.539,8.001 C2.367,8.001 2.918,7.45 2.918,6.622 L2.914,6.187 C2.914,6.187 2.709,4.954 4.354,4.954 L11.015,5 L11.015,6.759 C11.338,7.081 11.862,7.081 12.185,6.759 L14.758,4.187 C15.08,3.863 15.08,3.339 14.758,3.017 L12.185,0.292 C11.862,-0.03 11.338,-0.03 11.015,0.292 L11.015,2.137 C10.854,2.09 4.562,2.063 4.562,2.063 C0.851,2.063 0.039,4.492 0.039,5.47 L0.039,6.501 C0.039,7.329 0.711,8.001 1.539,8.001 L1.539,8.001 Z">
+            </path>
+            <path
+                d="M13.5,8.042 C12.672,8.042 12,8.626 12,9.454 L12.002,10.411 C11.957,10.768 11.357,11.001 10.477,11.001 L3.938,11.001 L3.936,9.442 C3.614,9.12 3.09,9.12 2.766,9.442 L0.194,12.014 C-0.128,12.338 -0.128,12.862 0.194,13.184 L2.766,15.756 C3.09,16.08 3.614,16.08 3.936,15.756 L3.938,13.905 L10.477,13.905 C14.188,13.905 15,11.463 15,10.484 L15,9.453 C15,8.626 14.328,8.042 13.5,8.042 L13.5,8.042 Z">
+            </path>
+        </svg>
+        <span class="table__info-text">Movimientos</span>
+    </div>
+    <div class="container__table">
+        <div class="container--large container--sub-table">
+            <div class="table__info table__info--options table__info--gap">
+                <div class="select select--filter">
+                    <div class="select__selected" id="filterMovements">{% if search_query %}{{ search_query }}{% else %}Filtrar por{% endif %}</div>
+                    <div class="select__options scroll">
+                        <div class="select__option select__option--filter">Entradas</div>
+                        <div class="select__option select__option--filter">Salidas</div>
+                    </div>
+                    <div class="select__icon">
+                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead class="table__headed">
+                    <tr>
+                        <th class="table__headed-title">Pieza</th>
+                        <th class="table__headed-title">Fuente</th>
+                        <th class="table__headed-title">Movimiento</th>
+                        <th class="table__headed-title">Cantidad</th>
+                        <th class="table__headed-title table__headed-actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table__body">
+                    {% include 'partials/_movements_table_body.html' %}
+                </tbody>  
+            </table>
+            <div class="table__footer">
+                {% include 'partials/_movements_table_footer.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" style="display: none;"></div>
+<div class="modal modal--parts modal--active" id="modalMovements" style="display: none;">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Registro <span id="movemenAction">ingreso</span> de partes</span>
+    </div>
+    
+    <div class="modal__text modal__text--margin-top">
+        <span class="modal__text-general">
+            <span class="modal__text-label">Fecha:</span>
+            <span class="modal__text-value" id="movemenDate"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Fuente:</span>
+            <span class="modal__text-value" id="movementSource"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Cantidad:</span>
+            <span class="modal__text-value" id="movementQuantity"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Observaciones:</span>
+            <span class="modal__text-value" id="movementObservations"></span>
+        </span>
+    </div>
+</div>
+
+<script src="{% static 'js/searchs_tables.js' %} ?v=4"></script>
+<script src="{% static 'js/tooltip.js'%}"></script>
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/modal_movements.js' %}"></script>
 
 {% endblock %}

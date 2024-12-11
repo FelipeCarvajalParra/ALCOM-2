@@ -182,8 +182,36 @@ def edit_part_action(request, part_id):
     except Exception:
         return JsonResponse({'error':'Error inesperado'})
 
+@login_required
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
 def view_movements(request):
-    return render(request, 'view_movements.html')
+
+    type_movement = request.GET.get('search', '').strip()
+    movements = Actualizaciones.objects.all().order_by('-actualizacion_pk')
+
+    if type_movement:
+        if type_movement == 'Entradas':
+            movements = Actualizaciones.objects.filter(tipo_movimiento='Entrada').order_by('-actualizacion_pk')
+        elif type_movement == 'Salidas':
+            movements = Actualizaciones.objects.filter(tipo_movimiento='Salida').order_by('-actualizacion_pk')
+
+    paginator = Paginator(movements, 15)
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
+    context = {
+        'paginator': paginator,
+        'search_query': type_movement,
+        'page_number': page_number
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_movements_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_movements_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
+    return render(request, 'view_movements.html', context)
 
 
     
