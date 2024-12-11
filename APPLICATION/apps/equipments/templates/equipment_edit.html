@@ -147,29 +147,15 @@
     </div>
 </div>
 
-{% if messages %}
-    {% for message in messages %}
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <div id="toast-data" data-icon="{{ message.tags }}" data-title="{{ message }}"></div>
-        <script src="{% static 'js/pop-up_window.js' %}" ></script>
-    {% endfor %}
-{% endif %}
-
-<script src="{% static 'js/sub_navigation.js' %} ?v=2" ></script>
-<script src="{% static 'js/delete_confirmations.js' %}"></script>
-<script src="{% static 'js/user_crud.js' %} ?v=2"></script>
-<script src="{% static 'js/filter_selector.js'%} ?v=3"></script>
-<script src="{% static 'js/update_files.js' %}"></script>
 <script src="{% static 'js/search_intervention.js' %} ?v=5"></script>
 <script src="{% static 'js/height_textarea.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script src="{% static 'js/tooltip_tippy.js' ?v=2%}"></script>
 <script src="{% static 'js/tooltip.js' %}"></script>
-
-
-
-
+<script src="{% static 'js/intervention_crud.js' %}"></script>
 
 {% endblock %}

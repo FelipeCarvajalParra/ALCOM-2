@@ -102,7 +102,10 @@ function delete_confirmations(){
         deleteEquipment.forEach(function (equipment) {
             equipment.addEventListener('click', function () {
                 const equipmentId = equipment.getAttribute('data-id'); 
-                const referenceId = document.getElementById('reference').value; 
+
+                const referenceElement = document.getElementById('reference');
+                const referenceId = referenceElement ? referenceElement.value : null;
+
                 showConfirmationModal(
                     '¿Estás seguro?',
                     'El equipo y todas las intervenciones asociadas se perderan de forma permanente.',
@@ -115,11 +118,6 @@ function delete_confirmations(){
             });
         });
     }
-
-    
-        
-           
-            
 }
     
     
@@ -166,7 +164,14 @@ function delete_confirmations(){
                             const equipmentId = arguments[4];  // recibir el ID aquí
                             const referenceId = arguments[6];
 
-                            deleteRequest('delete_equipment', equipmentId, `edit_reference/${referenceId}`, true);
+                            console.log(equipmentId)
+
+                            if (referenceId){
+                                deleteRequest('delete_equipment', equipmentId, `edit_reference/${referenceId}`, true);
+                            }else {
+                                deleteRequest('delete_equipment', equipmentId, 'view_equipments');
+                            }
+                           
                             break
     
                     }

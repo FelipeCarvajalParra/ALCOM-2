@@ -1,47 +1,52 @@
 {% if paginator|length > 0 %}
     {% for intervention in paginator %}
-            <tr class="table__row">
-                <td class="table__cell table__cell--auto table__cell--flex">
-                    <img class="table__image table__image--circular" src="{{intervention.usuario_fk.profile_picture.url}}"
-                        alt="img" />
-                    <div class="table__container-text">
-                        <a href="" class="table__container-link">{{ intervention.usuario_fk.first_name }} {{ intervention.usuario_fk.last_name}}</a>
-                        <span class="table__container-email">{{ intervention.num_orden_pk }}</span>
-                    </div>
-                </td>
-                
-                <td class="table__cell table__cell--medium table__cell--overflow" data-text="{% if user.groups.exists %}{% for group in user.groups.all %}{% if group.name == 'administrators' %}Administrador{% elif group.name == 'technicians' %}Técnico{% elif group.name == 'consultants' %}Consultor{% else %}{{ group.name }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Sin grupos{% endif %}">
-                    {{ intervention.fecha_hora|date:"d/m/Y" }}
-                </td>
+        <tr class="table__row">
+            <td class="table__cell table__cell--auto table__cell--flex">
+                <img class="table__image table__image--circular" src="{{intervention.usuario_fk.profile_picture.url}}"
+                    alt="img" />
+                <div class="table__container-text">
+                    <a href="{% url 'edit_user' intervention.usuario_fk.id %}" class="table__container-link">{{ intervention.usuario_fk.first_name }} {{ intervention.usuario_fk.last_name}}</a>
+                    <span class="table__container-email">{{ intervention.num_orden_pk }}</span>
+                </div>
+            </td>
+            
+            <td class="table__cell table__cell--medium table__cell--overflow" data-text="{{ intervention.fecha_hora|date:'d/m/Y' }}">
+                {{ intervention.fecha_hora|date:"d/m/Y" }}
+            </td>
 
-                <td class="table__cell table__cell--small table__cell--overflow"
-                    data-text="{% if intervention.estado == 'Aprobada' %}Aprobada{% elif intervention.estado == 'Pendiente' %}Pendiente{% else %}None{% endif %}">
-                    {% if intervention.estado == 'Aprobada' %}
-                        <div class="status status--active">
-                            <span>
-                                Aprobada
-                            </span>
-                        </div>
-                    {% elif intervention.estado == 'Pendiente' %}
-                        <div class="status status--blocked">
-                            <span>
-                                Pendiente
-                            </span>
-                        </div>
-                    {% else %}
+            <td class="table__cell table__cell--small table__cell--overflow"
+                data-text="{% if intervention.estado == 'Aprobada' %}Aprobada{% elif intervention.estado == 'Pendiente' %}Pendiente{% else %}None{% endif %}">
+                {% if intervention.estado == 'Aprobada' %}
+                    <div class="status status--active">
                         <span>
-                            None
+                            Aprobada
                         </span>
-                    {% endif %}
-                </td>
-                <td class="table__cell table__cell--actions">
-                    <a href="/edit_equipment/{{intervention.cod_equipo_fk.cod_equipo_pk}}?intervention_id={{intervention.num_orden_pk}}" >
-                        <svg class="svg-option" width="20px" height="20px">
-                            <use href="#icon-view"></use>
-                        </svg>
-                    </a>
-                </td> 
-            </tr>
+                    </div>
+                {% elif intervention.estado == 'Pendiente' %}
+                    <div class="status status--blocked">
+                        <span>
+                            Pendiente
+                        </span>
+                    </div>
+                {% else %}
+                    <span>
+                        None
+                    </span>
+                {% endif %}
+            </td>
+            <td class="table__cell table__cell--actions">
+                <a href="/edit_equipment/{{intervention.cod_equipo_fk.cod_equipo_pk}}?intervention_id={{intervention.num_orden_pk}}" >
+                    <svg class="svg-option" width="20px" height="20px">
+                        <use href="#icon-view"></use>
+                    </svg>
+                </a>
+                <a href="{% if intervention.formato %}{{ intervention.formato.url }}{% else %}{% url 'order_service' intervention.num_orden_pk %}{% endif %}" target="blank__">
+                    <svg class="svg-option" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM7 6V10H11V6H7ZM7 12V14H17V12H7ZM7 16V18H17V16H7ZM13 7V9H17V7H13Z"></path>
+                    </svg>
+                </a>
+            </td> 
+        </tr>
     {% endfor %}
 {% else %}
     <tr class="table__row table__row--not-results">

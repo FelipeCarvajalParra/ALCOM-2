@@ -20,9 +20,12 @@
                     </svg>
                 </a>
                 {% if user.groups.first.name == 'administrators' %}
+                <a class="deleteEquipment" data-id="{{ equipment.cod_equipo_pk }}">
                     <svg class="svg-option svg-option--delete" width="20px" height="20px">
                         <use href="#icon-delete"></use>
                     </svg>
+                </a>
+                    
                 {% endif %}
             </td>
         </tr>

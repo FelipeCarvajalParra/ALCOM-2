@@ -105,12 +105,18 @@
             <main class="orden__main">
                 <div class="orden__info-client">
                     <div class="orden__info-name orden__date-table__item--border-rigth">
-                        <span class="text-bold">EMPRESA: </span>
-                        <span> ALCOM SAS</span>
+                        <span class="text-bold">EMPRESA:</span>
+                        <span>ALCOM SAS</span>
                     </div>
                     <div class="orden__info-service ">
                         <span class="text-bold">PROCEDIMIENTO:</span>
                         <span>{{ intervention.tarea_realizada|upper }}</span>
+                    </div>
+                </div>
+                <div class="orden__info-client">
+                    <div class="orden__info-reference">
+                        <span class="text-bold">REFERENCIA:</span>
+                        <span>{{ equipment.referencia_fk.referencia_pk|upper }} </span>
                     </div>
                 </div>
                 <div class="orden__info-equipment">
@@ -126,13 +132,9 @@
                         <span class="text-bold">SERIAL: </span>
                         <span> {{ equipment.serial }} </span>
                     </div>
-                    <div class="orden__info-category orden__date-table__item--border-rigth">
+                    <div class="orden__info-category">
                         <span class="text-bold">CATEGORIA: </span>
                         <span>{{ equipment.referencia_fk.categoria|upper }}</span>
-                    </div>
-                    <div class="orden__info-reference orden__date-table__item--border-rigth">
-                        <span class="text-bold">REFERENCIA: </span>
-                        <span>{{ equipment.referencia_fk.referencia_pk|upper }}</span>
                     </div>
                 </div>
                 <div class="order__line"></div>

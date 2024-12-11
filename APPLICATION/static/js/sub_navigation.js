@@ -42,17 +42,29 @@ navButtons.forEach(button => {
 // Verificar si hay un botón activo almacenado en localStorage al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     const activeButtonTarget = localStorage.getItem('activeButton');
+    const currentPath = window.location.pathname; // Ruta actual
+
+    // Solo mantener el botón activo si la URL no cambia de sección
+    const previousPath = sessionStorage.getItem('previousPath');
+    if (previousPath !== currentPath) {
+        localStorage.removeItem('activeButton');
+    }
+
+    // Almacenar la ruta actual en sessionStorage para referencia futura
+    sessionStorage.setItem('previousPath', currentPath);
+
     if (activeButtonTarget) {
         // Buscar el botón que tiene el mismo atributo data-target almacenado
         const activeButton = Array.from(navButtons).find(button => button.getAttribute('data-target') === activeButtonTarget);
-        
+
         // Simular un clic en el botón encontrado para activar la sección correcta
         if (activeButton) {
             activeButton.click();
         }
     } else {
-        // Si no hay ningún botón almacenado, activar el primero por defecto
-        navButtons[0].click();
+        if (navButtons.length > 0) {
+            // Si no hay un botón activo almacenado, activar el primer botón
+            navButtons[0].click();
+        }
     }
 });
-

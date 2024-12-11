@@ -203,7 +203,8 @@
 }
 
 .orden__info-equipment{
-    height: 50px;
+    min-height: 50px;
+    text-align: center;
 }
 
 .orden__info-name, .orden__info-service{
@@ -221,7 +222,7 @@
     background-color: #2d386e;
 }
 
-.orden__info-code, .orden__info-serial, .orden__info-brand, .orden__info-category, .orden__info-reference{
+.orden__info-code, .orden__info-serial, .orden__info-brand, .orden__info-category{
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -234,11 +235,20 @@
 }
 
 .orden__info-serial{
+    width: 40%;
+}
+
+.orden__info-category{
     width: 30%;
 }
 
-.orden__info-category, .orden__info-reference{
-    width: 20%;
+.orden__info-reference{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    gap: 5px;
 }
 
 .orden__description{
