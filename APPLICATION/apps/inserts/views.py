@@ -169,7 +169,7 @@ def view_interventions(request):
         interventions = Intervenciones.objects.filter(usuario_fk=request.user).order_by('-fecha_hora')
 
     date_range = request.GET.get('dateRange')
-    print(date_range)
+
     if date_range:
         try:
             start_date_str, end_date_str = date_range.split(' - ')
@@ -431,9 +431,7 @@ def save_result_intervention(request, num_order):
         else:
             return JsonResponse({'error': 'Resultado no válido.'}, status=400)
 
-    except Exception as e:
-        print('Error:', e)
-        traceback.print_exc()  # Esto imprimirá el traceback completo del error
+    except Exception:
         return JsonResponse({'error': 'Error inesperado'})
     
 

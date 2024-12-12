@@ -124,8 +124,7 @@ def delete_equipment(request, id_equipment):
         messages.success(request, 'Equipo eliminado correctamente.')
         return JsonResponse({'success': True}, status=200) 
     
-    except Exception as e:
-        print(e)
+    except Exception :
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})  
 

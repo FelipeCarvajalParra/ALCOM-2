@@ -1687,7 +1687,7 @@ display: block;
     transform: translateY(-50%);
     background-color: white;
     padding: 0 5px;
-    color: #4a4f63;
+    color: #ccc;
     transition: all 0.2s ease;
     white-space: nowrap;
 }

@@ -16,8 +16,11 @@ from apps.logIn.views import group_required
 from apps.users.models import CustomUser
 from apps.activityLog.models import ActivityLog
 from apps.activityLog.utils import log_activity
-from django.http import HttpResponseForbidden
 from apps.inserts.models import Intervenciones
+from django.utils.timezone import make_aware, get_current_timezone
+from datetime import datetime
+from collections import defaultdict
+
 
 group_name = {
     'Consultor': 'consultants', 
@@ -59,34 +62,6 @@ def view_users(request):
         return JsonResponse({'body': html_body, 'footer': html_footer})
 
     return render(request, 'view_users.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
-from django.template.loader import render_to_string
-from django.utils.timezone import make_aware, get_current_timezone
-from datetime import datetime
-from collections import defaultdict
-import json
-
 
 @login_required
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
@@ -147,10 +122,6 @@ def edit_user(request, id):
         for date, count in interventions_data.items()
     ]
 
-    if selected_date:
-        print('dato: ', type(selected_date_obj))
-
-    
     # Crear contexto
     user = get_object_or_404(CustomUser, pk=id)
     context = {
@@ -170,26 +141,6 @@ def edit_user(request, id):
         return JsonResponse({'body': html_body})
 
     return render(request, 'user_edit.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def validate_user_data(data, is_update=False):
     required_fields = ['names', 'lastName', 'email', 'jobName', 'username', 'status', 'group']
@@ -275,9 +226,7 @@ def register_user(request):
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def update_personal_data(request, user_id):
     userAccount = get_object_or_404(CustomUser, id=user_id)
-    print('usuario', userAccount)
     data = json.loads(request.body)
-    print('data', data)
 
     if not all([data.get('names', '').strip(), data.get('lastName', '').strip(), data.get('email', '').strip()]):
         return JsonResponse({'success': False, 'error': 'Todos los campos son requeridos.'}, status=400)
@@ -408,8 +357,6 @@ def update_login_data(request, user_id):
 def delete_user(request, user_id):
     try:
         user_instance = get_object_or_404(CustomUser, id=user_id)
-
-        print(user_instance.id)
 
         # Verificar si la imagen no es la por defecto
         if user_instance.profile_picture and user_instance.profile_picture.url != settings.MEDIA_URL + 'default/default_user.jpg':

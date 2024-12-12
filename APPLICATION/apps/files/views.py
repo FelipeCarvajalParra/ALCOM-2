@@ -42,8 +42,6 @@ def update_file(request):
     file = request.FILES.get('file')  # Cambiado de 'image' a 'file' para soportar ambos tipos
     file_type = request.POST.get('type')
 
-    print(app_name, table, field, record_id, file, file_type)
-
     # Verificar campos requeridos
     if not (app_name and table and field and record_id and file and file_type):
         messages.error(request, 'Faltan campos requeridos')
