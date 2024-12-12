@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'apps.inserts',
     'apps.partsInventory',
     'apps.files',
-    'apps.errors'
+    'apps.errors',
+    'apps.shopping'
 ]
 
 MIDDLEWARE = [

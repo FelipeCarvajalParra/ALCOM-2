@@ -20,6 +20,7 @@ urlpatterns = [
     path('', include('apps.errors.urls')),
     path('', include('apps.partsInventory.urls')),
     path('', include('apps.inserts.urls')),
+    path('', include('apps.shopping.urls')),
 ]
 
 if settings.DEBUG:

@@ -5,7 +5,8 @@ function delete_confirmations(){
     const deleteCategory = document.querySelectorAll('.deleteCategory');
     const deleteReference = document.querySelectorAll('.deleteReference');
     const deleteReferenceImage = document.getElementById('deleteReferenceImage');
-    const deleteEquipment = document.querySelectorAll('.deleteEquipment')
+    const deleteEquipment = document.querySelectorAll('.deleteEquipment');
+    const deleteShopping = document.querySelectorAll('.deleteShopping');
     
     if (logoutLink) {
         logoutLink.addEventListener('click', function () {
@@ -118,6 +119,27 @@ function delete_confirmations(){
             });
         });
     }
+
+    if (deleteShopping) {
+        deleteShopping.forEach(function (shoppin) {
+            shoppin.addEventListener('click', function () {
+                const shoppinId = shoppin.getAttribute('data-id'); 
+
+                const partElement = document.getElementById('idPart');
+                const partId = partElement ? partElement.value : null;
+
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'El registro de compra se perdera de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    shoppinId, 
+                    7,
+                    partId,
+                );
+            });
+        });
+    }
 }
     
     
@@ -173,7 +195,11 @@ function delete_confirmations(){
                             }
                            
                             break
-    
+                        case(7):
+                            const shoppingId = arguments[4];  // recibir el ID aquí
+                            const partId = arguments[6];
+                            deleteRequest('delete_shopping', shoppingId, `edit_part/${partId}`, true);
+                            break;
                     }
                 }
             }

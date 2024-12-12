@@ -338,12 +338,48 @@
                 </div>
             </div>
         </div>
+
+
+
+
+        <div id="shopping" class="container--activity scroll" style="display: none;">
+            <div class="container__section-title">
+                <span>Lista de compras</span>
+            </div>
+            <div class="container__table">
+                <div class="container--large container--sub-table">
+                    <table class="table">
+                        <div class="table__info table__info--options table__info--gap">
+                            {% if user.groups.first.name == 'administrators' %}
+                                <div class="button button--margin-left" data-modal-id="modalAddShopping">
+                                    <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
+                                    </svg>
+                                    <span>Agregar</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <thead class="table__headed">
+                            <th class="table__headed-title">Fecha</th>
+                            <th class="table__headed-title">Color</th>
+                            <th class="table__headed-title">Cantidad</th>
+                            <th class="table__headed-title table__headed-actions">Acciones</th>
+                        </thead>
+                        <tbody class="table__body">
+                            {% include 'partials/_shopping_table_body.html' %}
+                        </tbody>
+                    </table>
+                    <div class="table__footer">
+                        {% include 'partials/_shopping_table_footer.html' %} 
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 {% if user.groups.first.name == 'administrators' %}
     <div class="modal-overlay"></div>
-
 
     <div class="modal" id="modalAdd">
         <button class="modal__close">
@@ -409,6 +445,54 @@
         </form>
     </div>
 
+
+
+
+    <div class="modal" id="modalAddShopping">
+        <button class="modal__close">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <div class="modal__header">
+            <span>Reporte de compra</span>
+            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la compra.</p>
+        </div>
+
+        <form class="container__form" id="addShoppingForm">
+            {% csrf_token %}
+            <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
+            
+            <div class="form__largue form__largue--margin-top">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input class="input input--medium" maxlength="100" type="text" id="color" name="color" required>
+                        <label class="input-container__label" for="color">Color</label>
+                    </div>
+                    <div class="input-wrapper">
+                        <input class="input input--medium" type="number" id="amountShopping" name="amountShopping" required>
+                        <label class="input-container__label" for="amountShopping">Cantidad</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form__largue form__largue--margin-top">
+                <div class="input-container">
+                    <div class="input-wrapper input-wrapper--largue">
+                        <textarea class="input input--largue textarea" id="noteShopping" name="noteShopping" maxlength="250" style="height: 45px;"></textarea>
+                        <label class="input-container__label textarea__label" for="noteShopping">Observaciones</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__options">
+                <button type="submit" class="button button--save">
+                    <span>Añadir</span>
+                </button>
+                <span id="messageShoppingError" class="login__error-message">‎</span>
+            </div>
+        </form>
+    </div>
+
 {% endif %}
 
 <div class="modal modal--parts" id="modalMovements">
@@ -442,12 +526,52 @@
     </div>
 </div>
 
+<div class="modal modal--parts" id="modalViewShopping">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Reporte de compra</span>
+    </div>
+    
+    <div class="modal__text modal__text--margin-top">
+        <span class="modal__text-general">
+            <span class="modal__text-label">Fecha:</span>
+            <span class="modal__text-value" id="shoppinDate"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Nombre parte:</span>
+            <span class="modal__text-value" id="shoppinPartName"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Numero parte:</span>
+            <span class="modal__text-value" id="shoppinPartCode"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Color:</span>
+            <span class="modal__text-value" id="shoppingColor"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Cantidad:</span>
+            <span class="modal__text-value" id="shoppingQuantity"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Observaciones:</span>
+            <span class="modal__text-value" id="shoppingObservations"></span>
+        </span>
+    </div>
+</div>
+
 <script src="{% static 'js/tooltip.js' %}"></script>
-<script src="{% static 'js/modal_movements.js' %} ?v=3"></script>
+<script src="{% static 'js/modal_parts.js' %} ?v=3"></script>
 <script src="{% static 'js/modal.js' %}"></script>
 <script src="{% static 'js/searchs_tables.js' %} ?v=3"></script>
 <script src="{% static 'js/part_crud.js' %} ?v=2" ></script>
 <script src="{% static 'js/inserts_crud.js' %} ?v=2"></script>
+<script src="{% static 'js/shopping_crud.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>

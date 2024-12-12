@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from apps.shopping.models import Compras
 from .models import Inventario
 from django.core.paginator import Paginator
 from django.conf import settings
@@ -91,6 +92,8 @@ def edit_part(request, part_id):
     part = get_object_or_404(Inventario, pk=part_id)
     part_movements = Actualizaciones.objects.filter(num_parte_fk=part_id).order_by('-actualizacion_pk')
 
+    shoppings = Compras.objects.filter(num_parte_fk=part_id).order_by('-fecha_hora')
+
     partsIncome = Actualizaciones.objects.filter(tipo_movimiento='Entrada', num_parte_fk=part_id).aggregate(Sum('cantidad'))['cantidad__sum'] or 0
     partsOutcome = Actualizaciones.objects.filter(tipo_movimiento='Salida', num_parte_fk=part_id).aggregate(Sum('cantidad'))['cantidad__sum'] or 0
 
@@ -107,13 +110,20 @@ def edit_part(request, part_id):
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
+    paginator_shopping = Paginator(shoppings, 11)
+    page_number_shopping = request.GET.get('page_shopping')
+    paginator_shopping = paginator_shopping.get_page(page_number_shopping)
+
     context = {
         'paginator': paginator,
+        'page_number': page_number,
+        'search_query': search,
         'part': part,
         'default_image': default_image,
-        'search_query': search,
         'partsIncome': partsIncome,
-        'partsOutcome': partsOutcome
+        'partsOutcome': partsOutcome,
+        'paginator_shopping': paginator_shopping,
+        'page_number_shopping': page_number_shopping,
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':

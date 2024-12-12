@@ -22,3 +22,4 @@ class Inventario(models.Model):
     class Meta:
         db_table = 'inventario'
 
+

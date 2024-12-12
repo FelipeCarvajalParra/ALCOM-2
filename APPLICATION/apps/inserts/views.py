@@ -22,6 +22,7 @@ from apps.logIn.views import group_required
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.utils.timezone import localtime
 
 
 @login_required
@@ -92,7 +93,6 @@ def add_parts(request, part_id):
 @transaction.atomic
 @group_required(['administrators', 'consultants'], redirect_url='/forbidden_access/')
 def consult_movements(request, movement_id):
-    from django.utils.timezone import localtime
 
     try:
         part = Actualizaciones.objects.get(actualizacion_pk=movement_id)
