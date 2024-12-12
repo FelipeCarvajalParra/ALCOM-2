@@ -160,10 +160,16 @@ def edit_part_action(request, part_id):
         namePart = request.POST.get('namePart')
         location = request.POST.get('location')
         url = request.POST.get('url')
+        linkShop1 = request.POST.get('linkShopping1')
+        linkShop2 = request.POST.get('linkShopping2')
+        linkShop3 = request.POST.get('linkShopping3')
 
         part.nombre = namePart
         part.ubicacion = location
         part.link_consulta = url
+        part.link_compra_1 = linkShop1
+        part.link_compra_2 = linkShop2
+        part.link_compra_3 = linkShop3
         part.save()
 
         log_activity(
@@ -179,7 +185,8 @@ def edit_part_action(request, part_id):
 
     except Inventario.DoesNotExist:
         return JsonResponse({'error':'No se encontro el registro'})
-    except Exception:
+    except Exception as e:
+        print(e)
         return JsonResponse({'error':'Error inesperado'})
 
 @login_required

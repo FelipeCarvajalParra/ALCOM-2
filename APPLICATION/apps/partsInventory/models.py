@@ -4,8 +4,10 @@ class Inventario(models.Model):
     num_parte_pk = models.CharField(primary_key=True, max_length=250)
     nombre = models.CharField(max_length=250, blank=True, null=True)
     ubicacion = models.CharField(max_length=250, blank=True, null=True)
-
     link_consulta = models.CharField(max_length=1000, blank=True)
+    link_compra_1 = models.CharField(max_length=1000, blank=True)
+    link_compra_2 = models.CharField(max_length=1000, blank=True)
+    link_compra_3 = models.CharField(max_length=1000, blank=True)
     manual = models.FileField(max_length=400, blank=True, upload_to='technical_sheets/', null=True)
     total_unidades = models.IntegerField(default=0)
     imagen_1 = models.ImageField(max_length=400, blank=True, upload_to='Parts_pictures/', null=True)
