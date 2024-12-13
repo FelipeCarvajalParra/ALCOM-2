@@ -1055,6 +1055,11 @@ a{
     width: 100%;
 }
 
+.table__footer--none-container{
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
 .table__image{
     min-width: 40px;
     max-width: 40px;

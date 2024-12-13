@@ -102,7 +102,6 @@ def view_all_references(request):
 
     for reference in paginator:
         reference.components = Valor.objects.filter(referencia_fk=reference.referencia_pk).values('valor', 'campo_fk__nombre_campo')
-        reference.cantidad_equipos = Equipos.objects.filter(referencia_fk=reference.referencia_pk).count()
         reference.image = Archivos.objects.filter(referencia_pk=reference.referencia_pk).first()
         
     context = { 
