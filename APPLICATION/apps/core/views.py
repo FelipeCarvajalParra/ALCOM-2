@@ -54,31 +54,41 @@ def error_export(request):
     return redirect('view_categories')
 
 @login_required
-@require_POST
-@transaction.atomic
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def search_general(request):
-    search_query = request.GET.get('search', '')
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        search_query = request.GET.get('search_general', '').strip()  # Elimina espacios en blanco
 
-    # Filtrar resultados con coincidencias parciales
-    user_results = CustomUser.objects.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
+        # Si el término de búsqueda está vacío, devolver una respuesta vacía
+        if not search_query:
+            empty_body = render_to_string('partials/_search_general_results.html', {
+                'user_results': [],
+                'category_results': [],
+                'reference_results': [],
+                'equipment_results': [],
+                'default_image': default_image
+            }, request=request)
+            return JsonResponse({'body': empty_body})
 
-    category_results = Categorias.objects.filter(Q(nombre__icontains=search_query))
+        # Filtrar resultados con coincidencias parciales
+        user_results = CustomUser.objects.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
+        category_results = Categorias.objects.filter(Q(nombre__icontains=search_query))
+        reference_results = Referencias.objects.filter(referencia_pk__icontains=search_query).select_related('archivos')
+        equipment_results = Equipos.objects.filter(
+            Q(serial__icontains=search_query) | Q(cod_equipo_pk__icontains=search_query)
+        )
 
-    reference_results = Referencias.objects.filter(referencia_pk__icontains=search_query).select_related('archivos')
-    
-    equipment_results = Equipos.objects.filter(
-        Q(serial__icontains=search_query) | Q(cod_equipo_pk__icontains=search_query)
-    )
+        # Renderizar el partial con los resultados
+        context = {
+            'user_results': user_results,
+            'category_results': category_results,
+            'reference_results': reference_results,
+            'equipment_results': equipment_results,
+            'default_image': default_image
+        }
+        html_body = render_to_string('partials/_search_general_results.html', context, request=request)
 
-    # Renderizar el partial con los resultados y devolver como JSON
-    context = render_to_string('partials/search_results.html', {
-        'user_results': user_results,
-        'category_results': category_results,
-        'reference_results': reference_results,
-        'equipment_results': equipment_results,
-        'default_image': default_image
-    })
+        return JsonResponse({'body': html_body})
 
-
-    return JsonResponse({'body': context})
+    # Si no es una solicitud AJAX, devuelve un error 400
+    return JsonResponse({'error': 'Invalid request'}, status=400)

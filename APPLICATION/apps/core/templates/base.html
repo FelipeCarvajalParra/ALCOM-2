@@ -1,4 +1,6 @@
 {% load static %}
+{% csrf_token %}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -307,23 +309,8 @@
                     <svg class="main__search-icon" width="20px" height="20px">
                         <use href="#search"></use>
                     </svg>
-                    <div class="container--search scroll" id="containerSearch">
-
-                        {% include "partials/search_results.html" %}
-                        
-                        <!--<div class="search-section">
-                            <div class="search-section__title">Partes</div>
-                            <div class="search-section__records">
-                                <a class="search-section__record" href="#">
-                                    <img class="search-section__image search-section__image--semi-circular"
-                                        src="/static/img/board.jpg" alt="img" />
-                                    <div class="search-section__text">
-                                        <span class="search-section__reference" href="#">Board</span>
-                                        <span class="search-section__sub-reference">9876-Nhghgydf</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>-->
+                    <div class="container--search container--search-general scroll" id="containerSearch">
+                        {% include "partials/_search_general_results.html" %}
                     </div>
 
                 </div>
@@ -347,10 +334,10 @@
         </main>
     </div>
    
+    <script src="{% static 'js/search_general.js' %}"></script>
     <script src="{% static 'js/side_bar.js' %} ?v=2"></script>
     <script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
     <script src="{% static 'js/sub_navigation.js' %}"></script>
-    <!--<script src="{% static 'js/search_general.js' %}"></script>-->
 
 
     {% if messages %}

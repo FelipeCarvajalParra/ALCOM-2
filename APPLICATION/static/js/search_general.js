@@ -1,5 +1,5 @@
-const searchInput = document.querySelector('.main__search-input');
-const searchContainer = document.querySelector('.container--search');
+const searchInput = document.getElementById('inputSearchGeneral');
+const searchContainer = document.getElementById('containerSearch');
 const layerColor = document.querySelector('.layer-color'); 
 
 // Muestra el contenedor solo si hay texto en el input
@@ -38,24 +38,37 @@ document.addEventListener('click', function(event) {
 
 let timeoutGeneral;
 
-function petition(url, search) {
+function petitionSearchGeneral(url, search) {
     let data = {
-        'search': search,
+        'search_general': search,
     };
 
     return $.ajax({
         url: url,
         data: data,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
         method: 'GET'  
     }).then(response => {
-        $('.container--search').html(response.body);
+        $('.container--search-general').html(response.body);
     });
 }
 
 $(document).on('input', '#inputSearchGeneral', function() {
     clearTimeout(timeoutGeneral);
+    const inputSearchGeneral = $('#inputSearchGeneral').val().trim();
+
+    // Evita la petición si el campo está vacío
+    if (!inputSearchGeneral) {
+        $('.container--search').html('<div class="search-section"><div class="search-section__title search-section__title--result-none">Sin resultados</div></div>');
+        return;
+    }
+
+    // Muestra el spinner o mensaje de carga
+    $('.container--search').html('<div class="search-section"><div class="search-section__loading">Cargando...</div></div>');
+
     timeout = setTimeout(function() {
-        const inputSearchGeneral = $('#inputSearchGeneral').val();
-        petition('/search_general/', inputSearchGeneral);
+        petitionSearchGeneral('/search_general/', inputSearchGeneral);
     }, 350);
 });

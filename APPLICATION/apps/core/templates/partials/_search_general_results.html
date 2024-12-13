@@ -39,7 +39,7 @@
             <div class="search-section__title">Referencias</div>    
             {% for reference in reference_results %}
                 <div class="search-section__records">
-                    <a class="search-section__record" href="/edit_reference/{{reference.referencia_pk}}">
+                    <a class="search-section__record" href="{% url 'edit_reference' reference.referencia_pk %}">
                         <img class="search-section__image search-section__image--semi-circular"
                             src="{% if reference.archivos and reference.archivos.imagen_1 %}{{ reference.archivos.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="img" />
                         <div class="search-section__text">
@@ -57,7 +57,7 @@
             <div class="search-section__title">Equipos</div>
             {% for equipment in equipment_results %}
                 <div class="search-section__records">
-                    <a class="search-section__record" href="#">
+                    <a class="search-section__record" href="{% url 'edit_equipment' equipment.cod_equipo_pk %}">
                         <div class="search-section__text">
                             <span class="search-section__reference" href="#">{{ equipment.serial }}</span>
                             <span class="search-section__sub-reference">Codigo: {{ equipment.cod_equipo_pk }}</span>
