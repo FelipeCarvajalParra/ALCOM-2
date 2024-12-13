@@ -47,4 +47,5 @@ def section_highlighter_processor(request):
         'is_order_service': current_path.startswith('/order_service/'),
         'is_view_interventions': current_path.startswith('/view_interventions/'),
         'is_view_movements': current_path.startswith('/view_movements/'),
+        'is_view_shopping': current_path.startswith('/view_shopping/'),
     }

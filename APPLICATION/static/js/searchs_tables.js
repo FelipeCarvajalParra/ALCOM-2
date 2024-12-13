@@ -77,7 +77,6 @@ function searchTable(module, page = 1, url) {
 
             petition(url, search, page)
                 .then(() => {
-
                     modal();
                     modalMovements();
                     tooltip()
@@ -99,6 +98,15 @@ function searchTable(module, page = 1, url) {
         case (9):
 
             search = $('#searchInterventions').val();
+
+            petition(url, search, page, brand, category, window.selectedDateRange)
+                .then(() => {
+                })
+                .catch(() => {
+                });
+            break;
+
+        case (10):
 
             petition(url, search, page, brand, category, window.selectedDateRange)
                 .then(() => {
@@ -314,6 +322,22 @@ if (paginatorViewInterventions) {
         timeout = setTimeout(function() {
             searchTable(9, 1, `/view_interventions/`); 
         }, 350); 
+    });
+    
+}
+
+
+const paginatorViewShopping = document.getElementById("paginatorViewShopping");
+if (paginatorViewShopping) { 
+
+    console.log('paginatorViewShopping');
+
+    const filterDateRange = document.getElementById('filterDateRange');
+    $(filterDateRange).on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        const rangeDate = $(this).val();
+        window.selectedDateRange = rangeDate;  
+        searchTable(10, 1, `/view_shopping/`);
     });
     
 }

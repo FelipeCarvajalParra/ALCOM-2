@@ -258,11 +258,11 @@
                                 </svg>
                                 <a href="{% url 'view_inventory_parts' %}" class="aside__nav-item-link" >Inventario</a>
                             </li>
-                            <li class="aside__nav-option-subitem aside__nav-item--no-current">
+                            <li class="aside__nav-option-subitem {% if is_view_shopping  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">
                                     <use href="#circle"></use>
                                 </svg>
-                                <a  href="{% url 'home/construction' %}" class="aside__nav-item-link">Compras</a>
+                                <a  href="{% url 'view_shopping' %}" class="aside__nav-item-link">Compras</a>
                             </li>
                             <li class="aside__nav-option-subitem {% if is_view_movements  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
                                 <svg class="" width="7" height="10">

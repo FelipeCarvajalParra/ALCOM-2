@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -11,6 +11,54 @@ from apps.logIn.views import group_required
 from apps.activityLog.utils import log_activity
 from datetime import datetime
 from django.utils.timezone import localtime
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.core.paginator import Paginator
+from django.template.loader import render_to_string
+
+
+@login_required
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+def view_shopping(request):
+
+    shoppings = Compras.objects.all().order_by('-fecha_hora')
+
+    date_range = request.GET.get('dateRange')
+    if date_range:
+        try:
+            start_date_str, end_date_str = date_range.split(' - ')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) - timedelta(seconds=1)
+            
+            # Añade la zona horaria
+            start_date = timezone.make_aware(start_date, timezone.get_current_timezone())
+            end_date = timezone.make_aware(end_date, timezone.get_current_timezone())
+            
+            # Filtrar por rango de fechas
+            print(start_date, end_date)
+            shoppings = shoppings.filter(fecha_hora__range=(start_date, end_date))
+            print(shoppings)
+        except (ValueError, IndexError):
+            pass
+
+    
+    paginator = Paginator(shoppings, 15)
+    page_number = request.GET.get('page')
+    paginator = paginator.get_page(page_number)
+
+    context = {
+        'paginator': paginator,
+        'page_number': page_number,
+        'date_range': date_range,
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html_body = render_to_string('partials/_shopping_table_body.html', context, request=request)
+        html_footer = render_to_string('partials/_shopping_table_footer.html', context, request=request)
+        return JsonResponse({'body': html_body, 'footer': html_footer})
+
+    return render(request, "view_shopping.html", context)
 
 @login_required
 @require_POST

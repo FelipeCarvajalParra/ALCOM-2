@@ -10,7 +10,7 @@ class Compras(models.Model):
     observaciones = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.num_parte_fk} - {self.fecha}"
+        return f"{self.num_parte_fk} - {self.fecha_hora}"
     
     class Meta:
         db_table = 'compras'

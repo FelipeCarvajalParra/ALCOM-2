@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+{% csrf_token %}
+
+<div class="container--large">
+    <div class="table__info">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25px" fill="currentColor">
+            <path d="M4.00488 16V4H2.00488V2H5.00488C5.55717 2 6.00488 2.44772 6.00488 3V15H18.4433L20.4433 7H8.00488V5H21.7241C22.2764 5 22.7241 5.44772 22.7241 6C22.7241 6.08176 22.7141 6.16322 22.6942 6.24254L20.1942 16.2425C20.083 16.6877 19.683 17 19.2241 17H5.00488C4.4526 17 4.00488 16.5523 4.00488 16ZM6.00488 23C4.90031 23 4.00488 22.1046 4.00488 21C4.00488 19.8954 4.90031 19 6.00488 19C7.10945 19 8.00488 19.8954 8.00488 21C8.00488 22.1046 7.10945 23 6.00488 23ZM18.0049 23C16.9003 23 16.0049 22.1046 16.0049 21C16.0049 19.8954 16.9003 19 18.0049 19C19.1095 19 20.0049 19.8954 20.0049 21C20.0049 22.1046 19.1095 23 18.0049 23Z"></path>
+        </svg>
+        <span class="table__info-text">Compras pendientes</span>
+    </div>
+    <div class="container__table">
+        <div class="container--large container--sub-table">
+            <div class="table__info table__info--options table__info--gap">
+                <input class="select select--search select--date-range select--right" type="text" id="filterDateRange" name="daterange" placeholder="DD/MM/AAAA - DD/MM/AAAA" value="{% if date_range %}{{ date_range }}{% endif %}" />
+            </div>
+            <table class="table">
+                <thead class="table__headed">
+                    <tr>
+                        <th class="table__headed-title">Fecha</th>
+                        <th class="table__headed-title">Color</th>
+                        <th class="table__headed-title">Cantidad</th>
+                        <th class="table__headed-title table__headed-actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table__body">
+                    {% include 'partials/_shopping_table_body.html' %}
+                </tbody>  
+            </table>
+            <div class="table__footer">
+                {% include 'partials/_shopping_table_footer.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" style="display: none;"></div>
+<div class="modal modal--parts" id="modalViewShopping">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Reporte de compra</span>
+    </div>
+    
+    <div class="modal__text modal__text--margin-top">
+        <span class="modal__text-general">
+            <span class="modal__text-label">Fecha:</span>
+            <span class="modal__text-value" id="shoppinDate"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Nombre parte:</span>
+            <span class="modal__text-value" id="shoppinPartName"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Numero parte:</span>
+            <span class="modal__text-value" id="shoppinPartCode"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Color:</span>
+            <span class="modal__text-value" id="shoppingColor"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Cantidad:</span>
+            <span class="modal__text-value" id="shoppingQuantity"></span>
+        </span>
+        <span class="modal__text-general">
+            <span class="modal__text-label">Observaciones:</span>
+            <span class="modal__text-value" id="shoppingObservations"></span>
+        </span>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="{% static 'js/searchs_tables.js' %} ?v=3"></script>
+<script src="{% static 'js/filter_selector_date.js' %}"></script>
+<script src="{% static 'js/tooltip.js'%}"></script>
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/modal_parts.js' %}"></script>
+
+{% endblock %}
