@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block contend %}
+{% load static %}
+{% csrf_token %}
+
+<div class="container--large container--padding-bottom">
+    <table class="table">
+        <div class="table__info table__info--options table__info--border-none" style="border-bottom: none;">
+            <div class="select select--filter">
+                <div class="select__selected" id="filterUser">{% if selected_user %}{{ selected_user }}{% else %}Usuario{% endif %}</div>
+                <div class="select__options scroll">
+                    <div class="select__option" data-id="{{user.id}}">TODOS</div>
+                    {% for user in usersTechnicians %}
+                      <div class="select__option">{{ user.username }}</div>
+                    {% endfor %}
+                </div>
+                <div class="select__icon">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="select select--filter">
+                <div class="select__selected" id="filterCategory">{% if category %}{{ category }}{% else %}Procedimiento{% endif %}</div>
+                <div class="select__options scroll">
+                    <div class="select__option">TODOS</div>
+                    <div class="select__option">Intervencion</div>
+                    <div class="select__option">Cambio de parte</div>
+                    <div class="select__option">Mantenimiento</div>
+                </div>
+                <div class="select__icon">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <input class="select select--search select--date-range select--right" type="text" id="filterDateRange" name="daterange" placeholder="DD/MM/AAAA - DD/MM/AAAA" value="{% if date_range %}{{ date_range }}{% endif %}" />
+        </div>
+    </table>
+</div>
+
+<style>
+    .container__grafic {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 30px;
+    }
+
+    .container__grafic--medium{
+        width: 60%;
+    }
+</style>
+
+
+<div id="activityContainer" class="container--large container--activity scroll" style="display: block;">
+    <div class="container__section-title">
+        <span>Actividad reciente</span>
+    </div>
+    <span id="viewReports" hidden></span>
+    <div class="container__grafics table__body">
+      {% include "partials/_chars_body.html" %}
+    </div>
+    
+</div>
+  
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/search_reports.js' %}"></script>
+<script src="{% static 'js/filter_selector_date.js' %}"></script>
+
+
+<script>
+    var options = {
+          series: [{
+          name: 'PRODUCT A',
+          data: [44, 55, 41, 67, 22, 43, 21, 49, 45, 31]
+        }, {
+          name: 'PRODUCT B',
+          data: [13, 23, 20, 8, 13, 27, 12, 33, 20, 8]
+        }, {
+          name: 'PRODUCT C',
+          data: [11, 17, 15, 15, 21, 14, 15, 13, 17, 0]
+        },],
+          chart: {
+          type: 'bar',
+          height: 350,
+          stacked: true,
+          toolbar: {
+            show: true
+          },
+          zoom: {
+            enabled: true
+          }
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: 'bottom',
+              offsetX: -10,
+              offsetY: 0
+            }
+          }
+        }],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            borderRadius: 10,
+            borderRadiusApplication: 'end', // 'around', 'end'
+            borderRadiusWhenStacked: 'last', // 'all', 'last'
+            dataLabels: {
+              total: {
+                enabled: true,
+                style: {
+                  fontSize: '13px',
+                  fontWeight: 900
+                }
+              }
+            }
+          },
+        },
+        xaxis: {
+          type: 'text',
+          categories: [
+            'Pepito1', 'Pepito2', 'Pepito3', 'Pepito4', 'Pepito5', 'Pepito6', 'pepito7', 'pepito8', 'pepito9', 'pepito10'
+          ],
+        },
+        legend: {
+          position: 'right',
+          offsetY: 40
+        },
+        fill: {
+          opacity: 1
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartBarras"), options);
+        chart.render();
+</script>
+<script>
+    var options = {
+          series: [{
+            name: "Session Duration",
+            data: [40, 23, 12, 45, 34, 25, 11, 78, 56, 34, 89, 23, 67, 45, 12, 90, 34, 56, 78, 23, 45, 67, 89, 12, 34, 56, 78, 90, 23, 45]
+          },
+          {
+            name: "Page Views",
+            data: [34, 56, 78, 23, 45, 67, 89, 12, 34, 56, 78, 90, 23, 45, 67, 23, 45, 67, 89, 12, 34, 56, 78, 90, 23, 45, 67, 89, 12, 34]
+          },
+          {
+            name: 'Total Visits',
+            data: [13, 23, 20, 8, 13, 27, 12, 33, 20, 8, 13, 27, 12, 33, 20, 8, 13, 27, 12, 33, 20, 8, 13, 27, 12, 33, 20, 8, 13, 27]  
+          }
+        ],
+          chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: [5, 7, 5],
+          curve: 'straight',
+          dashArray: [0, 8, 5]
+        },
+        legend: {
+          tooltipHoverFormatter: function(val, opts) {
+            return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'
+          }
+        },
+        markers: {
+          size: 0,
+          hover: {
+            sizeOffset: 6
+          }
+        },
+        xaxis: {
+          categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan',
+            '10 Jan', '11 Jan', '12 Jan', '13 Jan', '14 Jan', '15 Jan', '16 Jan', '17 Jan', '18 Jan', '19 Jan', '20 Jan',
+            '21 Jan', '22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan', '29 Jan', '30 Jan', '31 Jan'
+          ],
+        },
+        tooltip: {
+          y: [
+            {
+              title: {
+                formatter: function (val) {
+                  return val + " (mins)"
+                }
+              }
+            },
+            {
+              title: {
+                formatter: function (val) {
+                  return val + " per session"
+                }
+              }
+            },
+            {
+              title: {
+                formatter: function (val) {
+                  return val;
+                }
+              }
+            }
+          ]
+        },
+        grid: {
+          borderColor: '#f1f1f1',
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chartLine"), options);
+        chart.render();
+</script>
+{% endblock %}
