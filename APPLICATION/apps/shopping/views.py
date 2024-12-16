@@ -16,7 +16,6 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
-
 @login_required
 @transaction.atomic
 @group_required(['administrators'], redirect_url='/forbidden_access/')
@@ -35,10 +34,7 @@ def view_shopping(request):
             start_date = timezone.make_aware(start_date, timezone.get_current_timezone())
             end_date = timezone.make_aware(end_date, timezone.get_current_timezone())
             
-            # Filtrar por rango de fechas
-            print(start_date, end_date)
             shoppings = shoppings.filter(fecha_hora__range=(start_date, end_date))
-            print(shoppings)
         except (ValueError, IndexError):
             pass
 
@@ -162,8 +158,7 @@ def validate_shopping(request, shopping_id):
         messages.success(request, 'Reporte de compra validado correctamente')
         return JsonResponse({'success': True})
 
-    except Exception as e:
-        print(e)
+    except Exception:
         messages.error(request, 'Ocurrió un error inesperado.')
         return JsonResponse({'success': True})
 
