@@ -2250,3 +2250,17 @@ input:-webkit-autofill {
     font-size: 12px;
     margin-top: 15px;
 }
+
+/*============= Bloque de graficos ================*/  
+
+.container__grafic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+}
+
+.container__grafic--medium{
+    width: 60%;
+}
