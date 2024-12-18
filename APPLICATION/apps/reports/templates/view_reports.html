@@ -9,7 +9,7 @@
             <div class="select select--filter">
                 <div class="select__selected" id="filterUser">{% if selected_user %}{{ selected_user }}{% else %}Usuario{% endif %}</div>
                 <div class="select__options scroll">
-                    <div class="select__option" data-id="{{user.id}}">TODOS</div>
+                    <div class="select__option">TODOS</div>
                     {% for user in usersTechnicians %}
                       <div class="select__option">{{ user.username }}</div>
                     {% endfor %}
@@ -42,9 +42,6 @@
 </div>
 
 <div id="activityContainer" class="container--large container--activity scroll" style="display: block;">
-    <div class="container__section-title">
-        <span>Actividad reciente</span>
-    </div>
     <span id="viewReports" hidden></span>
     <div class="container__grafics table__body">
       {% include "partials/_chars_body.html" %}
@@ -62,7 +59,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="{% static 'js/filter_selector.js' %}"></script>
-<script src="{% static 'js/search_reports.js' %} ?v=2"></script>
+<script src="{% static 'js/search_reports.js' %} ?v=4"></script>
 <script src="{% static 'js/filter_selector_date.js' %}"></script>
 
 

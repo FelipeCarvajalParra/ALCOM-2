@@ -114,23 +114,6 @@ function searchTable(module, page = 1, url) {
                 .catch(() => {
                 });
             break;
-        case (11):
-
-            const filterUserElement = document.getElementById('filterUser');
-            const filterUserValue = filterUserElement ? filterUserElement.textContent.trim() : null;
-
-            const filterCategoryElement = document.getElementById('filterCategory');
-            const filterCategoryValue = filterCategoryElement ? filterCategoryElement.textContent.trim() : null;
-
-            console.log('filterUserValue', filterUserValue);
-
-
-            petition(url, search, page, brand, filterCategoryValue, window.selectedDateRange, filterUserValue)
-                .then(() => {
-                })
-                .catch(() => {
-                });
-            break;
 
         default:
             search = ''; 
@@ -355,50 +338,6 @@ if (paginatorViewShopping) {
     });
     
 }
-
-const viewReports = document.getElementById("viewReports");
-if (viewReports) { 
-
-    console.log('paginatorViewShopping');
-
-    const filterDateRange = document.getElementById('filterDateRange');
-    $(filterDateRange).on('apply.daterangepicker', function (ev, picker) {
-        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-        const rangeDate = $(this).val();
-
-        window.selectedDateRange = rangeDate;  
-        searchTable(11, 1, `/view_reports/`);
-    });
-
-    const filterUser = document.getElementById('filterUser');
-    if (filterUser) {
-        const observer = new MutationObserver(function(mutationsList) {
-            for (const mutation of mutationsList) {
-                if (mutation.type === 'childList' || mutation.type === 'subtree') {
-                    searchTable(11, 1, `/view_reports/`) 
-                }
-            }
-        });
-    
-        observer.observe(filterUser, { childList: true, subtree: true });
-    }
-
-    const filterCategory = document.getElementById('filterCategory');
-    if (filterCategory) {
-        const observer = new MutationObserver(function(mutationsList) {
-            for (const mutation of mutationsList) {
-                if (mutation.type === 'childList' || mutation.type === 'subtree') {
-                    searchTable(11, 1, `/view_reports/`) 
-                }
-            }
-        });
-    
-        observer.observe(filterCategory, { childList: true, subtree: true });
-    }
-
-
-}
-
 
 
 

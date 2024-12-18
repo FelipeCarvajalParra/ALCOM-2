@@ -1,21 +1,45 @@
+let currentAjaxRequest = null; // Variable para manejar la solicitud AJAX activa
+
 // Función que realiza la petición AJAX
 function petition(dateRange) {
+
+    dateRange = dateRange || $('#filterDateRange').val();
+
+    const filterUserElement = document.getElementById('filterUser');
+    const filterUserValue = filterUserElement ? filterUserElement.textContent.trim() : null;
+
+    const filterCategoryElement = document.getElementById('filterCategory');
+    const filterCategoryValue = filterCategoryElement ? filterCategoryElement.textContent.trim() : null;
+
     let data = {
-        'dateRange': dateRange
+        'dateRange': dateRange,
+        'filterUser': filterUserValue,
+        'filterCategory': filterCategoryValue,
     };
 
-    // Realizar la petición AJAX al servidor
-    return $.ajax({
+    // Cancelar la solicitud anterior si existe
+    if (currentAjaxRequest) {
+        currentAjaxRequest.abort();
+    }
+
+    // Crear una nueva solicitud AJAX
+    currentAjaxRequest = $.ajax({
         url: '/view_reports/',
         data: data,
         dataType: 'json', // Esperamos una respuesta en formato JSON
-        method: 'GET'
-    }).then(data => {
+        method: 'GET',
+    });
+
+    // Manejar la respuesta
+    return currentAjaxRequest.then(data => {
         console.log('Respuesta del servidor:', data);
         updateChart(data);
-        
     }).catch(error => {
-        console.error('Error en la petición AJAX:', error);
+        if (error.statusText !== "abort") { // Ignorar errores de abortar
+            console.error('Error en la petición AJAX:', error);
+        }
+    }).always(() => {
+        currentAjaxRequest = null; // Limpiar la solicitud activa después de completar
     });
 }
 
@@ -40,35 +64,27 @@ function updateInterventions(interventionsByDay) {
         container.appendChild(div);
     }
 
-    // Si el contenedor del gráfico no existe, lo agregamos dinámicamente
-    if (!document.querySelector("#chartLine")) {
-        let chartContainer = document.createElement('div');
-        chartContainer.id = "chartLine";
-        container.appendChild(chartContainer);
-    }
-
     // Actualizar el gráfico después de insertar el contenedor
     updateChart(interventionsByDay);
 }
 
-
-
-
+// Función para actualizar el gráfico
 function updateChart(data) {
-
-    console.log('Datos para el gráfico:', data);
 
     // Obtener las categorías y las series del JSON
     const categories = data.categories;
     const seriesData = data.series;
+    const range = data.range;
 
     // Organizar las series
-    const series = seriesData.map(seriesItem => {
-        return {
-            name: seriesItem.name,
-            data: seriesItem.data
-        };
-    });
+    const series = seriesData
+        .filter(seriesItem => seriesItem.name && Array.isArray(seriesItem.data))
+        .map(seriesItem => {
+            return {
+                name: seriesItem.name,
+                data: seriesItem.data,
+            };
+        });
 
     // Asegurarnos de que el contenedor #chartLine existe en el DOM
     const chartContainer = document.querySelector("#chartLine");
@@ -93,7 +109,7 @@ function updateChart(data) {
                 dashArray: [0, 0, 0]  // Cambiar a 0 para todas las líneas
             },
             title: {
-                text: 'Estadísticas de Intervenciones',
+                text: range,
                 align: 'left'
             },
             legend: {
@@ -108,7 +124,8 @@ function updateChart(data) {
                 }
             },
             xaxis: {
-                categories: categories
+                categories: categories,
+                convertedCatToNumeric: true,
             },
             tooltip: {
                 y: [
@@ -142,7 +159,9 @@ function updateChart(data) {
 
         // Verificar si el gráfico ya ha sido creado para actualizarlo, si no, crearlo
         if (window.chart) {
-            window.chart.updateOptions(options);
+            window.chart.destroy();
+            window.chart = new ApexCharts(chartContainer, options);
+            window.chart.render();
         } else {
             window.chart = new ApexCharts(chartContainer, options);
             window.chart.render();
@@ -157,26 +176,49 @@ const filterDateRange = document.getElementById('filterDateRange');
 if (filterDateRange) {
     $(filterDateRange).on('apply.daterangepicker', function(ev, picker) {
         // Obtener el rango de fechas seleccionado
-        const rangeDate = $(this).val();
+        const rangeDate = picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD');
 
         // Realizar la petición con el nuevo rango de fechas
         petition(rangeDate);
     });
 }
 
-$(document).ready(function() {
-    // Si hay datos iniciales, actualizamos la tabla y el gráfico
-    if (initialData) {
-      
-        console.log('Datos iniciales js:', initialData);
 
-     
+
+// Inicializar los datos al cargar la página
+$(document).ready(function() {
+    if (initialData) {
         updateChart(initialData);
     } else {
-        // Si no hay datos iniciales, realizar la petición con el rango de fechas por defecto
         const initialDateRange = $('#filterDateRange').val();
         if (initialDateRange) {
             petition(initialDateRange); // Realizar la petición inicial con el rango de fechas por defecto
         }
     }
 });
+
+const filterUser = document.getElementById('filterUser');
+if (filterUser) {
+    const observer = new MutationObserver(function(mutationsList) {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                petition();
+            }
+        }
+    });
+
+    observer.observe(filterUser, { childList: true, subtree: true });
+}
+
+const filterCategory = document.getElementById('filterCategory');
+if (filterCategory) {
+    const observer = new MutationObserver(function(mutationsList) {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                petition();
+            }
+        }
+    });
+
+    observer.observe(filterCategory, { childList: true, subtree: true });
+}
