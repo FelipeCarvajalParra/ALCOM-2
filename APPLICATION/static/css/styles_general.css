@@ -706,6 +706,11 @@ a{
     background-color: #ffe3e2;
     color: #ff5f5b;
 }
+
+.status--earring {
+    background-color: #fff3cd;
+    color: #f7d02f;
+}
     
 @media (max-width: 1000px) { /* Mostrar el botón solo cuando la pantalla sea pequeña y el sidebar esté expandido */
     .aside--contract + .aside__close-btn {
@@ -1393,6 +1398,10 @@ display: block;
 .button--new-part{
     margin-top: 5px;
     font-size: 1rem;
+}
+
+.button--margin-top{
+    margin-top: 10px;
 }
 
 /*============= Bloque main ================*/
@@ -2223,6 +2232,9 @@ input:-webkit-autofill {
     cursor: pointer;
     background-color: #282a42;
     font-size: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .floating-button__checkbox:checked ~ .floating-button__toggle .floating-button__label {

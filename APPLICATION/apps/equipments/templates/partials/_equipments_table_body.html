@@ -13,6 +13,13 @@
             <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ equipment.referencia_fk.categoria }}">
                 {% if equipment.referencia_fk.categoria %}{{ equipment.referencia_fk.categoria }}{% else %}No categoría{% endif %}
             </td>
+            <td class="table__cell table__cell--mini table__cell--overflow" data-text="{{ equipment.estado }}">
+                <div class="status {% if equipment.estado == 'Disponible' %} status--active {% elif equipment.estado == 'Revisar' %} status--blocked {% elif equipment.estado == 'Reparar' %} status--earring {% endif %}">
+                    <span>
+                        {{  equipment.estado }}
+                    </span>
+                </div>
+            </td>
             <td class="table__cell table__cell--actions">
                 <a href="{% url 'edit_equipment' equipment.cod_equipo_pk %}">
                     <svg class="svg-option svg-option--edit" width="20px" height="20px">

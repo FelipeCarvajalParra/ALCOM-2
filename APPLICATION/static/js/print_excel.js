@@ -1,4 +1,6 @@
 const printUsersExcel = document.getElementById('printUsersExcel');
+const printEquipmentsExcel = document.getElementById('printEquipmentsExcel');
+const printReferencesExcel = document.getElementById('printReferencesExcel');
 
 if (printUsersExcel) {
     printUsersExcel.addEventListener('click', function () {
@@ -6,6 +8,26 @@ if (printUsersExcel) {
         const table = 'customUser';
         const fields_table = [ 'first_name', 'last_name', 'username', 'email', 'position'];
         const fields_pdf = [ 'Nombres', 'Apellidos', 'Usuario', 'Correo', 'Cargo'];
+        downloadExcel(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printEquipmentsExcel) {
+    printEquipmentsExcel.addEventListener('click', function () {
+        const app_name = 'equipments';
+        const table = 'equipos';
+        const fields_table = ['referencia_fk.referencia_pk', 'referencia_fk.marca' ,'cod_equipo_pk', 'serial', 'estado'];
+        const fields_pdf = ['Referencia', 'Marca', 'Codigo ALCOM', 'Serial', 'Estado'];
+        downloadExcel(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printReferencesExcel) {
+    printReferencesExcel.addEventListener('click', function () {
+        const app_name = 'references';
+        const table = 'referencias';
+        const fields_table = ['categoria', 'referencia_pk' ,'marca'];
+        const fields_pdf = ['Categoria', 'Referencia', 'Marca', ];
         downloadExcel(app_name, table, fields_table, fields_pdf);
     });
 }

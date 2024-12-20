@@ -1,4 +1,6 @@
 const printUsersPdf = document.getElementById('printUsersPdf');
+const printEquipmentsPdf = document.getElementById('printEquipmentsPdf');
+const printReferencesPdf = document.getElementById('printReferencesPdf');
 
 if (printUsersPdf) {
     printUsersPdf.addEventListener('click', function () {
@@ -7,6 +9,27 @@ if (printUsersPdf) {
         const fields_table = [ 'first_name', 'last_name', 'username', 'email', 'position']
         const fields_pdf = [ 'Nombres', 'Apellidos', 'Usurio', 'Correo', 'Cargo']
         printPdf(app_name, table, fields_table, fields_pdf)
+    });
+}
+
+if (printEquipmentsPdf) {
+    console.log('printEquipmentsPdf')
+    printEquipmentsPdf.addEventListener('click', function () {
+        const app_name = 'equipments';
+        const table = 'equipos';
+        const fields_table = ['referencia_fk.referencia_pk', 'referencia_fk.marca' ,'cod_equipo_pk', 'serial', 'estado'];
+        const fields_pdf = ['Referencia', 'Marca', 'Codigo ALCOM', 'Serial', 'Estado'];
+        printPdf(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printReferencesPdf) {
+    printReferencesPdf.addEventListener('click', function () {
+        const app_name = 'references';
+        const table = 'referencias';
+        const fields_table = ['categoria', 'referencia_pk' ,'marca'];
+        const fields_pdf = ['Categoria', 'Referencia', 'Marca', ];
+        printPdf(app_name, table, fields_table, fields_pdf);
     });
 }
 

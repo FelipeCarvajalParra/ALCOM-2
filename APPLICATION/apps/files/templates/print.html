@@ -1,4 +1,5 @@
 {% load static %}
+{% load utils %} <!-- Carga del filtro personalizado -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,28 +15,29 @@
     </div>
     
     <table>
-        <thead>
+    <thead>
+        <tr>
+            <!-- Encabezados de las columnas -->
+            {% for field in fields %}
+                <th>{{ field.name }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
             <tr>
                 {% for field in fields %}
-                    <th>{{ field.name }}</th>
+                    <td>{{ row|get_item:field.name }}</td>
                 {% endfor %}
             </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                {% for value in row.values %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
 
     <div class="footer">
         <p>Registro generado por {{ request.user.first_name }} {{ request.user.last_name }} el {{ current_time|date:"d/m/Y H:i:s" }}</p>
     </div>
 
-    <script src="{% static 'js/print.js' %}" ></script>
+    <script src="{% static 'js/print.js' %}"></script>
 </body>
-</html>
+</html> 

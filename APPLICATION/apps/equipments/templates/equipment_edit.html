@@ -15,6 +15,11 @@
                     <path d="M16 2L21 7V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918C3 2.44405 3.44495 2 3.9934 2H16ZM11 11H8V13H11V16H13V13H16V11H13V8H11V11Z"></path>
                 </svg>
             </a>
+            <a class="floating-button__link" data-tooltip="Modificar estado" data-modal-id="modalEditEquipmentState">
+                <svg class="floating-button__svg" fill="currentColor" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M493.556 -.063c-265.602 0 -482.306 209.741 -493.5 472.594 -.765 18.027 13 19.031 13 19.031l83.813 0c16.291 0 19.146 -9.297 19.531 -17.625 9.228 -199.317 175.315 -357.688 377.156 -357.688 107.739 0 204.915 45.163 273.719 117.563l-58.813 56.875c-10.23 12.319 -10.043 27.275 5.063 31.5l247.125 49.75c21.15 5.281 46.288 -10.747 37.656 -43.656l-58.375 -227.563c-1.482 -8.615 -15.924 -22.024 -29.406 -12.406l-64.094 60.031c-89.659 -91.567 -214.627 -148.406 -352.875 -148.406zm409.625 508.5c-16.291 0 -19.146 9.297 -19.531 17.625 -9.228 199.317 -175.315 357.688 -377.156 357.688 -107.739 0 -204.915 -45.132 -273.719 -117.531l58.813 -56.906c10.229 -12.319 10.043 -27.275 -5.063 -31.5l-247.125 -49.75c-21.15 -5.281 -46.288 10.747 -37.656 43.656l58.375 227.563c1.482 8.615 15.924 22.024 29.406 12.406l64.094 -60.031c89.659 91.567 214.627 148.406 352.875 148.406 265.602 0 482.306 -209.741 493.5 -472.594 .765 -18.027 -13 -19.031 -13 -19.031l-83.813 0z"></path>
+                </svg>
+            </a>
         </div>
         <div class="floating-button__toggle">
             <label for="floating-button__checkbox" class="floating-button__label">
@@ -50,23 +55,11 @@
                 <div class="container__section-detail">
                     <span class="detail__label">Estado:</span>
                     <span class="detail__value">
-                        {% if equipment.estado == 'Disponible' %}
-                            <div class="status status--active">
-                                <span>
-                                    Disponible
-                                </span>
-                            </div>
-                        {% elif equipment.estado == 'No disponible' %}
-                            <div class="status status--blocked">
-                                <span>
-                                    No disponible
-                                </span>
-                            </div>
-                        {% else %}
+                        <div class="status {% if equipment.estado == 'Disponible' %} status--active {% elif equipment.estado == 'Revisar' %} status--blocked {% elif equipment.estado == 'Reparar' %} status--earring {% endif %}">
                             <span>
-                                None
+                                {{  equipment.estado }}
                             </span>
-                        {% endif %}
+                        </div>
                     </span>
                 </div>
             </div>
@@ -147,15 +140,62 @@
     </div>
 </div>
 
+<div class="modal-overlay"></div>
+<div class="modal modal--category scroll" id="modalEditEquipmentState">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Actualizar estado</span>
+        <p class="modal__subheader">Seleccione el estado actual del equipo.</p>
+    </div>
+
+    <form class="container__form" id="editEquipmentStateForm">
+        {% csrf_token %}
+        <input type="hidden" id="editCategoryId">  <!-- Campo oculto para el ID de la categoría -->
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--flex input-wrapper--largue">
+                    <div class="select select--filter select--state select--largue select--active">
+                        <div class="select__selected" id="equipmentState">Estado</div>
+                        <div class="select__options scroll">
+                            <div class="select__option">Disponible</div>
+                            <div class="select__option">Revisar</div>
+                            <div class="select__option">Reparar</div>
+                        </div>
+                        <div class="select__icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Guardar cambios</span>
+            </button>
+            <span id="messageEditEquipmentStateError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
 <script src="{% static 'js/search_intervention.js' %} ?v=5"></script>
 <script src="{% static 'js/height_textarea.js' %} ?v=2"></script>
 <script src="{% static 'js/inputs_placeholders.js' %} ?v=2"></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
 <script src="{% static 'js/delete_confirmations.js' %} ?v=2"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+<script src="{% static 'js/equipment_crud.js' %}"></script>
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script src="{% static 'js/tooltip_tippy.js' ?v=2%}"></script>
 <script src="{% static 'js/tooltip.js' %}"></script>
-<script src="{% static 'js/intervention_crud.js' %}"></script>
 
 {% endblock %}

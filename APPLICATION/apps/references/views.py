@@ -142,7 +142,6 @@ def new_reference(request, category_id):
             return JsonResponse({'error': 'La referencia ya existe.'}, status=400)
         
         
-
         # Crear la referencia y valores dentro de una transacción
         category = get_object_or_404(Categorias, pk=category_id)
         new_reference = Referencias.objects.create(
@@ -255,7 +254,7 @@ def edit_reference(request, reference_id):
     brands = Referencias.objects.values('marca').distinct()
     search_query = request.GET.get('search', '')
 
-    list_equipments = Equipos.objects.filter(referencia_fk = reference_id).order_by('cod_equipo_pk')
+    list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
     list_equipments = list_equipments.filter(cod_equipo_pk__icontains=search_query)
     paginator = Paginator(list_equipments,11)  # Número de elementos por página
     page_number = request.GET.get('page')

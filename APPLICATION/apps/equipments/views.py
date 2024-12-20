@@ -221,3 +221,36 @@ def edit_equipment(request, id_equipment):
 
     return render(request, 'equipment_edit.html', context)
 
+
+@login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+def edit_equipment_state(request):
+    try:
+
+        equipment_id = request.POST.get('codeEquipment')
+        if not Equipos.objects.filter(pk=equipment_id).exists():
+            return JsonResponse({'error': 'Equipo no encontrado.'})
+
+        equipment = get_object_or_404(Equipos, pk=equipment_id)
+
+        new_state = request.POST.get('state')
+        if new_state not in ['Disponible', 'Revisar', 'Reparar']:
+            return JsonResponse({'error': 'Estado inválido.'})
+
+        equipment.estado = new_state
+        equipment.save()
+
+        log_activity(
+            user=request.user.id,
+            action='UPDATE',
+            description=f'El usuario actualizó el estado del equipo {equipment.cod_equipo_pk}.',
+            link=f'/edit_equipment/{equipment.cod_equipo_pk}', 
+            category='EQUIPMENTS'
+        )
+        messages.success(request, 'Estado actualizado correctamente.')
+        return JsonResponse({'success': True}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 'Ocurrio un error inesperado.'})

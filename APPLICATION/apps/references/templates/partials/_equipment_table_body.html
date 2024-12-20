@@ -12,7 +12,13 @@
             </td>
             <td class="table__cell table__cell--small table__cell--overflow"
                 data-text="{{equipment.estado}}">
-                {{equipment.estado}}
+
+                <div class="status {% if equipment.estado == 'Disponible' %} status--active {% elif equipment.estado == 'Revisar' %} status--blocked {% elif equipment.estado == 'Reparar' %} status--earring {% endif %}">
+                    <span>
+                        {{  equipment.estado }}
+                    </span>
+                </div>
+
             </td>
             <td class="table__cell table__cell--actions">
                 {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}

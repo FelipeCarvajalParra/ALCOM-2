@@ -12,10 +12,14 @@ from django.conf import settings
 import os
 import io
 from django.db import transaction
-from django.utils import timezone
 from openpyxl import Workbook
 from django.contrib.auth.decorators import login_required
 from apps.logIn.views import group_required
+from django.db.models import F
+from django.utils.timezone import now
+from django.apps import apps
+from django.http import JsonResponse
+from django.shortcuts import render
 
 def compress_and_convert_to_webp(image_file):
 
@@ -219,6 +223,8 @@ def download_file(request):
         messages.error(request, f'Ha ocurrido un error: {str(e)}')
         return HttpResponse(status=500)
 
+
+
 @login_required
 @require_POST
 @transaction.atomic
@@ -226,8 +232,8 @@ def download_file(request):
 def print_pdf(request):
     app_name = request.POST.get('app_name')
     table_name = request.POST.get('table')
-    fields_table = request.POST.getlist('fields_table[]')  # Lista de campos en el modelo
-    fields_pdf = request.POST.getlist('fields_pdf[]')      # Lista de nombres de columnas para el PDF
+    fields_table = request.POST.getlist('fields_table[]')  # Campos en el modelo
+    fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres para las columnas en el PDF
 
     # Obtener el modelo dinámicamente
     try:
@@ -235,56 +241,105 @@ def print_pdf(request):
     except LookupError:
         return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
 
-    # Consultar los datos de la tabla usando los campos especificados
-    queryset = model.objects.values(*fields_table)
+    # Preparar la consulta para manejar campos relacionados
+    queryset = model.objects.all()
+    processed_fields = []
+    annotations = {}
+
+    # Procesar campos directos y relacionados
+    for field in fields_table:
+        if '.' in field:  # Campo relacionado
+            related_field, related_attr = field.split('.', 1)
+            annotations[f"{related_field}__{related_attr}"] = F(f"{related_field}__{related_attr}")
+            processed_fields.append(f"{related_field}__{related_attr}")
+        else:  # Campo directo
+            processed_fields.append(field)
+
+    if annotations:
+        queryset = queryset.annotate(**annotations)
+
+    # Extraer los valores necesarios
+    try:
+        data = queryset.values(*processed_fields)
+    except Exception as e:
+        return JsonResponse({'error': f'Error al obtener los datos: {str(e)}'}, status=400)
+
+    # Imprimir datos en consola para depuración (opcional)
+    print("Datos enviados al template:")
+    print(list(data))
 
     # Preparar el contexto para la plantilla
     context = {
-        'data': queryset,  # Cada registro como un diccionario con los campos especificados
-        'fields': [{'name': field} for field in fields_pdf],  # Nombres de los campos para la cabecera
-        'current_time': timezone.now(),  # Fecha y hora actual para el pie de página
-        'request': request  # Para utilizar `request.user` en la plantilla
+        'data': data,  # Datos procesados con campos relacionados resueltos
+        'fields': [{'name': field.replace('.', '__')} for field in fields_pdf],  # Encabezados para el PDF
+        'current_time': now(),  # Fecha y hora actual
+        'request': request,  # Para usar información del usuario
+        'case': 'equipments',  # Asegúrate de pasar el valor correcto para 'case'
     }
 
-    # Renderizar la plantilla `print.html` con el contexto
+    # Renderizar la plantilla `print.html`
     return render(request, 'print.html', context)
-    
 
 @login_required
 @require_POST
 @transaction.atomic
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def print_excel(request):
-    app_name = request.POST.get('app_name')
-    table_name = request.POST.get('table')
-    fields_table = request.POST.getlist('fields_table[]')  # Campos en la base de datos
-    fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres de columnas para Excel
 
-    # Obtener el modelo dinámicamente
     try:
-        model = apps.get_model(app_name, table_name)
-    except LookupError:
-        return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
+        app_name = request.POST.get('app_name')
+        table_name = request.POST.get('table')
+        fields_table = request.POST.getlist('fields_table[]')  # Campos en la base de datos (incluyendo relaciones)
+        fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres de columnas para Excel
 
-    # Consultar los datos de la tabla usando los campos especificados
-    queryset = model.objects.values(*fields_table)
+        print(app_name, table_name, fields_table, f'Campos en la base de datos: {fields_table}')
 
-    # Crear un archivo Excel con openpyxl
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Registros"
+        # Obtener el modelo dinámicamente
+        try:
+            model = apps.get_model(app_name, table_name)
+        except LookupError:
+            return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
 
-    # Agregar encabezados
-    worksheet.append(fields_pdf)
+        # Preparar la consulta para manejar relaciones
+        queryset = model.objects.all()
 
-    # Agregar datos de la consulta
-    for record in queryset:
-        row = [record[field] for field in fields_table]
-        worksheet.append(row)
+        # Construir las anotaciones para los campos relacionados
+        annotations = {}
+        for field in fields_table:
+            if '.' in field:  # Es un campo relacionado
+                related_field, related_attr = field.split('.', 1)
+                annotations[field] = F(f"{related_field}__{related_attr}")
+        
+        # Aplicar las anotaciones al queryset
+        if annotations:
+            queryset = queryset.annotate(**annotations)
 
-    # Preparar el archivo para descarga
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=registros.xlsx'
-    workbook.save(response)
-    return response
+        # Extraer los valores necesarios
+        try:
+            data = queryset.values(*fields_table)
+        except Exception as e:
+            return JsonResponse({'error': f'Error al obtener los datos: {str(e)}'})
+
+        # Crear un archivo Excel con openpyxl
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.title = "Registros"
+
+        # Agregar encabezados
+        worksheet.append(fields_pdf)
+
+        # Agregar datos de la consulta
+        for record in data:
+            row = [record.get(field, '') for field in fields_table]
+            worksheet.append(row)
+
+        # Preparar el archivo para descarga
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=registros.xlsx'
+        workbook.save(response)
+        return response
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': f'Ha ocurrido un error: {str(e)}'})
+
     

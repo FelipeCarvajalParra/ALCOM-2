@@ -169,6 +169,38 @@ function updateChart(data) {
     } else {
         console.error('El contenedor del gráfico no se encuentra');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 }
 
 // Función para manejar el rango de fechas del daterangepicker

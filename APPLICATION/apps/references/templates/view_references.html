@@ -44,7 +44,8 @@
                     <span> Exportar </span>
                 </div>
                 <div class="select__options">
-                    <div class="select__option select__option--export" id="opctionExcel">
+
+                    <div class="select__option select__option--export" id="printReferencesExcel">
                         <svg fill="#000000" width="23px" height="18px" viewBox="0 -8 72 72" id="Layer_1"
                             data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -54,7 +55,8 @@
                         </svg>
                         <span>Excel</span>
                     </div>
-                    <div class="select__option select__option--export" id="opctionPdf">
+
+                    <div class="select__option select__option--export" id="printReferencesPdf">
                         <svg width="23px" height="18px" viewBox="-274.15 0 1200 1200"
                             xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
                             <path
@@ -249,6 +251,8 @@
     <script src="{% static 'js/searchs_tables.js' %} ?v=3"></script>
     <script src="{% static 'js/tooltip.js' %} ?v=2" ></script>
     <script src="{% static 'js/filter_brands.js' %}"></script>
+    <script src="{% static 'js/print_excel.js' %}"></script>
+    <script src="{% static 'js/print_pdf.js' %}"></script>
     
 
 {% endblock %}
