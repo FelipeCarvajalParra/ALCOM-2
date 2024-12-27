@@ -45,7 +45,6 @@ if (newEquipmentForm) {
 
 if (editEquipmentStateForm) {
     editEquipmentStateForm.addEventListener('submit', function(event) {
-        console.log('entra');
 
         event.preventDefault(); // Evitar el envío del formulario
         messageEditEquipmentStateError.textContent = '‎';

@@ -13,7 +13,6 @@ if (printUsersPdf) {
 }
 
 if (printEquipmentsPdf) {
-    console.log('printEquipmentsPdf')
     printEquipmentsPdf.addEventListener('click', function () {
         const app_name = 'equipments';
         const table = 'equipos';

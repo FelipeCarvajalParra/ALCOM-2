@@ -185,9 +185,6 @@ function delete_confirmations(){
                         case(6):
                             const equipmentId = arguments[4];  // recibir el ID aquí
                             const referenceId = arguments[6];
-
-                            console.log(equipmentId)
-
                             if (referenceId){
                                 deleteRequest('delete_equipment', equipmentId, `edit_reference/${referenceId}`, true);
                             }else {

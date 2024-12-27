@@ -32,7 +32,6 @@ function petition(dateRange) {
 
     // Manejar la respuesta
     return currentAjaxRequest.then(data => {
-        console.log('Respuesta del servidor:', data);
         updateChart(data);
     }).catch(error => {
         if (error.statusText !== "abort") { // Ignorar errores de abortar
@@ -169,37 +168,6 @@ function updateChart(data) {
     } else {
         console.error('El contenedor del gráfico no se encuentra');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
 }
 
@@ -214,8 +182,6 @@ if (filterDateRange) {
         petition(rangeDate);
     });
 }
-
-
 
 // Inicializar los datos al cargar la página
 $(document).ready(function() {

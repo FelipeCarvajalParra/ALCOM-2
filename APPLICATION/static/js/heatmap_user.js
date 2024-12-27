@@ -20,8 +20,6 @@ function sendRequest(date) {
         method: 'GET',
     })
     .then(response => {
-        console.log("Request sent:", response);
-
         // Verifica si la respuesta contiene la clave 'body' y si es válida
         if (response.body) {
             // Actualizar solo la lista de intervenciones
