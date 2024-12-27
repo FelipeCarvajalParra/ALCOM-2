@@ -264,10 +264,6 @@ def print_pdf(request):
     except Exception as e:
         return JsonResponse({'error': f'Error al obtener los datos: {str(e)}'}, status=400)
 
-    # Imprimir datos en consola para depuración (opcional)
-    print("Datos enviados al template:")
-    print(list(data))
-
     # Preparar el contexto para la plantilla
     context = {
         'data': data,  # Datos procesados con campos relacionados resueltos
@@ -291,8 +287,6 @@ def print_excel(request):
         table_name = request.POST.get('table')
         fields_table = request.POST.getlist('fields_table[]')  # Campos en la base de datos (incluyendo relaciones)
         fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres de columnas para Excel
-
-        print(app_name, table_name, fields_table, f'Campos en la base de datos: {fields_table}')
 
         # Obtener el modelo dinámicamente
         try:
@@ -339,7 +333,6 @@ def print_excel(request):
         workbook.save(response)
         return response
     except Exception as e:
-        print(e)
         return JsonResponse({'error': f'Ha ocurrido un error: {str(e)}'})
 
     

@@ -196,7 +196,6 @@ def edit_part_action(request, part_id):
     except Inventario.DoesNotExist:
         return JsonResponse({'error':'No se encontro el registro'})
     except Exception as e:
-        print(e)
         return JsonResponse({'error':'Error inesperado'})
 
 @login_required

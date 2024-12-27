@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db import transaction
 from apps.logIn.views import group_required
+from apps.users.models import CustomUser
 
 @login_required
 @transaction.atomic
@@ -83,4 +84,3 @@ def delete_activity_log(request, id_log):
     except Exception as e:
         messages.error(request, f'Ha ocurrido un error al eliminar el registro: {str(e)}')
         return HttpResponse(status=500)
-    

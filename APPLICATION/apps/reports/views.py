@@ -21,8 +21,6 @@ def view_reports(request):
     selected_user = request.GET.get('filterUser')
     selected_category = request.GET.get('filterCategory')
 
-    print("user: ", selected_user, "category: ", selected_category, "range: ", date_range)
-
     if not date_range:
         today = datetime.today()
         first_day_of_month = today.replace(day=1)
