@@ -8,7 +8,7 @@
                 {% elif log.action == 'LOGIN' %}list-activity__icon--login
                 {% elif log.action == 'LOCKOUT' %}list-activity__icon--lockout
                 {% else %}list-activity__icon{% endif %} list-activity__icon--image" src="{{ log.user.profile_picture.url }}" alt="">
-                <span class="list-activity__title">Felipe Carvajal Parra</span>
+                <span class="list-activity__title">{{ log.user.first_name }} {{ log.user.last_name }}</span>
                 <span class="list-activity__timestamp">{{ log.timestamp|date:"d/m/Y - g:iA" }}</span>
             </div>
             <div class="list-activity__body list-activity__body--activity">
