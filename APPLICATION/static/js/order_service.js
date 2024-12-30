@@ -208,14 +208,6 @@ function saveIntervention(result, file) {
     .then(data => {
         if (data.redirect_url) {
             window.location.href = data.redirect_url; // Redirige al usuario
-        } else if (data.message) {
-            Swal.fire({
-                title: 'Éxito',
-                text: data.message,
-                icon: 'success'
-            }).then(() => {
-                window.location.reload();
-            });
         } else if (data.error) {
             Swal.fire({
                 title: 'Error',

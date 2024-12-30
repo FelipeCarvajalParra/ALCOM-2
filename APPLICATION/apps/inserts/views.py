@@ -288,7 +288,7 @@ def new_intervention(request):
 
         # Validar equipo
         try:
-            equipment_instance = Equipos.objects.get(cod_equipo_pk=data.get('codeEquipment').strip())
+            equipment_instance = Equipos.objects.get(cod_equipo_pk=data.get('codeEquipmentOrder').strip())
         except Equipos.DoesNotExist:
             return JsonResponse({'error': 'El equipo especificado no existe.'})
 
@@ -335,11 +335,13 @@ def new_intervention(request):
             )
 
         # Responder con éxito
-        return JsonResponse({'success': 'Datos procesados correctamente.'})
+        messages.success(request, 'Intervención registrada correctamente.')
+        return JsonResponse({'success': True})
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Error al procesar los datos JSON.'})
-    except Exception:
+    except Exception as e:
+        traceback.print_exc()
         return JsonResponse({'error': 'Error inesperado.'})
 
 
@@ -400,7 +402,9 @@ def save_result_intervention(request, num_order):
                 link=f'/edit_equipment/{intervention.cod_equipo_fk.cod_equipo_pk}?intervention_id={intervention.num_orden_pk}',     
                 category='INTERVENTIONS'          
             )
-            return JsonResponse({'message': 'La intervención ha sido aprobada correctamente.'})
+
+            messages.success(request, 'La intervención ha sido aprobada.')
+            return JsonResponse({'message': True})
 
         elif result == 'denied':
 
@@ -426,6 +430,7 @@ def save_result_intervention(request, num_order):
             intervention.delete()
             registerLog.delete()
             
+            messages.success(request, 'La intervención ha sido rechazada.')
             return JsonResponse({'redirect_url': reverse('edit_equipment', kwargs={'id_equipment': equipment_intervention})})
 
         else:
