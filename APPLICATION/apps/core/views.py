@@ -71,19 +71,23 @@ def search_general(request):
             return JsonResponse({'body': empty_body})
 
         # Filtrar resultados con coincidencias parciales
-        user_results = CustomUser.objects.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
-        category_results = Categorias.objects.filter(Q(nombre__icontains=search_query))
-        reference_results = Referencias.objects.filter(referencia_pk__icontains=search_query).select_related('archivos')
-        equipment_results = Equipos.objects.filter(
-            Q(serial__icontains=search_query) | Q(cod_equipo_pk__icontains=search_query)
-        )
+        if request.user.groups.first().name == 'administrators':
+            user_results = CustomUser.objects.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
 
+        if request.user.groups.first().name == 'administrators' or request.user.groups.first().name == 'technicians':
+            category_results = Categorias.objects.filter(Q(nombre__icontains=search_query))
+            equipment_results = Equipos.objects.filter(
+                Q(serial__icontains=search_query) | Q(cod_equipo_pk__icontains=search_query)
+            )
+
+        reference_results = Referencias.objects.filter(referencia_pk__icontains=search_query).select_related('archivos')
+        
         # Renderizar el partial con los resultados
         context = {
-            'user_results': user_results,
-            'category_results': category_results,
-            'reference_results': reference_results,
-            'equipment_results': equipment_results,
+            'user_results': user_results if 'user_results' in locals() else None,
+            'category_results': category_results if 'category_results' in locals() else None,
+            'reference_results': reference_results if 'reference_results' in locals() else None,
+            'equipment_results': equipment_results if 'equipment_results' in locals() else None,
             'default_image': default_image
         }
         html_body = render_to_string('partials/_search_general_results.html', context, request=request)
