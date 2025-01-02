@@ -302,6 +302,12 @@ def update_login_data(request, user_id):
                 role_changed = True
             else:
                 return JsonResponse({'success': False, 'error': f'El grupo "{group_name}" no existe.'})
+            
+    if 'status' in data:
+        if data['status'] != 'Estado':
+            if data['status'] not in status_mapping:
+                return JsonResponse({'success': False, 'error': 'Estado no válido.'})
+            user_to_update.status = status_mapping[data['status']]
 
     # Validación y actualización de password
     if 'password' in data and data['password'].strip():

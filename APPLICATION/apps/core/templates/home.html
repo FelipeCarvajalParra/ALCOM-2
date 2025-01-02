@@ -2,17 +2,414 @@
 {% block contend %}
 {% load static %}
 
-<div class="page_home">
-    <div class="container__home">
-        <img class="container__home-img" src="{{ request.user.profile_picture.url }}" alt="Perfil de {{ request.user.username }}">
-        <div class="container__home-content">
-            <h2 class="container__home-greeting">{{ greeting }}</h2>
-            <p class="container__home-phrase">En Alcom, cada uno de nosotros juega un papel fundamental en el crecimiento y la innovación de nuestra organización. Este portal está diseñado para ser un recurso valioso que te apoye en tu trabajo diario y fomente la colaboración y el desarrollo dentro de nuestro equipo.</p>
-            <a href="/profile/{{user.id}}" class="button button--save">
-                <span>Actualizar perfil</span>
-            </a>
+<style>
+    .page__home{
+        flex-direction: column;
+    }
+
+    .container--cards{
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .container__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        display: flex;
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        height: 120px;
+    }
+
+    .card__container-icon{
+        width: 30%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card__icon{
+        width: 60px;
+        border-radius: 50%;
+        padding: 10px;
+        background-color: blue;
+    }
+
+    .card__icon--total{
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #FFC107;
+    }
+
+    .card__icon--goal{
+        background-color: rgba(36, 158, 250, 0.2);
+        color: #249efa;
+    }
+
+    .card__icon--month{
+        background-color: rgba(105, 221, 79, 0.2);
+        color: #69dd4f;
+    }
+
+    .card__icon--week{
+        background-color: rgba(240, 73, 92, 0.2);
+        color: #f0495c;
+    }
+
+
+
+    .card__info{
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+    }
+
+    .card__metric{
+        font-size: 1.5rem;
+        font-weight: 900;
+    }
+
+    .card__metric--total{
+        color: #FFC107;
+    }
+    
+    .card__metric--goal{
+        color: #249efa;
+    }
+
+    .card__metric--month{
+        color: #69dd4f;
+    }
+
+    .card__metric--week{
+        color: #f0495c;
+    }
+
+
+    .card__description{
+        font-size: 0.8rem;
+        color: #3b4056;
+    }
+
+    @media (max-width: 480px) {
+        .container__cards {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+    }
+
+</style>
+
+<div class="page__home">
+
+    <div class="container--large container--padding-bottom container--cards">
+        <div class="container__cards">
+            <div class="card">
+                <div class="card__container-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 344.963 344.963" xml:space="preserve" fill="currentColor" class="card__icon card__icon--total">
+                        <path d="M321.847,86.242l-40.026-23.11l-23.104-40.02h-46.213l-40.026-23.11l-40.026,23.11H86.239 l-23.11,40.026L23.11,86.242v46.213L0,172.481l23.11,40.026v46.213l40.026,23.11l23.11,40.026h46.213l40.02,23.104l40.026-23.11 h46.213l23.11-40.026l40.026-23.11v-46.213l23.11-40.026l-23.11-40.026V86.242H321.847z M156.911,243.075 c-3.216,3.216-7.453,4.779-11.671,4.72c-4.219,0.06-8.455-1.504-11.671-4.72l-50.444-50.444c-6.319-6.319-6.319-16.57,0-22.889 l13.354-13.354c6.319-6.319,16.57-6.319,22.889,0l25.872,25.872l80.344-80.35c6.319-6.319,16.57-6.319,22.889,0l13.354,13.354 c6.319,6.319,6.319,16.57,0,22.889L156.911,243.075z"></path>
+                    </svg>
+                </div>
+                <div class="card__info">
+                    <span class="card__metric card__metric--total" id="TotalInterventions"></span>
+                    <span class="card__description">Intervenciones totales</span>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card__container-icon" >
+                    <svg width="22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="card__icon card__icon--week">
+                        <path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM7 6V10H11V6H7ZM7 12V14H17V12H7ZM7 16V18H17V16H7ZM13 7V9H17V7H13Z"></path>
+                    </svg>
+                </div>
+                <div class="card__info">
+                    <span class="card__metric card__metric--week" id="weekInterventionsCount"></span>
+                    <span class="card__description">Intervenciones esta semana</span>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card__container-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="card__icon card__icon--month">
+                        <path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 8H4V19H20V8ZM15.0355 10.136L16.4497 11.5503L11.5 16.5L7.96447 12.9645L9.37868 11.5503L11.5 13.6716L15.0355 10.136Z"></path>
+                    </svg>
+                </div>
+                <div class="card__info">
+                    <span class="card__metric card__metric--month" id="monthInterventionsCount"></span>
+                    <span class="card__description">Intervenciones este mes</span>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card__container-icon">
+                    <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="card__icon card__icon--goal">
+                        <path d="M21.92,5.62A1,1,0,0,0,21,5H19V3a1,1,0,0,0-.62-.92,1,1,0,0,0-1.09.21l-3,3A1,1,0,0,0,14,6V8.59l-2.21,2.2a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L15.41,10H18a1,1,0,0,0,.71-.29l3-3A1,1,0,0,0,21.92,5.62Z"></path>
+                        <path d="M12,22A10,10,0,0,1,12,2h.42a1,1,0,1,1-.18,2H12a8,8,0,1,0,8,8,1.93,1.93,0,0,0,0-.24,1,1,0,0,1,.91-1.09,1,1,0,0,1,1.09.91c0,.14,0,.28,0,.42A10,10,0,0,1,12,22Zm5.88-8.8a1,1,0,0,0-2-.4A4,4,0,1,1,11.2,8.08a1,1,0,1,0-.4-2,6,6,0,1,0,7.08,7.08Z"></path>
+                    </svg>
+                </div>
+                <div class="card__info">
+                    <span class="card__metric card__metric--goal">0/0</span>
+                    <span class="card__description">Meta semanal</span>
+                </div>
+            </div>
+            
         </div>
     </div>
+
+    <style>
+        .container--home-graphics{
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .home__graphic-columns{
+            width: 70%;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+
+        .home__graphic-radial{
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .home__graphic-line{
+            width: 100%;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+
+        @media (max-width: 1100px) {
+            .container--home-graphics{
+                flex-direction: column;
+            }
+
+            .home__graphic-columns{
+                width: 100%;
+            }
+        }
+        
+    </style>
+
+    <div class="container--large container--padding-bottom container--home-graphics">
+        <div class="home__graphic-columns" id="chart"></div>
+        <div class="home__graphic-radial" id="radialChart"></div>
+    </div>
+
+    <div class="container--large container--padding-bottom container--home-graphics">
+        <div class="home__graphic-line" id="lineChart"></div>
+    </div>
+
+    <script>
+        // Obtener el JSON desde la variable del contexto
+        const data = JSON.parse('{{ data_json|safe }}');
+
+        // Asignar los valores a los elementos HTML
+        document.getElementById('TotalInterventions').innerText = data.metrics.total_intervention;
+        document.getElementById('monthInterventionsCount').innerText = data.metrics.month_interventions_count;
+        document.getElementById('weekInterventionsCount').innerText = data.metrics.week_interventions_count;
+
+       
+    </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/es.json"></script>
+<script>
+    // Obtener los datos JSON desde la variable del contexto
+    const chartData = JSON.parse('{{ data_json|safe }}');
+    console.log(chartData);
+
+
+    $.getJSON('https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/es.json', function(data) {
+    var es = data;
+
+    // Opciones de la gráfica
+    var options = {
+        series: chartData.graph.series,
+        chart: {
+            type: 'bar',
+            height: 350,
+            stacked: true,
+            toolbar: { show: true },
+            zoom: { enabled: true },
+            locales: [es],  // Asignar la localización cargada
+            defaultLocale: 'es'  // Establecer idioma en español
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: { legend: { position: 'bottom', offsetX: -10, offsetY: 0 } }
+        }],
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                borderRadius: 10,
+                dataLabels: {
+                    total: { enabled: true, style: { fontSize: '13px', fontWeight: 900 } }
+                }
+            },
+        },
+        xaxis: {
+            type: 'datetime',
+            categories: chartData.graph.categories
+        },
+        legend: { position: 'right', offsetY: 40 },
+        fill: { opacity: 1 }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        var options = {
+          series: [100],
+          chart: {
+          height: 350,
+          type: 'radialBar',
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '70%',
+            }
+          },
+        },
+        labels: ['Meta semanal'],
+        };
+
+        var chart = new ApexCharts(document.querySelector("#radialChart"), options);
+        chart.render();
+    </script>
+
+
+
+
+
+    <script>
+        var options = {
+          series: [{
+            name: "Session Duration",
+            data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10]
+          },
+          {
+            name: "Page Views",
+            data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35]
+          },
+          {
+            name: 'Total Visits',
+            data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47]
+          }
+        ],
+          chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: [5, 7, 5],
+          curve: 'straight',
+          dashArray: [0, 8, 5]
+        },
+        title: {
+          text: 'Page Statistics',
+          align: 'left'
+        },
+        legend: {
+          tooltipHoverFormatter: function(val, opts) {
+            return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'
+          }
+        },
+        markers: {
+          size: 0,
+          hover: {
+            sizeOffset: 6
+          }
+        },
+        xaxis: {
+          categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan',
+            '10 Jan', '11 Jan', '12 Jan'
+          ],
+        },
+        tooltip: {
+          y: [
+            {
+              title: {
+                formatter: function (val) {
+                  return val + " (mins)"
+                }
+              }
+            },
+            {
+              title: {
+                formatter: function (val) {
+                  return val + " per session"
+                }
+              }
+            },
+            {
+              title: {
+                formatter: function (val) {
+                  return val;
+                }
+              }
+            }
+          ]
+        },
+        grid: {
+          borderColor: '#f1f1f1',
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#lineChart"), options);
+        chart.render();
+    </script>
+
+
+
+    
 </div>
     
 
