@@ -122,7 +122,20 @@
         </div>
 
         <div id="goalsContainer" class="container--activity scroll" style="display: none;">
-            
+            <div class="container__section-title">
+                <span>Lista de metas</span>
+                <div class="button button--margin-left" data-modal-id="modalNewGoal">
+                    <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
+                    </svg>
+                    <span>Agregar</span>
+                </div>
+            </div>
+
+            <ul class="container__list-activity">
+                {% include "partials/_goals_body.html" %}
+            </ul>
+
         </div>
 
         <div id="personalDataContainer" class="container--activity scroll" style="display: none;" >
@@ -251,6 +264,93 @@
     </div>
 </div>
 
+
+<div class="modal-overlay"></div>
+<div class="modal" id="modalNewGoal">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Añadir nueva meta</span>
+        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar una nueva meta.</p>
+    </div>
+
+    <form class="container__form" id="newGoalsForm">
+        {% csrf_token %}
+        <div class="form__largue">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="week" name="goalWeek" required/>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="number" name="goalCant" required>
+                    <label class="input-container__label">Cantidad de intervenciones</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir meta</span>
+            </button>
+            <span id="messageErrorGoal" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
+<script>
+
+// Obtener referencias a los elementos del formulario
+const newGoalsForm = document.getElementById('newGoalsForm');
+const user = document.getElementById('idUserAccount').dataset.user;
+const messageErrorGoal = document.getElementById('messageErrorGoal');
+
+newGoalsForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar el envío del formulario
+    messageErrorGoal.textContent = '‎';
+
+    // Crear un objeto FormData con los datos del formulario
+    const formData = new FormData(newGoalsForm);
+    formData.append('user', user);  // 'user' es el nombre del campo que recibirás en el servidor
+
+    // Hacer una solicitud POST al servidor
+    fetch('/new_goat/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData  // Enviar el FormData con los datos del formulario y el usuario
+    })
+    .then(response => {
+        // Si el estado es 403, redirigir manualmente
+        if (response.status === 403) {
+            window.location.href = '/forbidden_access/';
+            return;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data) {  
+            if (data.error) {
+                messageErrorGoal.textContent = data.error;  
+            } else if (data.success) {
+                location.reload();
+            }
+        }
+    })
+    .catch(error => {
+        messageErrorGoal.textContent = 'Ha ocurrido un error en la validación.';  // Muestra un mensaje de error
+    });
+});
+
+
+</script>
+
+
+
 <!-- heatmap dependencias -->
 <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
 
@@ -282,5 +382,6 @@
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/update_files.js' %}"></script>
 <script src="{% static 'js/heatmap_user.js' %} ?v=6"></script>
+<script src="{% static 'js/modal.js' %}" ></script>
 
 {% endblock %}

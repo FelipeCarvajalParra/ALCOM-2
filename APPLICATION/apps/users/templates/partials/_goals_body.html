@@ -1,0 +1,32 @@
+{% load static  %}
+
+{% if paginator_goals|length > 0 %}
+    {% for goal in paginator_goals %}
+        <li class="list-activity__item">
+            <div>
+                <div class="list-activity__header">
+                    <img class="list-activity__icon list-activity__icon--image {% if goal.estado == 'En progreso' or goal.estado == 'Pendiente' %} goal__progress {% elif goal.estado == 'Completado' %} goal__succes {% else %} goal__error {% endif %}" src="{{ goal.imagen }}" alt="">
+                    <span class="list-activity__title">Realizar {{ goal.meta }} intervenciones entre el {{ goal.rango_fechas }}</span>
+                    <span class="list-activity__timestamp">{{ goal.estado }}</span>
+                </div>
+                <div class="list-activity__body list-activity__body--activity">
+                    <p class="list-activity__description list-activity__description--activity">El usuario ha completado el {{ goal.porcentaje }}% de las intervenciones</p>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+{% else %}
+    <li class="list-activity__item">
+        <div>
+            <div class="list-activity__header">
+                <img class="list-activity__icon list-activity__icon--image goal__progress" src="{% static 'img/default/goalProgress.webp' %}" alt="">
+                <span class="list-activity__title">No hay metas registradas</span>
+                <span class="list-activity__timestamp">En proceso</span>
+            </div>
+            <div class="list-activity__body list-activity__body--activity">
+                <p class="list-activity__description list-activity__description--activity">El usuario no tiene metas registradas</p>
+            </div>
+        </div>
+    </li>
+{% endif %}
+

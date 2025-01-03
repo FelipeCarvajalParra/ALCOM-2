@@ -20,6 +20,9 @@ from apps.inserts.models import Intervenciones
 from django.utils.timezone import make_aware, get_current_timezone
 from datetime import datetime
 from collections import defaultdict
+from apps.goals.models import Metas
+from datetime import datetime, timedelta
+from django.templatetags.static import static
 
 
 group_name = {
@@ -122,6 +125,51 @@ def edit_user(request, id):
         for date, count in interventions_data.items()
     ]
 
+    # Registro de metas
+    user_goals = Metas.objects.filter(usuario_fk_id=id).order_by('-rango_fechas')
+
+    # Obtener fecha actual
+    fecha_actual = datetime.now()
+
+    for goal in user_goals:
+        try:
+            # Parsear las fechas del rango en 'goal.rango_fechas'
+            fechas = goal.rango_fechas.split(' - ')
+            fecha_inicio = datetime.strptime(fechas[0], '%d/%m/%Y')
+            fecha_fin = datetime.strptime(fechas[1], '%d/%m/%Y')
+
+            # Comprobar si la semana está en el rango actual
+            if fecha_inicio <= fecha_actual <= fecha_fin:
+                if goal.completado == 1:
+                    goal.imagen = static('img/default/goalSucces.webp')
+                    goal.estado = 'Completado'
+                else:
+                    goal.imagen = static('img/default/goalProgress.webp')
+                    goal.estado = 'En progreso'
+            elif fecha_actual > fecha_fin:  # Si ya pasó la fecha de fin
+                if goal.completado == 1:
+                    goal.imagen = static('img/default/goalSucces.webp')
+                    goal.estado = 'Completado'
+                else:
+                    goal.imagen = static('img/default/goalFail.webp')
+                    goal.estado = 'No completado'
+            else:
+                # Semana aún no comienza
+                goal.imagen = static('img/default/goalProgress.webp')
+                goal.estado = 'Pendiente'
+
+            if goal.meta > 0:
+                goal.porcentaje = int((goal.progreso / goal.meta) * 100)
+            else:
+                goal.porcentaje = 0
+
+        except ValueError:
+            # Manejar el caso donde el rango de fechas no tiene el formato esperado
+            goal.imagen = static('img/default/goalError.png')
+            goal.estado = 'Error en rango de fechas'
+            goal.porcentaje = 0
+
+
     # Crear contexto
     user = get_object_or_404(CustomUser, pk=id)
     context = {
@@ -133,6 +181,7 @@ def edit_user(request, id):
         'interventions': selected_date_interventions,
         'years': years,
         'selected_date': selected_date_obj if selected_date else None,
+        'paginator_goals': user_goals
     }
 
     # Respuesta parcial para AJAX

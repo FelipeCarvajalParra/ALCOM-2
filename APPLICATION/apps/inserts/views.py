@@ -23,6 +23,7 @@ from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.utils.timezone import localtime
+from apps.goals.models import Metas
 
 
 @login_required
@@ -385,7 +386,6 @@ def save_result_intervention(request, num_order):
 
         if result == 'passed':
             if uploaded_file:
-                # Aquí estamos verificando que el archivo sea un PDF
                 if uploaded_file.content_type == 'application/pdf':
                     intervention.formato = uploaded_file
                 else:
@@ -394,6 +394,19 @@ def save_result_intervention(request, num_order):
                 return JsonResponse({'error': 'No se ha recibido ningún archivo PDF.'}, status=400)
 
             intervention.estado = 'Aprobada'
+
+            user_object = get_object_or_404(CustomUser, pk=request.user.id)
+            week_range = f"{(datetime.now() - timedelta(days=datetime.now().weekday())).strftime('%d/%m/%Y')} - {(datetime.now() - timedelta(days=datetime.now().weekday()) + timedelta(days=6)).strftime('%d/%m/%Y')}"
+            if Metas.objects.filter(rango_fechas=week_range, usuario_fk=user_object).exists():
+                user_goal = Metas.objects.get(rango_fechas=week_range, usuario_fk=user_object)
+
+                if user_goal.completado == 0:
+                    user_goal.progreso += 1
+                    user_goal.save()
+                    if user_goal.progreso == user_goal.meta:
+                        user_goal.completado = 1
+                        user_goal.save()
+
             intervention.save()
             log_activity(
                 user=request.user.id,                       
@@ -404,8 +417,8 @@ def save_result_intervention(request, num_order):
             )
 
             messages.success(request, 'La intervención ha sido aprobada.')
-            return JsonResponse({'message': True})
-
+            return JsonResponse({'redirect_url': reverse('edit_equipment', kwargs={'id_equipment': intervention.cod_equipo_fk.cod_equipo_pk})})
+        
         elif result == 'denied':
 
             registerLog = ActivityLog.objects.filter(link=f'/edit_equipment/{intervention.cod_equipo_fk.cod_equipo_pk}?intervention_id={intervention.num_orden_pk}')

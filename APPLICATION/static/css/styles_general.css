@@ -2228,3 +2228,17 @@ input:-webkit-autofill {
 .container__grafic--medium{
     width: 60%;
 }
+
+/* goals */
+
+.goal__progress{
+    box-shadow: 0 0 0 3px rgba(248, 184, 17, 0.4);
+}
+
+.goal__error{
+    box-shadow: 0 0 0 3px rgb(245, 108, 109, 0.4);
+}
+
+.goal__succes{
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.4);
+}

@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 import json
 from django.http import JsonResponse
 from django.utils import timezone
+from apps.goals.models import Metas
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -72,7 +73,6 @@ def home(request):
         # Asegurarse de que 'fecha_hora' sea consciente de la zona horaria
         if entry['fecha_hora']:
             fecha_hora = entry['fecha_hora']
-            # Si es naive, conviértelo a aware
             if timezone.is_naive(fecha_hora):
                 fecha_hora = timezone.make_aware(fecha_hora)
             
@@ -82,6 +82,20 @@ def home(request):
                 data_by_task[day][task] += entry['count']  # Acumular las intervenciones
         else:
             print('Fecha no encontrada en la entrada:', entry)
+
+
+    # Buacar meta para la semana actual
+    week_range = f"{(datetime.now() - timedelta(days=datetime.now().weekday())).strftime('%d/%m/%Y')} - {(datetime.now() - timedelta(days=datetime.now().weekday()) + timedelta(days=6)).strftime('%d/%m/%Y')}"
+    percentage = 0
+    if Metas.objects.filter(rango_fechas=week_range, usuario_fk=user).exists():
+        user_goal = Metas.objects.get(rango_fechas=week_range, usuario_fk=user)
+        goal = f'{user_goal.progreso}/{user_goal.meta}'
+
+        if user_goal.meta > 0:
+            percentage = int((user_goal.progreso / user_goal.meta) * 100)
+        
+    else:
+        goal = '⏱️'
 
     # Preparar datos para la gráfica
     graph_series = [
@@ -105,6 +119,8 @@ def home(request):
             'total_intervention': total_intervention,
             'month_interventions_count': month_interventions_count,
             'week_interventions_count': week_interventions_count,
+            'goal': goal,
+            'percentage': percentage
         },
         'graph': {
             'series': graph_series,
