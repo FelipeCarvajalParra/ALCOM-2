@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-
+ 
 
 class Referencias(models.Model):
     referencia_pk = models.CharField(primary_key=True, max_length=250, unique=True)
