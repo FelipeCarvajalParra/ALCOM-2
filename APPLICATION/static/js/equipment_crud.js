@@ -2,7 +2,6 @@ const newEquipmentForm = document.getElementById('newEquipmentForm');
 const messageNewEquipmentError = document.getElementById('messageError');
 const editEquipmentStateForm = document.getElementById('editEquipmentStateForm');
 const messageEditEquipmentStateError = document.getElementById('messageEditEquipmentStateError');
-const codeEquipment = document.getElementById('codeEquipment').textContent;
 
 if (newEquipmentForm) {
     newEquipmentForm.addEventListener('submit', function(event) {
@@ -44,6 +43,9 @@ if (newEquipmentForm) {
 }
 
 if (editEquipmentStateForm) {
+
+    const codeEquipment = document.getElementById('codeEquipment').textContent;
+
     editEquipmentStateForm.addEventListener('submit', function(event) {
 
         event.preventDefault(); // Evitar el envío del formulario

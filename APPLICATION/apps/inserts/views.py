@@ -395,7 +395,7 @@ def save_result_intervention(request, num_order):
 
             intervention.estado = 'Aprobada'
 
-            user_object = get_object_or_404(CustomUser, pk=request.user.id)
+            user_object = get_object_or_404(CustomUser, pk=intervention.usuario_fk_id)
             week_range = f"{(datetime.now() - timedelta(days=datetime.now().weekday())).strftime('%d/%m/%Y')} - {(datetime.now() - timedelta(days=datetime.now().weekday()) + timedelta(days=6)).strftime('%d/%m/%Y')}"
             if Metas.objects.filter(rango_fechas=week_range, usuario_fk=user_object).exists():
                 user_goal = Metas.objects.get(rango_fechas=week_range, usuario_fk=user_object)

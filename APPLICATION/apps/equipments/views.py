@@ -63,6 +63,8 @@ def view_equipments(request):
 @transaction.atomic
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_equipment(request):
+
+    print('hola manolo')
     try:
         reference = request.POST.get('reference')
         code = request.POST.get('code')
@@ -220,7 +222,6 @@ def edit_equipment(request, id_equipment):
     }
 
     return render(request, 'equipment_edit.html', context)
-
 
 @login_required
 @require_POST
