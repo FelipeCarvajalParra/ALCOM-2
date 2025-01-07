@@ -41,9 +41,9 @@ def view_reports(request):
     categories = [(start_date + timedelta(days=i)).strftime("%d/%m/%Y") for i in range(delta.days + 1)]
 
     # Inicializar contadores para cada tipo de intervención
-    intervenciones_counts = [0] * (delta.days + 1)
-    cambios_partes_counts = [0] * (delta.days + 1)
-    mantenimientos_counts = [0] * (delta.days + 1)
+    interventions_counts = [0] * (delta.days + 1)
+    changes_parts_counts = [0] * (delta.days + 1)
+    maintenance_counts = [0] * (delta.days + 1)
 
     # Asegúrate de que los rangos incluyan el inicio y el final del día
     start_datetime = timezone.make_aware(datetime.combine(start_date, time.min), timezone.get_current_timezone())
@@ -64,11 +64,11 @@ def view_reports(request):
     for intervention in interventions:
         day_index = (intervention.fecha_hora.date() - start_date.date()).days
         if intervention.tarea_realizada == "Intervencion":
-            intervenciones_counts[day_index] += 1
+            interventions_counts[day_index] += 1
         elif intervention.tarea_realizada == "Cambio de parte":
-            cambios_partes_counts[day_index] += 1
+            changes_parts_counts[day_index] += 1
         elif intervention.tarea_realizada == "Mantenimiento":
-            mantenimientos_counts[day_index] += 1
+            maintenance_counts[day_index] += 1
 
     # Construir el mensaje de rango dinámico
     range_message = f"Rango: {date_range}"  # Mensaje base con el rango de fechas
@@ -87,15 +87,15 @@ def view_reports(request):
         "series": [
             {
                 "name": "Intervenciones",
-                "data": intervenciones_counts
+                "data": interventions_counts
             },
             {
                 "name": "Cambio de partes",
-                "data": cambios_partes_counts
+                "data": changes_parts_counts
             },
             {
                 "name": "Mantenimiento",
-                "data": mantenimientos_counts
+                "data": maintenance_counts
             }
         ]
     }

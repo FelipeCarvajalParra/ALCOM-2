@@ -4,7 +4,6 @@ from django.shortcuts import render
 from datetime import datetime
 from apps.logIn.views import group_required
 from django.contrib import messages
-from io import BytesIO
 from apps.users.models import CustomUser
 from apps.categories.models import Categorias
 from apps.equipments.models import Equipos
@@ -12,7 +11,6 @@ from apps.references.models import Referencias
 from django.db.models import Q
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.views.decorators.http import require_POST
 from django.db import transaction
 from apps.inserts.models import Intervenciones
 from datetime import datetime, timedelta
@@ -20,6 +18,8 @@ import json
 from django.http import JsonResponse
 from django.utils import timezone
 from apps.goals.models import Metas
+from django.http import JsonResponse
+from datetime import datetime, time
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -128,24 +128,82 @@ def home(request):
         }
     }
 
+    today = datetime.today()
+    first_day_of_month = today.replace(day=1)
+    last_day_of_month = today.replace(day=28) + timedelta(days=4)  # Garantiza que caiga en el último día del mes
+    last_day_of_month = last_day_of_month - timedelta(days=last_day_of_month.day)
+    date_range = f"{first_day_of_month.strftime('%Y-%m-%d')} - {last_day_of_month.strftime('%Y-%m-%d')}"
+
+    start_date_str, end_date_str = date_range.split(" - ")
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+
+    # Asegurar que las fechas sean conscientes de la zona horaria
+    start_date = timezone.make_aware(start_date, timezone.get_current_timezone())
+    end_date = timezone.make_aware(end_date, timezone.get_current_timezone())
+
+    # Crear una lista de días en el rango de fechas
+    delta = end_date - start_date
+    categories = [(start_date + timedelta(days=i)).strftime("%d/%m/%Y") for i in range(delta.days + 1)]
+
+    # Inicializar contadores para cada tipo de intervención
+    interventions_counts = [0] * (delta.days + 1)
+    changes_parts_counts = [0] * (delta.days + 1)
+    maintenance_counts = [0] * (delta.days + 1)
+
+    # Asegúrate de que los rangos incluyan el inicio y el final del día
+    start_datetime = timezone.make_aware(datetime.combine(start_date, time.min), timezone.get_current_timezone())
+    end_datetime = timezone.make_aware(datetime.combine(end_date, time.max), timezone.get_current_timezone())
+
+    interventions = Intervenciones.objects.filter(
+        fecha_hora__range=[start_datetime, end_datetime],
+        usuario_fk=user.id
+    ).exclude(fecha_hora__isnull=True)
+
+
+    # Contar las intervenciones por día y tipo
+    for intervention in interventions:
+        day_index = (intervention.fecha_hora.date() - start_date.date()).days
+        if intervention.tarea_realizada == "Intervencion":
+            interventions_counts[day_index] += 1
+        elif intervention.tarea_realizada == "Cambio de parte":
+            changes_parts_counts[day_index] += 1
+        elif intervention.tarea_realizada == "Mantenimiento":
+            maintenance_counts[day_index] += 1
+
+
+    # Construir el array en el formato deseado
+    report_data = {
+        "categories": categories,
+        "series": [
+            {
+                "name": "Intervenciones",
+                "data": interventions_counts
+            },
+            {
+                "name": "Cambio de partes",
+                "data": changes_parts_counts
+            },
+            {
+                "name": "Mantenimiento",
+                "data": maintenance_counts
+            }
+        ]
+    }
+
     # Pasar el JSON al contexto
     context = {
         'data_json': json.dumps(data),  # Serializar el JSON
+        'data_grafic_line': json.dumps(report_data)  # Convertir a JSON antes de pasarlo a la plantilla
     }
 
     return render(request, 'home.html', context)
-
-
 
 @login_required
 @transaction.atomic
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def site_construction(request):
     return render(request, 'construction.html')
-
-def error_export(request):
-    messages.error(request, 'Usted no tiene permiso para generar reportes.')
-    return redirect('view_categories')
 
 @login_required
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
