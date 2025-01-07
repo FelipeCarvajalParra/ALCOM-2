@@ -126,7 +126,7 @@ def edit_user(request, id):
     ]
 
     # Registro de metas
-    user_goals = Metas.objects.filter(usuario_fk_id=id).order_by('-rango_fechas')
+    user_goals = Metas.objects.filter(usuario_fk_id=id).order_by('rango_fechas')
 
     # Obtener fecha actual
     fecha_actual = datetime.now()
