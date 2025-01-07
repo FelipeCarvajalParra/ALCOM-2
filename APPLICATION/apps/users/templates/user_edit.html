@@ -141,6 +141,9 @@
                 <ul class="container__list-activity">
                     {% include "partials/_goals_body.html" %}
                 </ul>
+                <div class="table__footer">
+                    {% include 'partials/_goals_footer.html' %}
+                </div>
 
             </div>
         {% endif %}
@@ -295,8 +298,8 @@
                     <input class="input input--medium" type="week" name="goalWeek" required/>
                 </div>
                 <div class="input-wrapper">
-                    <input class="input input--medium" type="number" name="goalCant" required>
-                    <label class="input-container__label">Cantidad de intervenciones</label>
+                    <input class="input input--medium" type="number" name="goalCant" id="goalCant" required>
+                    <label class="input-container__label" for="goalCant">Cantidad de intervenciones</label>
                 </div>
             </div>
         </div>

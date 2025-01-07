@@ -126,7 +126,7 @@ def edit_user(request, id):
     ]
 
     # Registro de metas
-    user_goals = Metas.objects.filter(usuario_fk_id=id).order_by('rango_fechas')
+    user_goals = Metas.objects.filter(usuario_fk_id=id)
 
     # Obtener fecha actual
     fecha_actual = datetime.now()
@@ -169,6 +169,9 @@ def edit_user(request, id):
             goal.estado = 'Error en rango de fechas'
             goal.porcentaje = 0
 
+    paginator_goals = Paginator(user_goals, 5)  # Este es el objeto Paginator completo
+    page_goal_number = request.GET.get('pageGoal')
+    paginator_goals = paginator_goals.get_page(page_goal_number)  # Este es el objeto Page para la página actual
 
     # Crear contexto
     user = get_object_or_404(CustomUser, pk=id)
@@ -181,7 +184,9 @@ def edit_user(request, id):
         'interventions': selected_date_interventions,
         'years': years,
         'selected_date': selected_date_obj if selected_date else None,
-        'paginator_goals': user_goals
+        'paginator_goals': paginator_goals,
+        'page_goal_number': page_goal_number,
+
     }
 
     # Respuesta parcial para AJAX
