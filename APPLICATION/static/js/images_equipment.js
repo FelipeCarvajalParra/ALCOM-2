@@ -8,8 +8,6 @@ previews.forEach(preview => {
         // Cambia la imagen principal por la ruta de la miniatura seleccionada
         mainImage.src = preview.src;
 
-        // Actualiza el atributo `data-field` e `data-record` del input
-
         fileUploadInput.setAttribute('data-field', preview.id); // Cambia el data-field por el ID de la imagen seleccionada
 
     });

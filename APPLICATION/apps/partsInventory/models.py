@@ -1,4 +1,5 @@
 from django.db import models
+from apps.references.models import Referencias
 
 class Inventario(models.Model):
     num_parte_pk = models.CharField(primary_key=True, max_length=250)
@@ -21,5 +22,13 @@ class Inventario(models.Model):
     
     class Meta:
         db_table = 'inventario'
+
+class PiezasReferencias(models.Model):
+    id_pk = models.AutoField(primary_key=True)
+    num_parte_fk = models.ForeignKey(Inventario, on_delete=models.CASCADE, db_column='num_parte_fk')
+    referencia_fk = models.ForeignKey(Referencias, on_delete=models.CASCADE, db_column='referencia_fk')
+
+    class Meta:
+        db_table = 'piezas_referencias'
 
 

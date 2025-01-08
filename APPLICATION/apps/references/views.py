@@ -14,7 +14,7 @@ from apps.equipments.models import Equipos
 from .models import Valor, Referencias, Archivos
 from apps.activityLog.utils import log_activity
 from apps.logIn.views import group_required
-from django.core.exceptions import ObjectDoesNotExist
+from apps.partsInventory.models import PiezasReferencias
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -286,6 +286,15 @@ def edit_reference(request, reference_id):
 
     except Exception as e:
         return HttpResponse(f"Ocurrió un error: {str(e)}")
+    
+
+    references_parts = PiezasReferencias.objects.filter(referencia_fk=reference_id)
+    print(references_parts)
+
+
+    paginator_parts = Paginator(references_parts,11)  # Número de elementos por página
+    page_number_parts = request.GET.get('pageParts')
+    paginator_parts = paginator_parts.get_page(page_number_parts)
 
     context = {
         'reference': reference,
@@ -295,6 +304,8 @@ def edit_reference(request, reference_id):
         'brands': brands,
         'paginator': paginator,
         'search_query': search_query,
+        'paginator_parts': paginator_parts,
+        'page_number_parts': page_number_parts
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':

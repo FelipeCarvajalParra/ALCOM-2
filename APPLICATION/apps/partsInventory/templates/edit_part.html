@@ -127,17 +127,25 @@
                 </svg>
                 <span>Detalles</span>
             </div>
-            <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
-                <svg viewBox="0 0 24 24" width="20px" height="20px" fill="currentColor">
-                    <path d="M5.01112 11.5747L6.29288 10.2929C6.68341 9.90236 7.31657 9.90236 7.7071 10.2929C8.09762 10.6834 8.09762 11.3166 7.7071 11.7071L4.7071 14.7071C4.51956 14.8946 4.26521 15 3.99999 15C3.73477 15 3.48042 14.8946 3.29288 14.7071L0.292884 11.7071C-0.0976406 11.3166 -0.0976406 10.6834 0.292884 10.2929C0.683408 9.90236 1.31657 9.90236 1.7071 10.2929L3.0081 11.5939C3.22117 6.25933 7.61317 2 13 2C18.5229 2 23 6.47715 23 12C23 17.5228 18.5229 22 13 22C9.85817 22 7.05429 20.5499 5.22263 18.2864C4.87522 17.8571 4.94163 17.2274 5.37096 16.88C5.80028 16.5326 6.42996 16.599 6.77737 17.0283C8.24562 18.8427 10.4873 20 13 20C17.4183 20 21 16.4183 21 12C21 7.58172 17.4183 4 13 4C8.72441 4 5.23221 7.35412 5.01112 11.5747ZM13 5C13.5523 5 14 5.44772 14 6V11.5858L16.7071 14.2929C17.0976 14.6834 17.0976 15.3166 16.7071 15.7071C16.3166 16.0976 15.6834 16.0976 15.2929 15.7071L12.2929 12.7071C12.1054 12.5196 12 12.2652 12 12V6C12 5.44772 12.4477 5 13 5Z"></path> 
-                </svg>
-                <span>Historico</span>
-            </div>
+            {% if request.user.groups.first.name == 'administrators' %}
+                <div class="button button--navegation button-margin-left" id="referencesEquipment" data-target="stock">
+                    <svg viewBox="0 0 24 24" width="20px" height="20px" fill="currentColor">
+                        <path d="M5.01112 11.5747L6.29288 10.2929C6.68341 9.90236 7.31657 9.90236 7.7071 10.2929C8.09762 10.6834 8.09762 11.3166 7.7071 11.7071L4.7071 14.7071C4.51956 14.8946 4.26521 15 3.99999 15C3.73477 15 3.48042 14.8946 3.29288 14.7071L0.292884 11.7071C-0.0976406 11.3166 -0.0976406 10.6834 0.292884 10.2929C0.683408 9.90236 1.31657 9.90236 1.7071 10.2929L3.0081 11.5939C3.22117 6.25933 7.61317 2 13 2C18.5229 2 23 6.47715 23 12C23 17.5228 18.5229 22 13 22C9.85817 22 7.05429 20.5499 5.22263 18.2864C4.87522 17.8571 4.94163 17.2274 5.37096 16.88C5.80028 16.5326 6.42996 16.599 6.77737 17.0283C8.24562 18.8427 10.4873 20 13 20C17.4183 20 21 16.4183 21 12C21 7.58172 17.4183 4 13 4C8.72441 4 5.23221 7.35412 5.01112 11.5747ZM13 5C13.5523 5 14 5.44772 14 6V11.5858L16.7071 14.2929C17.0976 14.6834 17.0976 15.3166 16.7071 15.7071C16.3166 16.0976 15.6834 16.0976 15.2929 15.7071L12.2929 12.7071C12.1054 12.5196 12 12.2652 12 12V6C12 5.44772 12.4477 5 13 5Z"></path> 
+                    </svg>
+                    <span>Historico</span>
+                </div>
+            {% endif %}
             <div class="button button--navegation button-margin-left" data-target="shopping">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px" fill="currentColor">
                     <path d="M4.00488 16V4H2.00488V2H5.00488C5.55717 2 6.00488 2.44772 6.00488 3V15H18.4433L20.4433 7H8.00488V5H21.7241C22.2764 5 22.7241 5.44772 22.7241 6C22.7241 6.08176 22.7141 6.16322 22.6942 6.24254L20.1942 16.2425C20.083 16.6877 19.683 17 19.2241 17H5.00488C4.4526 17 4.00488 16.5523 4.00488 16ZM6.00488 23C4.90031 23 4.00488 22.1046 4.00488 21C4.00488 19.8954 4.90031 19 6.00488 19C7.10945 19 8.00488 19.8954 8.00488 21C8.00488 22.1046 7.10945 23 6.00488 23ZM18.0049 23C16.9003 23 16.0049 22.1046 16.0049 21C16.0049 19.8954 16.9003 19 18.0049 19C19.1095 19 20.0049 19.8954 20.0049 21C20.0049 22.1046 19.1095 23 18.0049 23Z"></path>
                 </svg>
                 <span>Compras</span>
+            </div>
+            <div class="button button--navegation button-margin-left" data-target="references">
+                <svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22px" height="22px" fill="currentColor">
+                    <path d="M17.75,3 L17.9344206,3.00514477 C19.5836668,3.09733553 20.9038593,4.41749589 20.9960552,6.06557622 L21.0012,6.25 L21.0012,17.75 L20.99606,17.9344 C20.9038646,19.5824607 19.5837041,20.9026574 17.9356238,20.994855 L17.7512,21 L6.25,21 C4.51697,21 3.10075,19.6435 3.00514,17.9344 L3,17.75 L3,6.25 C3,4.51697 4.35645,3.10075 6.06558,3.00514 L6.25,3 L17.75,3 Z M19,8 L5.0012,8 L5,17.75 C5,18.3972 5.49187,18.9295 6.12219,18.9935 L6.25,19 L17.7512,19 L17.87901,18.9935 C18.4673087,18.9337667 18.935002,18.466092 18.9947465,17.8778033 L19.0012,17.75 L19,8 Z M10.25,9.5 C10.6296958,9.5 10.943491,9.78215388 10.9931534,10.1482294 L11,10.25 L11,17.25 C11,17.6296958 10.7178461,17.943491 10.3517706,17.9931534 L10.25,18 L6.75,18 C6.37030423,18 6.05650904,17.7178461 6.00684662,17.3517706 L6,17.25 L6,10.25 C6,9.87030423 6.28215388,9.55650904 6.64822944,9.50684662 L6.75,9.5 L10.25,9.5 Z M9.5,11 L7.5,11 L7.5,16.5 L9.5,16.5 L9.5,11 Z M16.25,12.5029959 C16.6642136,12.5029959 17,12.8387823 17,13.2529959 C17,13.6326916 16.7178461,13.9464868 16.3517706,13.9961492 L16.25,14.0029959 L12.7544121,14.0029959 C12.3401986,14.0029959 12.0044121,13.6672094 12.0044121,13.2529959 C12.0044121,12.8733001 12.286566,12.5595049 12.6526416,12.5098425 L12.7544121,12.5029959 L16.25,12.5029959 Z M17.25,9.5 C17.6642136,9.5 18,9.83578644 18,10.25 C18,10.6296958 17.7178461,10.943491 17.3517706,10.9931534 L17.25,11 L12.7544121,11 C12.3401986,11 12.0044121,10.6642136 12.0044121,10.25 C12.0044121,9.87030423 12.286566,9.55650904 12.6526416,9.50684662 L12.7544121,9.5 L17.25,9.5 Z"> </path> 
+                </svg>
+                <span>Referencias</span>
             </div>
         </div>
 
@@ -264,7 +272,7 @@
             </form>
         </div>
 
-        <div id="technicalSheet" class="container--activity scroll" style="display: none;">
+        <div id="technicalSheet" class="container--activity scroll" style="display: block;">
             <form class="container__section-title container__section-title--button">
                 <div class="container__section-title">
                     <span>Manual</span>
@@ -293,54 +301,53 @@
             </div>
         </div>
 
-        <div id="stock" class="container--activity scroll" style="display: none;">
-            <div class="container__section-title">
-                <span>Lista de existencias</span>
-            </div>
-            <div class="container__table">
-                <div class="container--large container--sub-table">
-                    <table class="table">
-                        <div class="table__info table__info--options table__info--gap">
-                            <div class="select select--filter select--active">
-                                <div class="select__selected" id="filterMovements">{% if search_query %}{{ search_query }}{% else %}Filtrar por{% endif %}</div>
-                                <div class="select__options scroll">
-                                    <div class="select__option select__option--filter">Entradas</div>
-                                    <div class="select__option select__option--filter">Salidas</div>
+        {% if request.user.groups.first.name == 'administrators' %}
+            <div id="stock" class="container--activity scroll" style="display: none;">
+                <div class="container__section-title">
+                    <span>Lista de existencias</span>
+                </div>
+                <div class="container__table">
+                    <div class="container--large container--sub-table">
+                        <table class="table">
+                            <div class="table__info table__info--options table__info--gap">
+                                <div class="select select--filter select--active">
+                                    <div class="select__selected" id="filterMovements">{% if search_query %}{{ search_query }}{% else %}Filtrar por{% endif %}</div>
+                                    <div class="select__options scroll">
+                                        <div class="select__option select__option--filter">Entradas</div>
+                                        <div class="select__option select__option--filter">Salidas</div>
+                                    </div>
+                                    <div class="select__icon">
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="select__icon">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M6.34292 7.75734L4.92871 9.17155L11.9998 16.2426L19.0708 9.17158L17.6566 7.75737L11.9998 13.4142L6.34292 7.75734Z"></path>
-                                    </svg>
-                                </div>
+                                {% if user.groups.first.name == 'administrators' %}
+                                    <div class="button button--right button--part" data-modal-id="modalAdd">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20 3L22 7V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V7.00353L4 3H20ZM20 9H4V19H20V9ZM13 10V14H16L12 18L8 14H11V10H13ZM18.7639 5H5.23656L4.23744 7H19.7639L18.7639 5Z"></path>
+                                        </svg>
+                                        <span>Actualizar</span>
+                                    </div>
+                                {% endif %}
                             </div>
-                            {% if user.groups.first.name == 'administrators' %}
-                                <div class="button button--right button--part" data-modal-id="modalAdd">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M20 3L22 7V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V7.00353L4 3H20ZM20 9H4V19H20V9ZM13 10V14H16L12 18L8 14H11V10H13ZM18.7639 5H5.23656L4.23744 7H19.7639L18.7639 5Z"></path>
-                                    </svg>
-                                    <span>Actualizar</span>
-                                </div>
-                            {% endif %}
+                            <thead class="table__headed">
+                                <th class="table__headed-title">Fuente</th>
+                                <th class="table__headed-title">Movimiento</th>
+                                <th class="table__headed-title">Cantidad</th>
+                                <th class="table__headed-title table__headed-actions">Acciones</th>
+                            </thead>
+                            <tbody class="table__body">
+                                {% include 'partials/_movements_table_body.html' %}
+                            </tbody>
+                        </table>
+                        <div class="table__footer">
+                            {% include 'partials/_movements_table_footer.html' %} 
                         </div>
-                        <thead class="table__headed">
-                            <th class="table__headed-title">Fuente</th>
-                            <th class="table__headed-title">Movimiento</th>
-                            <th class="table__headed-title">Cantidad</th>
-                            <th class="table__headed-title table__headed-actions">Acciones</th>
-                        </thead>
-                        <tbody class="table__body">
-                            {% include 'partials/_movements_table_body.html' %}
-                        </tbody>
-                    </table>
-                    <div class="table__footer">
-                        {% include 'partials/_movements_table_footer.html' %} 
                     </div>
                 </div>
             </div>
-        </div>
-
-
-
+        {% endif %}
 
         <div id="shopping" class="container--activity scroll" style="display: none;">
             <div class="container__section-title">
@@ -350,7 +357,7 @@
                 <div class="container--large container--sub-table">
                     <table class="table">
                         <div class="table__info table__info--options table__info--gap">
-                            {% if user.groups.first.name == 'administrators' %}
+                            {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
                                 <div class="button button--margin-left" data-modal-id="modalAddShopping">
                                     <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
@@ -375,12 +382,46 @@
                 </div>
             </div>
         </div>
+
+        <div id="references" class="container--activity scroll" style="display: none;">
+            <div class="container__section-title">
+                <span>Referencias asociadas</span>
+            </div>
+            <div class="container__table">
+                <div class="container--large container--sub-table">
+                    <table class="table">
+                        <div class="table__info table__info--options table__info--gap">
+                            {% if user.groups.first.name == 'administrators' or user.groups.first.name == 'technicians' %}
+                                <div class="button button--margin-left" data-modal-id="modalAddPartReference">
+                                    <svg width="15px" height="15px" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M866.332 213v653.332H213v186.666h653.332v653.332h186.666v-653.332h653.332V866.332h-653.332V213z"></path>
+                                    </svg>
+                                    <span>Agregar</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <thead class="table__headed">
+                            <th class="table__headed-title">Referencia</th>
+                            <th class="table__headed-title">Categoria</th>
+                            <th class="table__headed-title table__headed-actions">Acciones</th>
+                        </thead>
+                        <tbody class="table__body">
+                            {% include 'partials/_references_associated_table_body.html' %}
+                        </tbody>
+                    </table>
+                    <div class="table__footer">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
+<div class="modal-overlay"></div>
 {% if user.groups.first.name == 'administrators' %}
-    <div class="modal-overlay"></div>
-
+    
     <div class="modal" id="modalAdd">
         <button class="modal__close">
             <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
@@ -444,56 +485,85 @@
 
         </form>
     </div>
+{% endif %}
 
+<div class="modal" id="modalAddShopping">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
 
-
-
-    <div class="modal" id="modalAddShopping">
-        <button class="modal__close">
-            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
-
-        <div class="modal__header">
-            <span>Reporte de compra</span>
-            <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la compra.</p>
-        </div>
-
-        <form class="container__form" id="addShoppingForm">
-            {% csrf_token %}
-            <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
-            
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input class="input input--medium" maxlength="100" type="text" id="color" name="color" required>
-                        <label class="input-container__label" for="color">Color</label>
-                    </div>
-                    <div class="input-wrapper">
-                        <input class="input input--medium" type="number" id="amountShopping" name="amountShopping" required>
-                        <label class="input-container__label" for="amountShopping">Cantidad</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form__largue form__largue--margin-top">
-                <div class="input-container">
-                    <div class="input-wrapper input-wrapper--largue">
-                        <textarea class="input input--largue textarea" id="noteShopping" name="noteShopping" maxlength="250" style="height: 45px;"></textarea>
-                        <label class="input-container__label textarea__label" for="noteShopping">Observaciones</label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal__options">
-                <button type="submit" class="button button--save">
-                    <span>Añadir</span>
-                </button>
-                <span id="messageShoppingError" class="login__error-message">‎</span>
-            </div>
-        </form>
+    <div class="modal__header">
+        <span>Reporte de compra</span>
+        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la compra.</p>
     </div>
 
-{% endif %}
+    <form class="container__form" id="addShoppingForm">
+        {% csrf_token %}
+        <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
+        
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="input input--medium" maxlength="100" type="text" id="color" name="color" required>
+                    <label class="input-container__label" for="color">Color</label>
+                </div>
+                <div class="input-wrapper">
+                    <input class="input input--medium" type="number" id="amountShopping" name="amountShopping" required>
+                    <label class="input-container__label" for="amountShopping">Cantidad</label>
+                </div>
+            </div>
+        </div>
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <textarea class="input input--largue textarea" id="noteShopping" name="noteShopping" maxlength="250" style="height: 45px;"></textarea>
+                    <label class="input-container__label textarea__label" for="noteShopping">Observaciones</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir</span>
+            </button>
+            <span id="messageShoppingError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div>
+
+<div class="modal" id="modalAddPartReference">
+    <button class="modal__close">
+        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+            <path id="Vector" d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div class="modal__header">
+        <span>Asociar referencia</span>
+        <p class="modal__subheader">Por favor, ingresa los datos necesarios para registrar la asociacion.</p>
+    </div>
+
+    <form class="container__form" id="addPartReferenceForm">
+        {% csrf_token %}
+        <input class="input input--largue" type="text" value="{{reference.referencia_pk}}" name="reference" hidden>
+        
+        <div class="form__largue form__largue--margin-top">
+            <div class="input-container">
+                <div class="input-wrapper input-wrapper--largue">
+                    <input class="input input--largue" id="reference" name="reference" maxlength="250" style="height: 45px;">
+                    <label class="input-container__label" for="reference">Referencia</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal__options">
+            <button type="submit" class="button button--save">
+                <span>Añadir</span>
+            </button>
+            <span id="messagePartReferenceError" class="login__error-message">‎</span>
+        </div>
+    </form>
+</div> 
 
 <div class="modal modal--parts" id="modalMovements">
     <button class="modal__close">
@@ -575,9 +645,11 @@
 <script src="{% static 'js/inputs_placeholders.js' %}"></script>
 <script src="{% static 'js/height_textarea.js' %}"></script>
 <script src="{% static 'js/images_equipment.js' %} ?v=2" ></script>
+<script src="{% static 'js/modal_images.js' %}" ></script>
 <script src="{% static 'js/update_files.js' %} ?v=2"></script>
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
+<script src="{% static 'js/part_reference_crud.js' %}"></script>
 
 
 

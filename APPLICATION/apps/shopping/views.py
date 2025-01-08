@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 
 @login_required
 @transaction.atomic
-@group_required(['administrators'], redirect_url='/forbidden_access/')
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def view_shopping(request):
 
     shoppings = Compras.objects.all().order_by('-fecha_hora')
@@ -59,7 +59,7 @@ def view_shopping(request):
 @login_required
 @require_POST
 @transaction.atomic
-@group_required(['administrators'], redirect_url='/forbidden_access/')
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def new_shopping(request):
     partid = request.POST.get('partId')
     color = request.POST.get('color')

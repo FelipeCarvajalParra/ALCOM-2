@@ -14,6 +14,7 @@ from apps.inserts.models import Actualizaciones
 from django.db.models import Sum
 from apps.logIn.views import group_required
 from apps.activityLog.utils import log_activity
+from apps.partsInventory.models import PiezasReferencias, Referencias
 
 default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
@@ -84,7 +85,7 @@ def new_part(request):
 
 @login_required
 @transaction.atomic
-@group_required(['administrators'], redirect_url='/forbidden_access/')
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def edit_part(request, part_id):
 
     search = request.GET.get('search', '').strip()
@@ -114,6 +115,13 @@ def edit_part(request, part_id):
     page_number_shopping = request.GET.get('page_shopping')
     paginator_shopping = paginator_shopping.get_page(page_number_shopping)
 
+    references_associated = PiezasReferencias.objects.filter(num_parte_fk=part_id)
+    print(references_associated)
+
+    paginator_references = Paginator(references_associated, 11)
+    page_number_references = request.GET.get('page_references')
+    paginator_references = paginator_references.get_page(page_number_references)
+
     context = {
         'paginator': paginator,
         'page_number': page_number,
@@ -124,6 +132,8 @@ def edit_part(request, part_id):
         'partsOutcome': partsOutcome,
         'paginator_shopping': paginator_shopping,
         'page_number_shopping': page_number_shopping,
+        'paginator_references': paginator_references,
+        'page_number_references': page_number_references
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -229,6 +239,76 @@ def view_movements(request):
 
     return render(request, 'view_movements.html', context)
 
+@login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+def delete_part_reference(request, partReference_id):
+    try:
+        # Obtener y eliminar la categoría
+        part_reference = get_object_or_404(PiezasReferencias, pk=partReference_id)
+
+        part = part_reference.num_parte_fk
+        reference = part_reference.referencia_fk
+
+        part_reference.delete()
+
+        log_activity(
+            user=request.user.id,
+            action='DELETE',
+            description=f'El usuario eliminó la asociación entre la pieza {part} y la referencia {reference}.',
+            category='PARTS'
+        )
+        messages.success(request, 'Asociacion eliminada correctamente.')
+        return JsonResponse({'success': True}, status=200) 
+    
+    except Exception:
+        messages.error(request, 'Ocurrió un error inesperado.')
+        return JsonResponse({'success': True})  
+    
+from django.http import JsonResponse, Http404
+
+@login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+def new_part_reference(request):
+    try:
+        part_id = request.POST.get('partId')
+        reference_id = request.POST.get('reference')
+
+        try:
+            part = get_object_or_404(Inventario, pk=part_id)
+        except Http404:
+            return JsonResponse({'error': 'No se encontró la pieza especificada.'})
+
+        try:
+            reference = get_object_or_404(Referencias, pk=reference_id)
+        except Http404:
+            return JsonResponse({'error': 'No se encontró la referencia especificada.'})
+
+        if PiezasReferencias.objects.filter(num_parte_fk=part, referencia_fk=reference).exists():
+            return JsonResponse({'error': 'La asociación ya existe.'})
+
+        new_part_reference = PiezasReferencias.objects.create(
+            num_parte_fk=part,
+            referencia_fk=reference
+        )
+
+        log_activity(
+            user=request.user.id,
+            action='CREATE',
+            description=f'El usuario creó una asociación entre la pieza {part} y la referencia {reference}.',
+            link=f'/edit_part/{part.num_parte_pk}',
+            category='PARTS'
+        )
+
+        messages.success(request, 'Asociación creada correctamente.')
+        return JsonResponse({'success': True}, status=200)
+
+    except Exception:
+        messages.error(request, 'Ocurrió un error inesperado.')
+        return JsonResponse({'success': True})
 
     
 

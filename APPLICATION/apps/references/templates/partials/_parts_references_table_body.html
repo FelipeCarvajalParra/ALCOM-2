@@ -1,0 +1,43 @@
+{% if paginator_parts|length > 0 %}
+    {% for part in paginator_parts %}
+        <tr class="table__row">
+            <td class="table__cell table__cell--auto table__cell--flex">
+                <img class="table__image table__image--semi-circular"
+                    src="{% if part.num_parte_fk.imagen_1 %}{{ part.num_parte_fk.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="" />
+                <div class="table__container-text">
+                    <a href="{% url 'edit_part' part.num_parte_fk.num_parte_pk %}" class="table__container-link">{{part.num_parte_fk.nombre}}</a>
+                    <span class="table__container-email">{{part.num_parte_fk.num_parte_pk}}</span>
+                </div>
+            </td> 
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{part.num_parte_fk.ubicacion}}">
+                {{part.num_parte_fk.ubicacion}}
+            </td>
+            <td class="table__cell table__cell--small table__cell--overflow" data-text="{{part.num_parte_fk.total_unidades}}">
+                {{part.num_parte_fk.total_unidades}}
+            </td>
+
+            
+            <td class="table__cell table__cell--actions table__cell--overflow">
+                <a href="{% url 'edit_part' part.num_parte_fk.num_parte_pk %}">
+                    <svg class="svg-option svg-option--edit" width="20px" height="20px">
+                        <use href="#icon-edit"></use>
+                    </svg>
+                </a>
+                <a id="partSearch" href="https://www.google.com/search?q={{part.nombre}}>{{part.num_parte_pk}}" target="_blank">
+                    <svg class="svg-option svg-option--edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 2L21 7V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918C3 2.44405 3.44495 2 3.9934 2H16ZM13.529 14.4464L15.7395 16.6569L17.1537 15.2426L14.9432 13.0322C15.8492 11.4983 15.6432 9.48951 14.3252 8.17157C12.7631 6.60948 10.2305 6.60948 8.66839 8.17157C7.1063 9.73367 7.1063 12.2663 8.66839 13.8284C9.98633 15.1464 11.9951 15.3524 13.529 14.4464ZM12.911 12.4142C12.13 13.1953 10.8637 13.1953 10.0826 12.4142C9.30156 11.6332 9.30156 10.3668 10.0826 9.58579C10.8637 8.80474 12.13 8.80474 12.911 9.58579C13.6921 10.3668 13.6921 11.6332 12.911 12.4142Z"></path>
+                    </svg>
+                </a>
+                
+            </td>
+        </tr>
+    {% endfor %}
+{% else %} 
+    <tr class="table__row table__row--not-results">
+        <td class="table__cell table__cell--not-results" colspan="4">
+            <span class="table__text--not-result">
+                No se encontraron resultados
+            </span>
+        </td>
+    </tr>
+{% endif %}

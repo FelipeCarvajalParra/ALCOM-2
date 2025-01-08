@@ -14,7 +14,7 @@
                 <svg class="floating-button__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M16 2L21 7V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918C3 2.44405 3.44495 2 3.9934 2H16ZM11 11H8V13H11V16H13V13H16V11H13V8H11V11Z"></path>
                 </svg>
-            </a>
+            </a> 
             {% if request.user.groups.first.name == 'administrators' %}
                 <a class="floating-button__link" data-tooltip="Modificar estado" data-modal-id="modalEditEquipmentState">
                     <svg class="floating-button__svg" fill="currentColor" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
@@ -59,7 +59,7 @@
                     <span class="detail__value">
                         <div class="status {% if equipment.estado == 'Disponible' %} status--active {% elif equipment.estado == 'Revisar' %} status--blocked {% elif equipment.estado == 'Reparar' %} status--earring {% endif %}">
                             <span>
-                                {{  equipment.estado }}
+                                {{ equipment.estado }}
                             </span>
                         </div>
                     </span>

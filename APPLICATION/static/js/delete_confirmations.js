@@ -7,6 +7,7 @@ function delete_confirmations(){
     const deleteReferenceImage = document.getElementById('deleteReferenceImage');
     const deleteEquipment = document.querySelectorAll('.deleteEquipment');
     const deleteShopping = document.querySelectorAll('.deleteShopping');
+    const deleteReferenceAssociated = document.querySelectorAll('.deleteReferenceAssociated');
     
     if (logoutLink) {
         logoutLink.addEventListener('click', function () {
@@ -124,7 +125,6 @@ function delete_confirmations(){
         deleteShopping.forEach(function (shoppin) {
             shoppin.addEventListener('click', function () {
                 const shoppinId = shoppin.getAttribute('data-id'); 
-
                 const partElement = document.getElementById('idPart');
                 const partId = partElement ? partElement.value : null;
 
@@ -140,8 +140,28 @@ function delete_confirmations(){
             });
         });
     }
-}
-    
+
+    if (deleteReferenceAssociated) {
+        deleteReferenceAssociated.forEach(function (reference) {
+            reference.addEventListener('click', function () {
+                const partReferenceId = reference.getAttribute('data-id'); 
+                const partElement = document.getElementById('idPart');
+                const partId = partElement ? partElement.value : null;
+
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'La asociacion con la referencia se perdera.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    partReferenceId, 
+                    8,
+                    partId,
+                );
+
+            });   
+        });
+    }
+}    
     
     function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action, urlAutoGenerate) {
         Swal.fire({
@@ -190,12 +210,16 @@ function delete_confirmations(){
                             }else {
                                 deleteRequest('delete_equipment', equipmentId, 'view_equipments');
                             }
-                           
                             break
                         case(7):
                             const shoppingId = arguments[4];  // recibir el ID aquí
                             const partId = arguments[6];
                             deleteRequest('delete_shopping', shoppingId, `edit_part/${partId}`, true);
+                            break;
+                        case(8):
+                            const partReferenceId = arguments[4];  // recibir el ID aquí
+                            const partId_2 = arguments[6];
+                            deleteRequest('delete_part_reference', partReferenceId, `edit_part/${partId_2}`, true);
                             break;
                     }
                 }
@@ -274,3 +298,4 @@ function delete_confirmations(){
 document.addEventListener('DOMContentLoaded', function() {
     delete_confirmations();
 });
+

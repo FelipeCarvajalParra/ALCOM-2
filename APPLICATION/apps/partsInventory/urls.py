@@ -8,4 +8,6 @@ urlpatterns = [
     path('edit_part_action/<part_id>', views.edit_part_action, name="edit_part_action"),
     path('consult_part/<part_id>', views.consult_part, name="consult_part"),
     path('view_movements/', views.view_movements, name="view_movements"),
+    path('delete_part_reference/<partReference_id>', views.delete_part_reference, name="delete_part_reference"),
+    path('new_part_reference/', views.new_part_reference, name="new_part_reference"),
 ]
