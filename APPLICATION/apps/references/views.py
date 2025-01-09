@@ -256,7 +256,7 @@ def edit_reference(request, reference_id):
 
     list_equipments = Equipos.objects.filter(referencia_fk = reference_id)
     list_equipments = list_equipments.filter(cod_equipo_pk__icontains=search_query)
-    paginator = Paginator(list_equipments,11)  # Número de elementos por página
+    paginator = Paginator(list_equipments,1)  # Número de elementos por página
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
     
@@ -289,10 +289,7 @@ def edit_reference(request, reference_id):
     
 
     references_parts = PiezasReferencias.objects.filter(referencia_fk=reference_id)
-    print(references_parts)
-
-
-    paginator_parts = Paginator(references_parts,11)  # Número de elementos por página
+    paginator_parts = Paginator(references_parts,1)  # Número de elementos por página
     page_number_parts = request.GET.get('pageParts')
     paginator_parts = paginator_parts.get_page(page_number_parts)
 
@@ -303,6 +300,7 @@ def edit_reference(request, reference_id):
         'default_image': default_image,
         'brands': brands,
         'paginator': paginator,
+        'page_number': page_number,
         'search_query': search_query,
         'paginator_parts': paginator_parts,
         'page_number_parts': page_number_parts

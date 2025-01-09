@@ -1,0 +1,49 @@
+<nav class="pagination">
+    <span class="pagination__records">
+        Registros {{ paginator_parts.start_index }} a {{ paginator_parts.end_index }} de {{ paginator_parts.paginator.count }}
+    </span>
+
+    {% if paginator_parts.paginator.num_pages > 1 %}
+    <ul class="pagination__list">
+        <!-- Botón para ir a la página anterior -->
+        {% if paginator_parts.has_previous %}
+        <li class="pagination__item pagination__item--previous">
+            <a class="pagination__container-icon" href="?pageParts={{ paginator_parts.previous_page_number }}{% if page_number %}&page={{ page_number }}{% endif %}">
+                <svg width="15px" height="15px">
+                    <use href="#icon-previous"></use>
+                </svg>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Mostrar páginas cercanas -->
+        {% for num in paginator_parts.paginator.page_range %}
+            {% if num == paginator_parts.number or num == paginator_parts.number|add:"-1" or num == paginator_parts.number|add:"1" %}
+                {% if num > 0 and num <= paginator_parts.paginator.num_pages %}
+                    {% if num == paginator_parts.number %}
+                    <li class="pagination__item pagination__item--active">
+                        <span class="pagination__container-icon">{{ num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="pagination__item">
+                        <a class="pagination__container-icon" href="?pageParts={{ num }}{% if page_number %}&page={{ page_number }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        <!-- Botón para ir a la página siguiente -->
+        {% if paginator_parts.has_next %}
+        <li class="pagination__item pagination__item--next">
+            <a class="pagination__container-icon" href="?pageParts={{ paginator_parts.next_page_number }}{% if page_number %}&page={{ page_number }}{% endif %}">
+                <svg width="15px" height="15px">
+                    <use href="#icon-next"></use>
+                </svg>
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+    {% endif %}
+</nav>
