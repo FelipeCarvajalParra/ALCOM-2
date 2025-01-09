@@ -272,20 +272,22 @@
                                 </svg>
                                 <a href="{% url 'view_inventory_parts' %}" class="aside__nav-item-link">Inventario partes</a>
                             </li>
-                            <li
-                                class="aside__nav-option-subitem {% if is_view_shopping  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
-                                <svg class="" width="7" height="10">
-                                    <use href="#circle"></use>
-                                </svg>
-                                <a href="{% url 'view_shopping' %}" class="aside__nav-item-link">Compras partes</a>
-                            </li>
-                            <li
-                                class="aside__nav-option-subitem {% if is_view_movements  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
-                                <svg class="" width="7" height="10">
-                                    <use href="#circle"></use>
-                                </svg>
-                                <a href="{% url 'view_movements' %}" class="aside__nav-item-link">Movimientos partes</a>
-                            </li>
+                            {% if role == 'admin' %}
+                                <li
+                                    class="aside__nav-option-subitem {% if is_view_shopping  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                                    <svg class="" width="7" height="10">
+                                        <use href="#circle"></use>
+                                    </svg>
+                                    <a href="{% url 'view_shopping' %}" class="aside__nav-item-link">Compras partes</a>
+                                </li>
+                                <li
+                                    class="aside__nav-option-subitem {% if is_view_movements  %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}">
+                                    <svg class="" width="7" height="10">
+                                        <use href="#circle"></use>
+                                    </svg>
+                                    <a href="{% url 'view_movements' %}" class="aside__nav-item-link">Movimientos partes</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </li>
                     {% endif %}

@@ -111,14 +111,12 @@ def edit_part(request, part_id):
     page_number = request.GET.get('page')
     paginator = paginator.get_page(page_number)
 
-    paginator_shopping = Paginator(shoppings, 11)
+    paginator_shopping = Paginator(shoppings, 1)
     page_number_shopping = request.GET.get('page_shopping')
     paginator_shopping = paginator_shopping.get_page(page_number_shopping)
 
     references_associated = PiezasReferencias.objects.filter(num_parte_fk=part_id)
-    print(references_associated)
-
-    paginator_references = Paginator(references_associated, 11)
+    paginator_references = Paginator(references_associated, 1)
     page_number_references = request.GET.get('page_references')
     paginator_references = paginator_references.get_page(page_number_references)
 
@@ -271,7 +269,7 @@ from django.http import JsonResponse, Http404
 @login_required
 @require_POST
 @transaction.atomic
-@group_required(['administrators'], redirect_url='/forbidden_access/')
+@group_required(['administrators', 'technicians'], redirect_url='/forbidden_access/')
 def new_part_reference(request):
     try:
         part_id = request.POST.get('partId')

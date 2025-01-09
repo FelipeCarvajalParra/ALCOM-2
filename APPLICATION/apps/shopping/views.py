@@ -38,14 +38,13 @@ def view_shopping(request):
         except (ValueError, IndexError):
             pass
 
-    
-    paginator = Paginator(shoppings, 15)
-    page_number = request.GET.get('page')
-    paginator = paginator.get_page(page_number)
+    paginator_shopping = Paginator(shoppings, 15)
+    page_number_shopping = request.GET.get('page_shopping')
+    paginator_shopping = paginator_shopping.get_page(page_number_shopping)
 
     context = {
-        'paginator': paginator,
-        'page_number': page_number,
+        'paginator_shopping': paginator_shopping,
+        'page_number_shopping': page_number_shopping,
         'date_range': date_range,
     }
 

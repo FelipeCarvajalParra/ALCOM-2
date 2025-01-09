@@ -1,4 +1,49 @@
-{% if is_view_shopping %}
-    <span id="paginatorViewShopping" hidden></span>
-    {% include 'paginator.html' %} 
-{% endif %}
+<nav class="pagination">
+    <span class="pagination__records">
+        Registros {{ paginator_shopping.start_index }} a {{ paginator_shopping.end_index }} de {{ paginator_shopping.paginator.count }}
+    </span>
+
+    {% if paginator_shopping.paginator.num_pages > 1 %}
+    <ul class="pagination__list">
+        <!-- Botón para ir a la página anterior -->
+        {% if paginator_shopping.has_previous %}
+        <li class="pagination__item pagination__item--previous">
+            <a class="pagination__container-icon" href="?page_shopping={{ paginator_shopping.previous_page_number }}{% if page_number_references %}&page_references={{page_number_references}}{% endif %}">
+                <svg width="15px" height="15px">
+                    <use href="#icon-previous"></use>
+                </svg>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Mostrar páginas cercanas -->
+        {% for num in paginator_shopping.paginator.page_range %}
+            {% if num == paginator_shopping.number or num == paginator_shopping.number|add:"-1" or num == paginator_shopping.number|add:"1" %}
+                {% if num > 0 and num <= paginator_shopping.paginator.num_pages %}
+                    {% if num == paginator_shopping.number %}
+                    <li class="pagination__item pagination__item--active">
+                        <span class="pagination__container-icon">{{ num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="pagination__item">
+                        <a class="pagination__container-icon" href="?page_shopping={{ num }}{% if page_number_references %}&page_references={{page_number_references}}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        <!-- Botón para ir a la página siguiente -->
+        {% if paginator_shopping.has_next %}
+        <li class="pagination__item pagination__item--next">
+            <a class="pagination__container-icon" href="?page_shopping={{ paginator_shopping.next_page_number }}{% if page_number_references %}&page_references={{page_number_references}}{% endif %}">
+                <svg width="15px" height="15px">
+                    <use href="#icon-next"></use>
+                </svg>
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+    {% endif %}
+</nav>
