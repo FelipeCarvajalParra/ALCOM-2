@@ -1,6 +1,8 @@
 const printUsersPdf = document.getElementById('printUsersPdf');
 const printEquipmentsPdf = document.getElementById('printEquipmentsPdf');
 const printReferencesPdf = document.getElementById('printReferencesPdf');
+const printShoppingPdf = document.getElementById('printShoppingPdf');
+const printMovementsPdf = document.getElementById('printMovementsPdf');
 
 if (printUsersPdf) {
     printUsersPdf.addEventListener('click', function () {
@@ -32,6 +34,25 @@ if (printReferencesPdf) {
     });
 }
 
+if (printShoppingPdf) {
+    printShoppingPdf.addEventListener('click', function () {
+        const app_name = 'shopping';
+        const table = 'compras';
+        const fields_table = ['num_parte_fk.nombre', 'num_parte_fk' ,'color', 'cantidad', 'fecha_hora'];
+        const fields_pdf = [ 'Parte', 'Numero de parte', 'Color', 'Cantidad', 'Fecha de registro'];
+        printPdf(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printMovementsPdf) {
+    printMovementsPdf.addEventListener('click', function () {
+        const app_name = 'inserts';
+        const table = 'actualizaciones';
+        const fields_table = ['num_parte_fk.nombre', 'num_parte_fk.num_parte_pk' ,'fuente', 'num_orden_fk', 'tipo_movimiento', 'cantidad'];
+        const fields_pdf = [ 'Parte', 'Numero de parte', 'Fuente', 'Intervencion (si aplica)', 'Movimiento', 'Cantidad'];
+        printPdf(app_name, table, fields_table, fields_pdf);
+    });
+}
 
 function printPdf(app_name, table, fields_table, fields_pdf) {
     const formData = new FormData(); 

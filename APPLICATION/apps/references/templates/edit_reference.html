@@ -138,13 +138,13 @@
                     </svg>
                     <span>Existencias</span>
                 </div>
+                <div class="button button--navegation button-margin-left" data-target="parts">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M0 4.6A2.6 2.6 0 0 1 2.6 2h18.8A2.6 2.6 0 0 1 24 4.6v.8A2.6 2.6 0 0 1 21.4 8H21v10.6c0 1.33-1.07 2.4-2.4 2.4H5.4C4.07 21 3 19.93 3 18.6V8h-.4A2.6 2.6 0 0 1 0 5.4v-.8ZM2.6 4a.6.6 0 0 0-.6.6v.8a.6.6 0 0 0 .6.6h18.8a.6.6 0 0 0 .6-.6v-.8a.6.6 0 0 0-.6-.6H2.6ZM8 10a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2H8Z"></path>
+                    </svg>
+                    <span>Piezas</span>
+                </div>
             {% endif %}
-            <div class="button button--navegation button-margin-left" data-target="parts">
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M0 4.6A2.6 2.6 0 0 1 2.6 2h18.8A2.6 2.6 0 0 1 24 4.6v.8A2.6 2.6 0 0 1 21.4 8H21v10.6c0 1.33-1.07 2.4-2.4 2.4H5.4C4.07 21 3 19.93 3 18.6V8h-.4A2.6 2.6 0 0 1 0 5.4v-.8ZM2.6 4a.6.6 0 0 0-.6.6v.8a.6.6 0 0 0 .6.6h18.8a.6.6 0 0 0 .6-.6v-.8a.6.6 0 0 0-.6-.6H2.6ZM8 10a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2H8Z"></path>
-                </svg>
-                <span>Piezas</span>
-            </div>
         </div>
 
         <div id="generalData" class="container--activity scroll" style="display: block;">
@@ -323,38 +323,37 @@
                     </div>
                 </div>
             </div>
-        {% endif %}
 
+            <div id="parts" class="container--activity scroll" style="display: none;">
+                <div class="container__section-title">
+                    <span>Lista de Partes</span>
+                </div>
+                <div class="container__table">
+                    <div class="container--large container--sub-table">
+                        <table class="table">
+                            
+                            <thead class="table__headed">
+                                <th class="table__headed-title">Parte</th>
+                                <th class="table__headed-title">Ubicacion</th>
+                                <th class="table__headed-title">Unidades</th>
+                                <th class="table__headed-title table__headed-actions">
+                                    Acciones
+                                </th>
+                            </thead>
+                            <tbody class="table__body">
+                                {% include 'partials/_parts_references_table_body.html' %}
+                            </tbody>
+                        </table>
 
-        <div id="parts" class="container--activity scroll" style="display: none;">
-            <div class="container__section-title">
-                <span>Lista de Partes</span>
-            </div>
-            <div class="container__table">
-                <div class="container--large container--sub-table">
-                    <table class="table">
-                        
-                        <thead class="table__headed">
-                            <th class="table__headed-title">Parte</th>
-                            <th class="table__headed-title">Ubicacion</th>
-                            <th class="table__headed-title">Unidades</th>
-                            <th class="table__headed-title table__headed-actions">
-                                Acciones
-                            </th>
-                        </thead>
-                        <tbody class="table__body">
-                            {% include 'partials/_parts_references_table_body.html' %}
-                        </tbody>
-                    </table>
-
-                    <div class="table__footer">
                         <div class="table__footer">
-                            {% include 'partials/_parts_references_table_footer.html' %}
+                            <div class="table__footer">
+                                {% include 'partials/_parts_references_table_footer.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -429,7 +428,9 @@
 <script src="{% static 'js/download_file.js' %} ?V=2" ></script>
 <script src="{% static 'js/modal_images.js' %}"></script>
 <script src="{% static 'js/tooltip.js' %}"></script>
+{% if user.groups.first.name != 'consultants'  %}
 <script src="{% static 'js/modal.js' %}"></script>
+{% endif %}
 <script src="{% static 'js/equipment_crud.js' %} ?v=3"></script>
 <script src="{% static 'js/filter_selector.js' %}"></script>
 <script src="{% static 'js/filter_brands.js' %}"></script>

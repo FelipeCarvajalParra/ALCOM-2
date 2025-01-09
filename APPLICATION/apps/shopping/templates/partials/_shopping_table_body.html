@@ -3,6 +3,16 @@
 {% if paginator_shopping|length > 0 %}
     {% for shopping in paginator_shopping %}
         <tr class="table__row">
+            {% if is_view_shopping %}
+            <td class="table__cell table__cell--auto table__cell--flex">
+                <img class="table__image table__image--semi-circular"
+                    src="{% if shopping.num_parte_fk.imagen_1 %}{{ shopping.num_parte_fk.imagen_1.url }}{% else %}{{ default_image }}{% endif %}" alt="" />
+                <div class="table__container-text">
+                    <a href="{% url 'edit_part' shopping.num_parte_fk %}" class="table__container-link">{{shopping.num_parte_fk.nombre}}</a>
+                    <span class="table__container-email">{{shopping.num_parte_fk.num_parte_pk}}</span>
+                </div>
+            </td>
+            {% endif %}
             <td class="table__cell table__cell--small table__cell--overflow" data-text="{{ shopping.fecha }}">
                 <span>
                     {{ shopping.fecha_hora|date }}

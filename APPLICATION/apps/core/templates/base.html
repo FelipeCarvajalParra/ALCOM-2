@@ -104,7 +104,7 @@
                         </div>
                     </li>
 
-                    {% if role != 'No role' %}
+                    {% if role == 'admin' or role == 'technician' %}
                     <li class="aside__nav-option">
                         <a class="aside__nav-item {% if is_home %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}"
                             href="{% url 'home' %}">
@@ -114,7 +114,9 @@
                             <span class="aside__nav-item-link" href="#">Inicio</span>
                         </a>
                     </li>
+                    {% endif %}
 
+                    {% if role != 'No role' %}
                     <li class="aside__nav-option">
                         <a class="aside__nav-item {% if is_profile %}aside__nav-item--current{% else %}aside__nav-item--no-current{% endif %}"
                             href="{% url 'profile' user.id %}">

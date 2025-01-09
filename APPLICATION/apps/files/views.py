@@ -20,6 +20,7 @@ from django.utils.timezone import now
 from django.apps import apps
 from django.http import JsonResponse
 from django.shortcuts import render
+from datetime import datetime
 
 def compress_and_convert_to_webp(image_file):
 
@@ -224,7 +225,6 @@ def download_file(request):
         return HttpResponse(status=500)
 
 
-
 @login_required
 @require_POST
 @transaction.atomic
@@ -244,19 +244,15 @@ def print_pdf(request):
     # Preparar la consulta para manejar campos relacionados
     queryset = model.objects.all()
     processed_fields = []
-    annotations = {}
 
     # Procesar campos directos y relacionados
     for field in fields_table:
         if '.' in field:  # Campo relacionado
+            # Procesar campos relacionados directamente con "__"
             related_field, related_attr = field.split('.', 1)
-            annotations[f"{related_field}__{related_attr}"] = F(f"{related_field}__{related_attr}")
             processed_fields.append(f"{related_field}__{related_attr}")
         else:  # Campo directo
             processed_fields.append(field)
-
-    if annotations:
-        queryset = queryset.annotate(**annotations)
 
     # Extraer los valores necesarios
     try:
@@ -266,11 +262,12 @@ def print_pdf(request):
 
     # Preparar el contexto para la plantilla
     context = {
-        'data': data,  # Datos procesados con campos relacionados resueltos
+        'data': data,  # Datos procesados
         'fields': [{'name': field.replace('.', '__')} for field in fields_pdf],  # Encabezados para el PDF
+        'fields_table': [field.replace('.', '__') for field in fields_table],  # Normalizar las claves del modelo
         'current_time': now(),  # Fecha y hora actual
-        'request': request,  # Para usar información del usuario
-        'case': 'equipments',  # Asegúrate de pasar el valor correcto para 'case'
+        'request': request,  # Información del usuario
+        'case': 'equipments',  # Pasar el valor correcto para 'case'
     }
 
     # Renderizar la plantilla `print.html`
@@ -281,12 +278,11 @@ def print_pdf(request):
 @transaction.atomic
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def print_excel(request):
-
     try:
         app_name = request.POST.get('app_name')
         table_name = request.POST.get('table')
-        fields_table = request.POST.getlist('fields_table[]')  # Campos en la base de datos (incluyendo relaciones)
-        fields_pdf = request.POST.getlist('fields_pdf[]')      # Nombres de columnas para Excel
+        fields_table = request.POST.getlist('fields_table[]')  # Ej: ['num_parte_fk.nombre', ...]
+        fields_pdf = request.POST.getlist('fields_pdf[]')      # Ej: ['Parte', ...]
 
         # Obtener el modelo dinámicamente
         try:
@@ -294,27 +290,34 @@ def print_excel(request):
         except LookupError:
             return JsonResponse({'error': 'Modelo no encontrado'}, status=400)
 
-        # Preparar la consulta para manejar relaciones
+        # Preparar el queryset
         queryset = model.objects.all()
-
-        # Construir las anotaciones para los campos relacionados
         annotations = {}
+        processed_fields = []
+
         for field in fields_table:
-            if '.' in field:  # Es un campo relacionado
+            if '.' in field:  # Campo relacionado
                 related_field, related_attr = field.split('.', 1)
-                annotations[field] = F(f"{related_field}__{related_attr}")
-        
-        # Aplicar las anotaciones al queryset
+                annotation_key = field.replace('.', '__')  # Ej: num_parte_fk.nombre -> num_parte_fk__nombre
+                annotations[annotation_key] = F(f"{related_field}__{related_attr}")
+                processed_fields.append(annotation_key)  # Usar clave anotada
+            else:
+                processed_fields.append(field)
+
+        # Aplicar anotaciones al queryset
         if annotations:
             queryset = queryset.annotate(**annotations)
 
-        # Extraer los valores necesarios
+        # Extraer valores
         try:
-            data = queryset.values(*fields_table)
+            data = queryset.values(*processed_fields)  # Usar processed_fields aquí
         except Exception as e:
-            return JsonResponse({'error': f'Error al obtener los datos: {str(e)}'})
+            return JsonResponse({'error': f'Error al obtener los datos: {str(e)}'}, status=400)
 
-        # Crear un archivo Excel con openpyxl
+        # Debugging: validar datos antes de continuar
+        # print(data)
+
+        # Crear archivo Excel
         workbook = Workbook()
         worksheet = workbook.active
         worksheet.title = "Registros"
@@ -322,17 +325,21 @@ def print_excel(request):
         # Agregar encabezados
         worksheet.append(fields_pdf)
 
-        # Agregar datos de la consulta
         for record in data:
-            row = [record.get(field, '') for field in fields_table]
+            row = []
+            for field in processed_fields:
+                value = record.get(field, '') or ''  # Obtén el valor o usa una cadena vacía
+                if isinstance(value, datetime):  # Si es una fecha/hora, formatearla
+                    value = value.strftime('%Y-%m-%d %H:%M:%S')
+                row.append(value)
             worksheet.append(row)
 
-        # Preparar el archivo para descarga
+        # Generar respuesta de archivo
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename=registros.xlsx'
         workbook.save(response)
         return response
-    except Exception as e:
-        return JsonResponse({'error': f'Ha ocurrido un error: {str(e)}'})
 
+    except Exception as e:
+        return JsonResponse({'error': f'Ha ocurrido un error: {str(e)}'}, status=500)
     

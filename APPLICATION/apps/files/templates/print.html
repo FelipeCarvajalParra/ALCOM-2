@@ -26,8 +26,9 @@
     <tbody>
         {% for row in data %}
             <tr>
-                {% for field in fields %}
-                    <td>{{ row|get_item:field.name }}</td>
+                {% for field in fields_table %}
+                    <!-- Acceder al valor usando la clave normalizada -->
+                    <td>{{ row|get_item:field }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

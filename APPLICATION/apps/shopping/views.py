@@ -15,6 +15,9 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+from django.conf import settings
+
+default_image = f"{settings.MEDIA_URL}default/default.jpg"
 
 @login_required
 @transaction.atomic
@@ -46,6 +49,7 @@ def view_shopping(request):
         'paginator_shopping': paginator_shopping,
         'page_number_shopping': page_number_shopping,
         'date_range': date_range,
+        'default_image': default_image
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':

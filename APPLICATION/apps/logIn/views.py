@@ -32,7 +32,6 @@ def group_required(group_names, redirect_url='login'):
         return _wrapped_view
     return decorator
 
-
 @require_POST
 def login_validate(request):
     username = request.POST.get('username')
@@ -82,7 +81,10 @@ def login_validate(request):
     user.login_attempts = 0
     user.save()
 
-    return JsonResponse({'success': True, 'redirect_url': '/home/'})
+    if request.user.groups.filter(name='administrators').exists():
+        return JsonResponse({'success': True, 'redirect_url': '/home/'})
+    elif request.user.groups.filter(name='consultants').exists():
+        return JsonResponse({'success': True, 'redirect_url': '/view_all_references/'})
 
 # Función para cerrar sesión 
 def logout_user(request):

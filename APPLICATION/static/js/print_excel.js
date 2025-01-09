@@ -1,6 +1,8 @@
 const printUsersExcel = document.getElementById('printUsersExcel');
 const printEquipmentsExcel = document.getElementById('printEquipmentsExcel');
 const printReferencesExcel = document.getElementById('printReferencesExcel');
+const printShoppingExcel = document.getElementById('printShoppingExcel');
+const printMovementsExcel = document.getElementById('printMovementsExcel');
 
 if (printUsersExcel) {
     printUsersExcel.addEventListener('click', function () {
@@ -28,6 +30,26 @@ if (printReferencesExcel) {
         const table = 'referencias';
         const fields_table = ['categoria', 'referencia_pk' ,'marca'];
         const fields_pdf = ['Categoria', 'Referencia', 'Marca', ];
+        downloadExcel(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printShoppingExcel) {
+    printShoppingExcel.addEventListener('click', function () {
+        const app_name = 'shopping';
+        const table = 'compras';
+        const fields_table = ['num_parte_fk.nombre', 'num_parte_fk' ,'color', 'cantidad', 'fecha_hora'];
+        const fields_pdf = [ 'Parte', 'Numero de parte', 'Color', 'Cantidad', 'Fecha de registro'];
+        downloadExcel(app_name, table, fields_table, fields_pdf);
+    });
+}
+
+if (printMovementsExcel) {
+    printMovementsExcel.addEventListener('click', function () {
+        const app_name = 'inserts';
+        const table = 'actualizaciones';
+        const fields_table = ['num_parte_fk.nombre', 'num_parte_fk.num_parte_pk' ,'fuente', 'num_orden_fk', 'tipo_movimiento', 'cantidad'];
+        const fields_pdf = [ 'Parte', 'Numero de parte', 'Fuente', 'Intervencion (si aplica)', 'Movimiento', 'Cantidad'];
         downloadExcel(app_name, table, fields_table, fields_pdf);
     });
 }

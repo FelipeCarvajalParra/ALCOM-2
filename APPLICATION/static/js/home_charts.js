@@ -1,7 +1,16 @@
 document.getElementById('TotalInterventions').innerText = dataLineChart.metrics.total_intervention;
 document.getElementById('monthInterventionsCount').innerText = dataLineChart.metrics.month_interventions_count;
 document.getElementById('weekInterventionsCount').innerText = dataLineChart.metrics.week_interventions_count;
-document.getElementById('userGoal').innerText = dataLineChart.metrics.goal;
+
+const userGoalElement = document.getElementById('userGoal');
+if (userGoalElement) {
+    userGoalElement.innerText = dataLineChart.metrics.goal;
+}
+
+const totalUsersElement = document.getElementById('totalUsers');
+if (totalUsersElement) {
+    totalUsersElement.innerText = dataLineChart.total_users;
+}
 
 $.getJSON('https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/es.json', function (data) {
     var es = data;
@@ -160,4 +169,3 @@ chart.render();
     
     window.chart = new ApexCharts(chartContainer, options);
     window.chart.render();
-    

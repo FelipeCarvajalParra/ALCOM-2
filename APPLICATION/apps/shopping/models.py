@@ -13,4 +13,4 @@ class Compras(models.Model):
         return f"{self.num_parte_fk} - {self.fecha_hora}"
     
     class Meta:
-        db_table = 'compras'
+        db_table = 'compras' 

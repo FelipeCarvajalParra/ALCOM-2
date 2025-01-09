@@ -32,23 +32,35 @@ from django.db.models import Count
 @transaction.atomic
 @group_required(['administrators', 'consultants', 'technicians'], redirect_url='/forbidden_access/')
 def home(request):
-    user = request.user
 
-    # Fecha actual o simulada
+    if request.user.groups.filter(name='consultants').exists():
+        print('Consultant')
+        return redirect('/view_all_references/')
+
+    user = request.user
     now = datetime.now()
 
-    # Calcular inicio y fin del mes actual
-    start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0) # Calcular inicio y fin del mes actual
     next_month = (start_month + timedelta(days=31)).replace(day=1)
     end_month = next_month - timedelta(seconds=1)
 
-    # Calcular inicio y fin de la semana actual
-    start_week = now - timedelta(days=now.weekday())
+    start_week = now - timedelta(days=now.weekday())  # Calcular inicio y fin de la semana actual
     start_week = start_week.replace(hour=0, minute=0, second=0, microsecond=0)
     end_week = start_week + timedelta(days=6, hours=23, minutes=59, seconds=59)
 
     # Filtros para intervenciones
-    user_interventions = Intervenciones.objects.filter(usuario_fk=user.id)
+
+    total_users = 0
+
+    if request.user.groups.exists() and request.user.groups.first().name == 'administrators':
+        user_interventions = Intervenciones.objects.all()
+        total_users = CustomUser.objects.all().count()
+    elif request.user.groups.exists() and request.user.groups.first().name == 'technicians':
+        user_interventions = Intervenciones.objects.filter(usuario_fk=request.user.id)
+    else:
+        user_interventions = Intervenciones.objects.none()  
+
+
     month_interventions_count = user_interventions.filter(
         fecha_hora__range=(start_month, end_month)
     ).count()
@@ -84,7 +96,7 @@ def home(request):
             print('Fecha no encontrada en la entrada:', entry)
 
 
-    # Buacar meta para la semana actual
+    # Buscar meta para la semana actual
     week_range = f"{(datetime.now() - timedelta(days=datetime.now().weekday())).strftime('%d/%m/%Y')} - {(datetime.now() - timedelta(days=datetime.now().weekday()) + timedelta(days=6)).strftime('%d/%m/%Y')}"
     percentage = 0
     if Metas.objects.filter(rango_fechas=week_range, usuario_fk=user).exists():
@@ -125,7 +137,8 @@ def home(request):
         'graph': {
             'series': graph_series,
             'categories': days_of_week,
-        }
+        },
+        'total_users': total_users
     }
 
     today = datetime.today()
@@ -155,11 +168,17 @@ def home(request):
     start_datetime = timezone.make_aware(datetime.combine(start_date, time.min), timezone.get_current_timezone())
     end_datetime = timezone.make_aware(datetime.combine(end_date, time.max), timezone.get_current_timezone())
 
-    interventions = Intervenciones.objects.filter(
-        fecha_hora__range=[start_datetime, end_datetime],
-        usuario_fk=user.id
-    ).exclude(fecha_hora__isnull=True)
-
+    if request.user.groups.exists() and request.user.groups.first().name == 'administrators':
+        interventions = Intervenciones.objects.filter(
+            fecha_hora__range=[start_datetime, end_datetime],
+        ).exclude(fecha_hora__isnull=True)
+    elif request.user.groups.exists() and request.user.groups.first().name == 'technicians':
+        interventions = Intervenciones.objects.filter(
+            fecha_hora__range=[start_datetime, end_datetime],
+            usuario_fk=user.id
+        ).exclude(fecha_hora__isnull=True)
+    else:
+        interventions = Intervenciones.objects.none()
 
     # Contar las intervenciones por día y tipo
     for intervention in interventions:
@@ -188,7 +207,8 @@ def home(request):
                 "name": "Mantenimiento",
                 "data": maintenance_counts
             }
-        ]
+        ],
+        "total_users": total_users
     }
 
     # Pasar el JSON al contexto

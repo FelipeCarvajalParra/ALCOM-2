@@ -51,24 +51,39 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card__container-icon">
-          <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-            class="card__icon card__icon--goal">
-            <path
-              d="M21.92,5.62A1,1,0,0,0,21,5H19V3a1,1,0,0,0-.62-.92,1,1,0,0,0-1.09.21l-3,3A1,1,0,0,0,14,6V8.59l-2.21,2.2a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L15.41,10H18a1,1,0,0,0,.71-.29l3-3A1,1,0,0,0,21.92,5.62Z">
-            </path>
-            <path
-              d="M12,22A10,10,0,0,1,12,2h.42a1,1,0,1,1-.18,2H12a8,8,0,1,0,8,8,1.93,1.93,0,0,0,0-.24,1,1,0,0,1,.91-1.09,1,1,0,0,1,1.09.91c0,.14,0,.28,0,.42A10,10,0,0,1,12,22Zm5.88-8.8a1,1,0,0,0-2-.4A4,4,0,1,1,11.2,8.08a1,1,0,1,0-.4-2,6,6,0,1,0,7.08,7.08Z">
-            </path>
-          </svg>
+      {% if request.user.groups.first.name == 'technicians' %}
+        <div class="card">
+          <div class="card__container-icon">
+            <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+              class="card__icon card__icon--goal">
+              <path
+                d="M21.92,5.62A1,1,0,0,0,21,5H19V3a1,1,0,0,0-.62-.92,1,1,0,0,0-1.09.21l-3,3A1,1,0,0,0,14,6V8.59l-2.21,2.2a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L15.41,10H18a1,1,0,0,0,.71-.29l3-3A1,1,0,0,0,21.92,5.62Z">
+              </path>
+              <path
+                d="M12,22A10,10,0,0,1,12,2h.42a1,1,0,1,1-.18,2H12a8,8,0,1,0,8,8,1.93,1.93,0,0,0,0-.24,1,1,0,0,1,.91-1.09,1,1,0,0,1,1.09.91c0,.14,0,.28,0,.42A10,10,0,0,1,12,22Zm5.88-8.8a1,1,0,0,0-2-.4A4,4,0,1,1,11.2,8.08a1,1,0,1,0-.4-2,6,6,0,1,0,7.08,7.08Z">
+              </path>
+            </svg>
+          </div>
+          <div class="card__info">
+            <span class="card__metric card__metric--goal" id="userGoal"></span>
+            <span class="card__description">Meta semanal</span>
+          </div>
         </div>
-        <div class="card__info">
-          <span class="card__metric card__metric--goal" id="userGoal"></span>
-          <span class="card__description">Meta semanal</span>
+      {% elif request.user.groups.first.name == 'administrators' %}
+        <div class="card">
+          <div class="card__container-icon">
+            <svg class="card__icon card__icon--goal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2 22C2 17.5817 5.58172 14 10 14C14.4183 14 18 17.5817 18 22H16C16 18.6863 13.3137 16 10 16C6.68629 16 4 18.6863 4 22H2ZM10 13C6.685 13 4 10.315 4 7C4 3.685 6.685 1 10 1C13.315 1 16 3.685 16 7C16 10.315 13.315 13 10 13ZM10 11C12.21 11 14 9.21 14 7C14 4.79 12.21 3 10 3C7.79 3 6 4.79 6 7C6 9.21 7.79 11 10 11ZM18.2837 14.7028C21.0644 15.9561 23 18.752 23 22H21C21 19.564 19.5483 17.4671 17.4628 16.5271L18.2837 14.7028ZM17.5962 3.41321C19.5944 4.23703 21 6.20361 21 8.5C21 11.3702 18.8042 13.7252 16 13.9776V11.9646C17.6967 11.7222 19 10.264 19 8.5C19 7.11935 18.2016 5.92603 17.041 5.35635L17.5962 3.41321Z"></path>
+            </svg>
+          </div>
+          <div class="card__info">
+            <span class="card__metric card__metric--goal" id="totalUsers"></span>
+            <span class="card__description">Usuarios registrados</span>
+          </div>
         </div>
-      </div>
+      {% endif %}
 
+    
     </div>
   </div>
 
@@ -89,10 +104,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/es.json"></script>
-
-  <script src="{% static 'js/home_charts.js' %}"></script>
-
-
+  <script src="{% static 'js/home_charts.js' %} ?v=2"></script>
 
 </div>
 
