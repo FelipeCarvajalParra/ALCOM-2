@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Metas
 from apps.users.models import CustomUser
 from django.shortcuts import get_object_or_404
-
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -32,12 +31,13 @@ def get_date_range_from_week(week_str):
 
     return f'{start_date} - {end_date}'
 
+from datetime import timedelta
+
 @login_required
 @require_POST
 @transaction.atomic
 @group_required(['administrators'], redirect_url='/forbidden_access/')
 def new_goat(request):
-    # Recuperar los datos enviados por el formulario
     goalWeek = request.POST.get('goalWeek')
     goalCant = int(request.POST.get('goalCant'))
     user = request.POST.get('user')
@@ -46,11 +46,8 @@ def new_goat(request):
         return JsonResponse({'error': 'Rellene todos los campos'})
 
     userObjet = get_object_or_404(CustomUser, pk=user)
-
-    # Asegúrate de que la función `get_date_range_from_week` devuelve una cadena con el formato esperado
     date_range = get_date_range_from_week(goalWeek)
     
-    # Comprobamos si ya existe una meta para ese rango de fechas y usuario
     if Metas.objects.filter(rango_fechas=date_range, usuario_fk=userObjet).exists():
         return JsonResponse({'error': 'Ya existe una meta para este usuario en esta semana'})
 
@@ -69,22 +66,52 @@ def new_goat(request):
     except ValueError:
         return JsonResponse({'error': 'Ha ocurrido un error al procesar las fechas'})
 
-    # Ahora realizamos el filtro con el rango de fechas convertido
-    interventions = Intervenciones.objects.filter(
-        usuario_fk=userObjet,
-        fecha_hora__range=[start_date, end_date],
-        estado='Aprobada'
-    ).count()
+    # Obtener la fecha actual
+    current_date = timezone.now().date()
 
-    # Crear la meta
-    meta = Metas(
-        meta=goalCant,
-        rango_fechas=date_range,
-        usuario_fk=userObjet,
-        progreso=min(interventions, goalCant),  # Si el progreso no debe exceder la meta
-        completado=interventions >= goalCant
-    )
-    meta.save()
+    # Calcular el primer día de la semana (lunes) y el último día de la semana (domingo) de la semana actual
+    start_of_week = current_date - timedelta(days=current_date.weekday())  # Lunes
+    end_of_week = start_of_week + timedelta(days=6)  # Domingo
 
-    messages.success(request, 'Meta creada correctamente.')
+    if start_date.date() < start_of_week:
+        return JsonResponse({'error': 'La meta no puede ser añadida para una semana pasada.'})
+
+    if start_date.date() >= start_of_week:
+        interventions = Intervenciones.objects.filter(
+            usuario_fk=userObjet,
+            fecha_hora__range=[start_date, end_date],
+            estado='Aprobada'
+        ).count()
+
+        # Crear la meta
+        meta = Metas(
+            meta=goalCant,
+            rango_fechas=date_range,
+            usuario_fk=userObjet,
+            progreso=min(interventions, goalCant),  # Si el progreso no debe exceder la meta
+            completado=interventions >= goalCant
+        )
+        meta.save()
+
+        messages.success(request, 'Meta creada correctamente.')
+        return JsonResponse({'success': True})
+
+
+@login_required
+@require_POST
+@transaction.atomic
+@group_required(['administrators'], redirect_url='/forbidden_access/')
+def delete_goal(request, id):
+    try:
+        id = int(id)  
+        goal = get_object_or_404(Metas, meta_id=id)
+
+        if goal.completado == 1:
+            return JsonResponse({'error': 'No se puede eliminar una meta completada'}, status=400) 
+
+        goal.delete() 
+    except Http404:  
+        return JsonResponse({'error': 'No se ha encontrado la meta'}, status=404)
+    
+    messages.success(request, 'Meta eliminada correctamente.')
     return JsonResponse({'success': True})

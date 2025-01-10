@@ -11,6 +11,12 @@
                 </div>
                 <div class="list-activity__body list-activity__body--activity">
                     <p class="list-activity__description list-activity__description--activity">El usuario ha completado el {{ goal.porcentaje }}% de las intervenciones</p>
+
+                    {% if request.user.groups.first.name == 'administrators' and goal.estado != 'Completado' and goal.estado != 'No completado' %}
+                        <svg class="svg-option svg-option--delete deleteCategory deleteGoal" width="20px" height="20px" data-id="{{ goal.meta_id }}" >
+                            <use href="#icon-delete"></use>
+                        </svg>
+                    {% endif %}
                 </div>
             </div>
         </li>

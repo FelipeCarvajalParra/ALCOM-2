@@ -8,6 +8,7 @@ function delete_confirmations(){
     const deleteEquipment = document.querySelectorAll('.deleteEquipment');
     const deleteShopping = document.querySelectorAll('.deleteShopping');
     const deleteReferenceAssociated = document.querySelectorAll('.deleteReferenceAssociated');
+    const deleteGoal = document.querySelectorAll('.deleteGoal');
     
     if (logoutLink) {
         logoutLink.addEventListener('click', function () {
@@ -161,6 +162,26 @@ function delete_confirmations(){
             });   
         });
     }
+
+    if (deleteGoal) {
+        deleteGoal.forEach(function (goal) {
+            goal.addEventListener('click', function () {
+                const goalId = goal.getAttribute('data-id'); 
+                const userElement = document.getElementById('idUserAccount');
+                const userId = userElement.getAttribute('data-user');
+
+                showConfirmationModal(
+                    '¿Estás seguro?',
+                    'La meta se perdera de forma permanente.',
+                    'Sí, eliminar',
+                    'Cancelar',
+                    goalId,
+                    9,
+                    userId
+                )
+            });   
+        });
+    }
 }    
     
     function showConfirmationModal(title, text, confirmButtonText, cancelButtonText, recordId, action, urlAutoGenerate) {
@@ -212,14 +233,19 @@ function delete_confirmations(){
                             }
                             break
                         case(7):
-                            const shoppingId = arguments[4];  // recibir el ID aquí
+                            const shoppingId = arguments[4];  
                             const partId = arguments[6];
                             deleteRequest('delete_shopping', shoppingId, `edit_part/${partId}`, true);
                             break;
                         case(8):
-                            const partReferenceId = arguments[4];  // recibir el ID aquí
+                            const partReferenceId = arguments[4];  
                             const partId_2 = arguments[6];
                             deleteRequest('delete_part_reference', partReferenceId, `edit_part/${partId_2}`, true);
+                            break;
+                        case(9):
+                            const goalId = arguments[4];  
+                            const userId = arguments[6];
+                            deleteRequest('delete_goal', goalId, `edit_user/${userId}`, true);
                             break;
                     }
                 }

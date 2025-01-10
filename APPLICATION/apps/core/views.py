@@ -56,10 +56,9 @@ def home(request):
         user_interventions = Intervenciones.objects.all()
         total_users = CustomUser.objects.all().count()
     elif request.user.groups.exists() and request.user.groups.first().name == 'technicians':
-        user_interventions = Intervenciones.objects.filter(usuario_fk=request.user.id)
+        user_interventions = Intervenciones.objects.filter(usuario_fk=request.user.id, estado = 'Aprobada')
     else:
         user_interventions = Intervenciones.objects.none()  
-
 
     month_interventions_count = user_interventions.filter(
         fecha_hora__range=(start_month, end_month)
@@ -175,7 +174,8 @@ def home(request):
     elif request.user.groups.exists() and request.user.groups.first().name == 'technicians':
         interventions = Intervenciones.objects.filter(
             fecha_hora__range=[start_datetime, end_datetime],
-            usuario_fk=user.id
+            usuario_fk=user.id,
+            estado = 'Aprobada'
         ).exclude(fecha_hora__isnull=True)
     else:
         interventions = Intervenciones.objects.none()

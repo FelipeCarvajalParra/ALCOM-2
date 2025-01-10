@@ -83,6 +83,8 @@ def login_validate(request):
 
     if request.user.groups.filter(name='administrators').exists():
         return JsonResponse({'success': True, 'redirect_url': '/home/'})
+    elif request.user.groups.filter(name='technicians').exists():
+        return JsonResponse({'success': True, 'redirect_url': '/home/'})
     elif request.user.groups.filter(name='consultants').exists():
         return JsonResponse({'success': True, 'redirect_url': '/view_all_references/'})
 
